@@ -1,0 +1,131 @@
+name: OpenAI Blueprint evaluation
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: Reviewed manifest phase
+        required: true
+        type: choice
+        default: canary
+        options:
+          - canary
+          - baseline
+          - repeated
+      dataset:
+        description: Optional dataset filter inside the reviewed phase
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - travel-document-fields
+          - travel-destination-level
+          - travel-request-summary
+          - travel-request-form
+          - travel-document-evidence
+          - date-normalizer
+          - travel-purpose-localizer
+          - travel-approval-routing
+      run_id:
+        description: Unique lowercase artifact run ID
+        required: true
+        type: string
+      seed:
+        description: Reproducible evaluation seed
+        required: true
+        type: string
+      max_calls:
+        description: Operator call ceiling, no greater than the manifest phase
+        required: true
+        type: number
+        default: 1
+      budget_usd:
+        description: Operator USD ceiling, no greater than the manifest phase
+        required: true
+        type: number
+        default: 0.05
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openai-blueprint-evaluation
+  cancel-in-progress: false
+
+jobs:
+  evaluate:
+    name: Guarded OpenAI evaluation
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    environment: openai-live
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --engine-strict
+
+      - name: Type-check matrix runner
+        run: npm run typecheck
+
+      - name: Build package
+        run: npm run build
+
+      - name: Review effective plan
+        env:
+          PIXIECORE_OPENAI_PHASE: ${{ inputs.phase }}
+          PIXIECORE_OPENAI_DATASET: ${{ inputs.dataset }}
+          PIXIECORE_OPENAI_RUN_ID: ${{ inputs.run_id }}
+          PIXIECORE_OPENAI_SEED: ${{ inputs.seed }}
+          PIXIECORE_OPENAI_MAX_CALLS: ${{ inputs.max_calls }}
+          PIXIECORE_OPENAI_BUDGET_USD: ${{ inputs.budget_usd }}
+        run: >-
+          npm run benchmark:openai --
+          --phase="$PIXIECORE_OPENAI_PHASE"
+          --dataset="$PIXIECORE_OPENAI_DATASET"
+          --run-id="$PIXIECORE_OPENAI_RUN_ID"
+          --seed="$PIXIECORE_OPENAI_SEED"
+          --source-revision="$GITHUB_SHA"
+          --max-calls="$PIXIECORE_OPENAI_MAX_CALLS"
+          --max-budget-usd="$PIXIECORE_OPENAI_BUDGET_USD"
+          --dry-run
+
+      - name: Run guarded live matrix
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PIXIECORE_OPENAI_PHASE: ${{ inputs.phase }}
+          PIXIECORE_OPENAI_DATASET: ${{ inputs.dataset }}
+          PIXIECORE_OPENAI_RUN_ID: ${{ inputs.run_id }}
+          PIXIECORE_OPENAI_SEED: ${{ inputs.seed }}
+          PIXIECORE_OPENAI_MAX_CALLS: ${{ inputs.max_calls }}
+          PIXIECORE_OPENAI_BUDGET_USD: ${{ inputs.budget_usd }}
+        run: >-
+          npm run benchmark:openai --
+          --phase="$PIXIECORE_OPENAI_PHASE"
+          --dataset="$PIXIECORE_OPENAI_DATASET"
+          --run-id="$PIXIECORE_OPENAI_RUN_ID"
+          --seed="$PIXIECORE_OPENAI_SEED"
+          --source-revision="$GITHUB_SHA"
+          --max-calls="$PIXIECORE_OPENAI_MAX_CALLS"
+          --max-budget-usd="$PIXIECORE_OPENAI_BUDGET_USD"
+          --confirm-remote-cost
+          --confirm-key-rotated
+
+      - name: Upload value-free checkpoints
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: openai-blueprint-results
+          path: benchmarks/results/openai/**
+          if-no-files-found: warn
+          retention-days: 14

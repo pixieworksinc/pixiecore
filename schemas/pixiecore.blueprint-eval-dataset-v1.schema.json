@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.blueprint-eval-dataset-v1.schema.json",
+  "title": "PixieCore Blueprint evaluation dataset v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "name", "version", "blueprint", "tags", "cases"],
+  "properties": {
+    "schema": {
+      "const": "pixiecore.blueprint-eval-dataset/v1"
+    },
+    "name": {
+      "$ref": "#/$defs/nonBlankString"
+    },
+    "version": {
+      "$ref": "#/$defs/semanticVersion"
+    },
+    "description": {
+      "$ref": "#/$defs/nonBlankString"
+    },
+    "blueprint": {
+      "$ref": "#/$defs/blueprintReference"
+    },
+    "tags": {
+      "$ref": "#/$defs/tags"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "$defs": {
+    "nonBlankString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "semanticVersion": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "blueprintVersion": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:\\.(?:0|[1-9]\\d*))?$"
+    },
+    "blueprintReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/nonBlankString"
+        },
+        "version": {
+          "$ref": "#/$defs/blueprintVersion"
+        }
+      }
+    },
+    "tag": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "maxLength": 80
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/tag"
+      }
+    },
+    "jsonPointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tags", "inputs", "expected_output", "comparison"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$",
+          "maxLength": 120
+        },
+        "description": {
+          "$ref": "#/$defs/nonBlankString"
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        },
+        "inputs": {
+          "type": "object"
+        },
+        "expected_output": {
+          "type": "object"
+        },
+        "comparison": {
+          "$ref": "#/$defs/comparison"
+        }
+      }
+    },
+    "comparison": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/exactComparison"
+        },
+        {
+          "$ref": "#/$defs/schemaComparison"
+        },
+        {
+          "$ref": "#/$defs/fieldsComparison"
+        },
+        {
+          "$ref": "#/$defs/setComparison"
+        },
+        {
+          "$ref": "#/$defs/numericToleranceComparison"
+        },
+        {
+          "$ref": "#/$defs/customComparison"
+        }
+      ]
+    },
+    "exactComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "const": "exact"
+        }
+      }
+    },
+    "schemaComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "const": "schema"
+        }
+      }
+    },
+    "fieldsComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pointers"],
+      "properties": {
+        "mode": {
+          "const": "fields"
+        },
+        "pointers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jsonPointer"
+          }
+        }
+      }
+    },
+    "setComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pointer"],
+      "properties": {
+        "mode": {
+          "const": "set"
+        },
+        "pointer": {
+          "$ref": "#/$defs/jsonPointer"
+        }
+      }
+    },
+    "numericToleranceComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pointers"],
+      "anyOf": [
+        {
+          "required": ["absolute_tolerance"],
+          "properties": {
+            "absolute_tolerance": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        {
+          "required": ["relative_tolerance"],
+          "properties": {
+            "relative_tolerance": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      ],
+      "properties": {
+        "mode": {
+          "const": "numeric_tolerance"
+        },
+        "pointers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jsonPointer"
+          }
+        },
+        "absolute_tolerance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "relative_tolerance": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "customComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "comparator"],
+      "properties": {
+        "mode": {
+          "const": "custom"
+        },
+        "comparator": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "maxLength": 160
+        },
+        "config": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

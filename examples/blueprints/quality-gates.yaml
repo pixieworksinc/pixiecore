@@ -1,0 +1,59 @@
+schema: pixiecore.reference-quality-gates/v1
+version: 1.0.0
+gates:
+  - id: extractor/travel-document-fields
+    dataset: extractor/travel-document-fields/evaluations/travel-document-fields.yaml
+    test: extractor/travel-document-fields/tests/travel-document-fields.contract.test.ts
+    minimum_cases: 7
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: classifier/travel-destination-level
+    dataset: classifier/travel-destination-level/evaluations/travel-destination-level.yaml
+    test: classifier/travel-destination-level/tests/travel-destination-level.contract.test.ts
+    minimum_cases: 13
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: summarizer/travel-request-summary
+    dataset: summarizer/travel-request-summary/evaluations/travel-request-summary.yaml
+    test: summarizer/travel-request-summary/tests/travel-request-summary.contract.test.ts
+    minimum_cases: 8
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: validator/travel-request-form
+    dataset: validator/travel-request-form/evaluations/travel-request-form.yaml
+    test: validator/travel-request-form/tests/travel-request-form.contract.test.ts
+    minimum_cases: 9
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: verifier/travel-document-evidence
+    dataset: verifier/travel-document-evidence/evaluations/travel-document-evidence.yaml
+    test: verifier/travel-document-evidence/tests/travel-document-evidence.contract.test.ts
+    minimum_cases: 8
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: converter/date-normalizer
+    dataset: converter/date-normalizer/evaluations/date-normalizer.yaml
+    test: converter/date-normalizer/tests/date-normalizer.contract.test.ts
+    minimum_cases: 10
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: translator/travel-purpose-localizer
+    dataset: translator/travel-purpose-localizer/evaluations/travel-purpose-localizer.yaml
+    test: translator/travel-purpose-localizer/tests/travel-purpose-localizer.contract.test.ts
+    minimum_cases: 8
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0
+  - id: router/travel-approval-routing
+    dataset: router/travel-approval-routing/evaluations/travel-approval-routing.yaml
+    test: router/travel-approval-routing/tests/travel-approval-routing.contract.test.ts
+    minimum_cases: 8
+    minimum_accuracy: 1
+    maximum_failures: 0
+    maximum_errors: 0

@@ -1,0 +1,232 @@
+{
+  "name": "@pixieworks/pixiecore",
+  "version": "0.1.0",
+  "description": "Clean-room TypeScript runtime for documented Prompt-Oriented Programming contracts",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./api": {
+      "types": "./dist/core/kernel/api/index.d.ts",
+      "import": "./dist/core/kernel/api/index.js"
+    },
+    "./apisix": {
+      "types": "./dist/core/kernel/apisix/index.d.ts",
+      "import": "./dist/core/kernel/apisix/index.js"
+    },
+    "./application": {
+      "types": "./dist/core/kernel/application/index.d.ts",
+      "import": "./dist/core/kernel/application/index.js"
+    },
+    "./application/trace-schema.json": "./schemas/pixiecore.application-trace-v1.schema.json",
+    "./application/partial-result-schema.json": "./schemas/pixiecore.application-partial-result-v1.schema.json",
+    "./audit": {
+      "types": "./dist/core/kernel/audit/index.d.ts",
+      "import": "./dist/core/kernel/audit/index.js"
+    },
+    "./audit/schema.json": "./schemas/pixiecore.signed-audit-export-v1.schema.json",
+    "./adoption/snapshot-schema.json": "./schemas/pixiecore.adoption-snapshot-v1.schema.json",
+    "./blueprint/schema.json": "./schemas/pixiecore.blueprint-v1.schema.json",
+    "./blueprint/package-schema.json": "./schemas/pixiecore.blueprint-package-v1.schema.json",
+    "./blueprint/quality-catalog-schema.json": "./schemas/pixiecore.blueprint-quality-catalog-v1.schema.json",
+    "./blueprint-packages": {
+      "types": "./dist/core/kernel/blueprint/packages.d.ts",
+      "import": "./dist/core/kernel/blueprint/packages.js"
+    },
+    "./cache": {
+      "types": "./dist/core/kernel/cache/index.d.ts",
+      "import": "./dist/core/kernel/cache/index.js"
+    },
+    "./cache/record-schema.json": "./schemas/pixiecore.safe-cache-record-v1.schema.json",
+    "./conformance": {
+      "types": "./dist/core/kernel/conformance/index.d.ts",
+      "import": "./dist/core/kernel/conformance/index.js"
+    },
+    "./data-policy": {
+      "types": "./dist/core/kernel/data-policy/index.d.ts",
+      "import": "./dist/core/kernel/data-policy/index.js"
+    },
+    "./data-policy/record-schema.json": "./schemas/pixiecore.data-retention-record-v1.schema.json",
+    "./mcp-server": {
+      "types": "./dist/core/kernel/mcp-server/index.d.ts",
+      "import": "./dist/core/kernel/mcp-server/index.js"
+    },
+    "./rag": {
+      "types": "./dist/core/kernel/rag/index.d.ts",
+      "import": "./dist/core/kernel/rag/index.js"
+    },
+    "./rag/chunk-metadata-schema.json": "./schemas/pixiecore.rag-chunk-metadata-v1.schema.json",
+    "./eval": {
+      "types": "./dist/core/kernel/evaluation/index.d.ts",
+      "import": "./dist/core/kernel/evaluation/index.js"
+    },
+    "./eval/dataset-schema.json": "./schemas/pixiecore.blueprint-eval-dataset-v1.schema.json",
+    "./eval/property-corpus-schema.json": "./schemas/pixiecore.evaluation-property-corpus-v1.schema.json",
+    "./eval/result-schema.json": "./schemas/pixiecore.blueprint-eval-result-v1.schema.json",
+    "./eval/benchmark-schema.json": "./schemas/pixiecore.blueprint-benchmark-v1.schema.json",
+    "./fallback": {
+      "types": "./dist/core/kernel/fallback/index.d.ts",
+      "import": "./dist/core/kernel/fallback/index.js"
+    },
+    "./fallback/receipt-schema.json": "./schemas/pixiecore.provider-fallback-receipt-v1.schema.json",
+    "./instruction-template/conformance-schema.json": "./schemas/pixiecore.instruction-template-conformance-v1.schema.json",
+    "./instruction-template/conformance-suite.json": "./conformance/pixiecore-instruction-template-v1/suite.json",
+    "./instruction-template/conformance-report-schema.json": "./schemas/pixiecore.instruction-template-conformance-report-v1.schema.json",
+    "./instruction-template/cross-runtime-comparison-schema.json": "./schemas/pixiecore.instruction-template-cross-runtime-comparison-v1.schema.json",
+    "./jit": {
+      "types": "./dist/core/kernel/jit/index.d.ts",
+      "import": "./dist/core/kernel/jit/index.js"
+    },
+    "./jit/program-schema.json": "./schemas/pixiecore.jit-program-v1.schema.json",
+    "./jit/admission-report-schema.json": "./schemas/pixiecore.jit-admission-report-v1.schema.json",
+    "./jit/promotions-schema.json": "./schemas/pixiecore.jit-promotions-v1.schema.json",
+    "./review": {
+      "types": "./dist/core/kernel/review/index.d.ts",
+      "import": "./dist/core/kernel/review/index.js"
+    },
+    "./review/handoff-schema.json": "./schemas/pixiecore.review-handoff-v1.schema.json",
+    "./review/receipt-schema.json": "./schemas/pixiecore.review-receipt-v1.schema.json",
+    "./telemetry": {
+      "types": "./dist/core/kernel/telemetry/index.d.ts",
+      "import": "./dist/core/kernel/telemetry/index.js"
+    },
+    "./telemetry/schema.json": "./schemas/pixiecore.execution-telemetry-v1.schema.json",
+    "./plugin": {
+      "types": "./dist/core/contracts/plugin/index.d.ts",
+      "import": "./dist/core/contracts/plugin/index.js"
+    },
+    "./plugin/schema.json": "./schemas/pixiecore.plugin-v1.schema.json",
+    "./plugin/package-schema.json": "./schemas/pixiecore.plugin-package-v1.schema.json",
+    "./recipe/schema.json": "./schemas/pixiecore.recipe-v1.schema.json",
+    "./recipe/standard.yaml": "./dist/plugins/recipe/recipes/pixiecore.recipe.yaml",
+    "./pop/blueprint-schema.json": "./schemas/pop.blueprint-0.1.schema.json",
+    "./pop/evaluation-dataset-schema.json": "./schemas/pop.evaluation-dataset-0.1.schema.json",
+    "./pop/evaluation-result-schema.json": "./schemas/pop.evaluation-result-0.1.schema.json",
+    "./pop/blueprint-package-schema.json": "./schemas/pop.blueprint-package-0.1.schema.json",
+    "./pop/conformance-suite-schema.json": "./schemas/pop.conformance-suite-0.1.schema.json",
+    "./pop/conformance-suite.json": "./conformance/pop-0.1/suite.json",
+    "./pop/conformance-report-schema.json": "./schemas/pop.conformance-report-0.1.schema.json",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "pixiecore": "./dist/core/kernel/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "conformance/adapters",
+    "conformance/pop-0.1",
+    "conformance/runners",
+    "conformance/pixiecore-instruction-template-v1",
+    "README.md",
+    "examples/analyze.yaml",
+    "examples/hello.yaml",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "schemas/*.json"
+  ],
+  "scripts": {
+    "clean:dist": "node scripts/clean-dist.mjs",
+    "clean:test-runtime": "node scripts/clean-test-runtime.mjs",
+    "build:test-runtime": "npm run check:core-plugin-catalog && npm run clean:test-runtime && tsc -p tsconfig.runtime.json --incremental --tsBuildInfoFile .pixiecore/test-runtime.tsbuildinfo && npm run copy:core-plugin-manifests",
+    "build:test-runtime:repeat": "npm run check:core-plugin-catalog && node scripts/build-test-runtime-repeat.mjs",
+    "generate:core-plugin-catalog": "node --import tsx scripts/generate-core-plugin-catalog.mjs --write && node --import tsx scripts/generate-core-recipe.mjs --write",
+    "check:core-plugin-catalog": "node --import tsx scripts/generate-core-plugin-catalog.mjs --check && node --import tsx scripts/generate-core-recipe.mjs --check",
+    "generate:blueprint-catalog-site": "node scripts/generate-blueprint-catalog-site.mjs --write",
+    "check:blueprint-catalog-site": "node scripts/generate-blueprint-catalog-site.mjs",
+    "generate:adoption-dashboard": "node scripts/generate-adoption-dashboard.mjs --write",
+    "check:adoption-dashboard": "node scripts/generate-adoption-dashboard.mjs",
+    "copy:core-plugin-manifests": "node --import tsx scripts/copy-core-plugin-manifests.mjs",
+    "prune:declarations": "node scripts/prune-private-declarations.mjs",
+    "build": "npm run check:core-plugin-catalog && npm run clean:dist && tsc -p tsconfig.runtime.json && tsc -p tsconfig.declarations.json && npm run copy:core-plugin-manifests && npm run prune:declarations",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "check:blueprint-versions": "node scripts/check-blueprint-versions.mjs",
+    "check:docs": "node scripts/check-docs.mjs",
+    "check:source-docs": "node scripts/check-source-file-documentation.mjs && eslint src/core src/plugins",
+    "docs:api": "typedoc",
+    "check:api-docs": "typedoc --emit none",
+    "check:quality-gates": "node scripts/check-reference-quality-gates.mjs",
+    "benchmark:reference": "node --import tsx examples/benchmarks/reference-blueprint.ts",
+    "benchmark:runtime-preparation": "node --import tsx scripts/benchmark-runtime-preparation.mjs",
+    "benchmark:openai": "node --import tsx examples/benchmarks/openai-blueprint-matrix.ts",
+    "benchmark:adjacent-patterns": "node --import tsx examples/comparison/publication-brief/benchmark.ts",
+    "report:adjacent-patterns": "node --import tsx examples/comparison/publication-brief/review-benchmark.ts",
+    "report:openai-extractor": "node --import tsx examples/benchmarks/openai-blueprint-reports.ts",
+    "report:openai-scorecard": "node --import tsx examples/benchmarks/openai-blueprint-scorecard.ts",
+    "check:conformance": "npm run build && node scripts/check-pop-conformance.mjs",
+    "check:conformance:independent": "python3 conformance/validators/python/pop_validator.py",
+    "check:instruction-template-conformance": "npm run build && node conformance/adapters/pixiecore-instruction-template.mjs --suite conformance/pixiecore-instruction-template-v1/suite.json",
+    "test:fast": "npm run check:core-plugin-catalog && node scripts/run-tests.mjs --experimental-test-isolation=none --test --import tsx tests/architecture/kernel-boundary.test.ts tests/architecture/recipe-boundary.test.ts tests/architecture/core-plugin-catalog.test.ts tests/architecture/core-service-ports.test.ts tests/contract/plugins.contract.test.ts tests/contract/public-exports.contract.test.ts tests/contract/cross-runtime-conformance.contract.test.ts src/plugins/recipe/tests/contract/recipe-service.test.ts src/plugins/cli/tests/architecture/cli-command-service.test.ts",
+    "test": "npm run build:test-runtime && node scripts/run-tests.mjs scripts/run-test-shards.mjs",
+    "test:profile": "npm run build:test-runtime:repeat && PIXIECORE_TEST_SHARD_PROFILE_PATH=.pixiecore/test-shard-profile.json node scripts/run-tests.mjs scripts/run-test-shards.mjs",
+    "test:repeat": "npm run build:test-runtime:repeat && node scripts/run-tests.mjs scripts/run-test-shards.mjs",
+    "test:architecture": "npm run check:core-plugin-catalog && node scripts/run-tests.mjs --test --import tsx tests/architecture/**/*.test.ts \"src/plugins/**/tests/architecture/**/*.test.ts\"",
+    "test:kernel": "npm run check:core-plugin-catalog && node scripts/run-tests.mjs --test --import tsx tests/architecture/kernel-boundary.test.ts tests/architecture/recipe-boundary.test.ts tests/architecture/core-plugin-catalog.test.ts tests/architecture/core-service-ports.test.ts tests/contract/plugins.contract.test.ts tests/contract/public-exports.contract.test.ts src/plugins/recipe/tests/contract/recipe-service.test.ts src/plugins/cli/tests/architecture/cli-command-service.test.ts",
+    "test:contract": "npm run check:core-plugin-catalog && node scripts/run-tests.mjs --test --import tsx tests/contract/**/*.test.ts \"src/plugins/**/tests/contract/**/*.test.ts\" \"examples/blueprints/**/tests/**/*.test.ts\"",
+    "test:integration": "npm run build:test-runtime && node scripts/run-tests.mjs --test --import tsx tests/integration/**/*.test.ts \"src/plugins/**/tests/integration/**/*.test.ts\"",
+    "test:smoke": "npm run check:core-plugin-catalog && node scripts/run-tests.mjs --test --import tsx tests/smoke/**/*.test.ts \"src/plugins/**/tests/smoke/**/*.test.ts\"",
+    "test:coverage": "npm run build:test-runtime && node scripts/run-tests.mjs --test --experimental-test-coverage \"--test-coverage-include=src/**/*.ts\" \"--test-coverage-exclude=src/plugins/**/tests/**\" --test-coverage-lines=90 --test-coverage-functions=90 --test-coverage-branches=90 --import tsx tests/*.test.ts tests/**/*.test.ts \"src/plugins/**/tests/**/*.test.ts\" \"examples/blueprints/**/tests/**/*.test.ts\" examples/plugin-project/custom/plugins/*/*/tests/**/*.test.ts examples/plugin-authoring/*/tests/**/*.test.js",
+    "test:stability": "node scripts/run-stability.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json --noEmit && tsc -p tsconfig.examples.json --noEmit",
+    "check:licenses": "node scripts/check-third-party-licenses.mjs",
+    "check:node-engines": "node scripts/ci/node-engines.mjs",
+    "check:security-release": "node scripts/check-security-release.mjs",
+    "prepare:public-snapshot": "node scripts/publication/prepare.mjs",
+    "prepare:release-artifact": "node scripts/release/prepare-artifact.mjs",
+    "verify:release-artifact": "node scripts/release/verify-artifact.mjs",
+    "verify:registry-artifact": "node scripts/release/verify-registry.mjs",
+    "update:licenses": "node scripts/check-third-party-licenses.mjs --write",
+    "verify:package": "npm run check:core-plugin-catalog && node --import tsx scripts/verify-package.mjs",
+    "start": "node dist/core/kernel/cli/index.js serve",
+    "prepack": "npm run check:node-engines && npm run check:licenses && npm run check:core-plugin-catalog && npm run check:blueprint-catalog-site && npm run check:adoption-dashboard && npm run check:architecture && npm run check:blueprint-versions && npm run check:docs && npm run check:source-docs && npm run check:api-docs && npm run build"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixieworksinc/pixiecore.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pixieworksinc/pixiecore/issues"
+  },
+  "homepage": "https://github.com/pixieworksinc/pixiecore#readme",
+  "keywords": [
+    "pixiecore",
+    "prompt-runtime",
+    "typescript",
+    "llm",
+    "mcp"
+  ],
+  "pixiecore": {
+    "plugins": "./plugins"
+  },
+  "dependencies": {
+    "@azure/identity": "^4.13.1",
+    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "ajv": "^8.17.1",
+    "dotenv": "^17.4.2",
+    "pdfjs-dist": "^6.2.108",
+    "semver": "^7.8.5",
+    "yaml": "^2.8.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@boneskull/typedoc-plugin-mermaid": "^0.2.1",
+    "@types/node": "22.13.0",
+    "semver": "7.8.5",
+    "eslint": "^10.9.1",
+    "eslint-plugin-jsdoc": "^64.2.1",
+    "mermaid": "^11.17.2",
+    "tsx": "^4.20.3",
+    "typedoc": "^0.28.20",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.68.0"
+  },
+  "license": "Apache-2.0"
+}

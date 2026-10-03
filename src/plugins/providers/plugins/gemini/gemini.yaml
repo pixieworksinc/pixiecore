@@ -1,0 +1,20 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.gemini
+name: PixieCore Gemini Providers
+version: '0.1.0'
+description: Provides Gemini Native and Gemini OpenAI-compatible provider factories.
+entry: ./gemini.js
+
+requires:
+  pixiecore.providers: ^0.1.0
+optional_requires:
+  pixiecore.providers.azure: ^0.1.0
+conflicts: {}
+
+components:
+  - type: provider
+    export: createGeminiNativeProviderFactory
+    provider_name: gemini_native
+  - type: provider
+    export: createGeminiOpenAIProviderFactory
+    provider_name: gemini_openai

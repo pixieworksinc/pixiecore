@@ -1,0 +1,33 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Route customer inquiry by policy
+version: 1.0.0
+blueprint:
+  path: ../blueprints/route-inquiry.yaml
+  version: 1.0.1
+tags: [application-composition, customer-inquiry, router]
+cases:
+  - id: route-urgent-premium-billing
+    tags: [canonical]
+    inputs:
+      request:
+        category: billing
+        priority: urgent
+        customer_tier: premium
+      policy:
+        version: 1.0.0
+        rules:
+          - id: route:billing-urgent-premium
+            category: billing
+            priority: urgent
+            customer_tier: premium
+            queue: billing-priority
+            owner: billing-lead
+            sla_hours: 1
+    expected_output:
+      status: routed
+      queue: billing-priority
+      owner: billing-lead
+      rule_id: route:billing-urgent-premium
+      sla_hours: 1
+      policy_version: 1.0.0
+    comparison: { mode: exact }

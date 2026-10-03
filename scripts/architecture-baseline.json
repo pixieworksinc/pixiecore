@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "migrationPhase": 8,
+  "legacySourceFiles": [],
+  "opaqueDynamicImportFiles": [
+    {
+      "file": "src/core/bootstrap/plugin-manager/catalog/module-loader.ts",
+      "reason": "The legacy plugin loader imports the manifest-selected module at runtime."
+    }
+  ],
+  "temporaryDependencyExceptions": []
+}

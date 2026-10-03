@@ -1,0 +1,53 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "PixieCore API",
+  "entryPoints": [
+    "src/index.ts",
+    "src/core/kernel/api/index.ts",
+    "src/core/kernel/application/index.ts",
+    "src/core/kernel/audit/index.ts",
+    "src/core/kernel/blueprint/packages.ts",
+    "src/core/kernel/cache/index.ts",
+    "src/core/kernel/conformance/index.ts",
+    "src/core/kernel/data-policy/index.ts",
+    "src/core/kernel/evaluation/index.ts",
+    "src/core/kernel/fallback/index.ts",
+    "src/core/kernel/jit/index.ts",
+    "src/core/kernel/mcp-server/index.ts",
+    "src/core/kernel/rag/index.ts",
+    "src/core/kernel/review/index.ts",
+    "src/core/kernel/telemetry/index.ts",
+    "src/core/contracts/plugin/index.ts"
+  ],
+  "entryPointStrategy": "resolve",
+  "tsconfig": "tsconfig.json",
+  "out": "build/api-docs",
+  "projectDocuments": [
+    "docs/architecture/class-diagrams.md",
+    "docs/architecture/class-diagram-blueprint-application.md"
+  ],
+  "plugin": [
+    "@boneskull/typedoc-plugin-mermaid"
+  ],
+  "ignoredHighlightLanguages": [
+    "mermaid"
+  ],
+  "mermaidSource": "local",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "validation": {
+    "invalidLink": false,
+    "notDocumented": true,
+    "notExported": false
+  },
+  "requiredToBeDocumented": [
+    "Class",
+    "Interface",
+    "Function",
+    "TypeAlias",
+    "Enum"
+  ],
+  "treatValidationWarningsAsErrors": true
+}

@@ -1,0 +1,17 @@
+# Review routing only. Merge and release authority live in MAINTAINERS.md.
+* @naoi
+
+# Public runtime and trust boundaries.
+/src/core/contracts/ @naoi
+/src/core/bootstrap/ @naoi
+/schemas/ @naoi
+/SECURITY.md @naoi
+
+# Portable POP specification and conformance.
+/docs/specification/ @naoi
+/docs/rfcs/ @naoi
+/conformance/ @naoi
+
+# First-party Blueprint and plugin ownership surfaces.
+/examples/blueprints/ @naoi
+/src/plugins/ @naoi

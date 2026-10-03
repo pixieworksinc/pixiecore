@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.self-evaluation
+name: PixieCore Self-Evaluation
+version: '0.1.0'
+description: Provides PixieCore's constructor-visible self-evaluation decorator.
+entry: ./self-evaluation.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: decorator
+    export: SelfEvalDecorator
+    priority: 30
+    stage: after

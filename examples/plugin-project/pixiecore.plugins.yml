@@ -1,0 +1,7 @@
+schema: pixiecore.plugins/v1
+roots:
+  - ./custom/plugins
+enabled:
+  - example.converter
+  - example.classifier
+disabled: []

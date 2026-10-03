@@ -1,0 +1,11 @@
+purpose: Customer contract renewal meetings
+start_date: '2026-09-14'
+end_date: '2026-09-18'
+destinations:
+  - San Francisco, US
+  - Los Angeles, US
+total_cost:
+  amount: 2840.5
+  currency: USD
+approval_notes:
+  - Hotel cap exception requires review

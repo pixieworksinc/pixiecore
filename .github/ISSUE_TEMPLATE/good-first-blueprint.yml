@@ -1,0 +1,66 @@
+name: Good-first Blueprint
+description: Propose one small, typed, offline-evaluable Blueprint contribution.
+title: "blueprint: "
+labels:
+  - good first issue
+  - blueprint
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Define one independently meaningful cognitive operation. Do not include secrets, confidential data, or fixtures without redistribution rights.
+  - type: input
+    id: operation
+    attributes:
+      label: Operation
+      description: Choose Extractor, Classifier, Summarizer, Validator, Verifier, Converter, Translator, or Router.
+      placeholder: Converter
+    validations:
+      required: true
+  - type: input
+    id: unit_name
+    attributes:
+      label: Proposed unit name
+      description: Use a short lowercase kebab-case name.
+      placeholder: invoice-date-normalizer
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Typed input and output contract
+      description: List the business inputs, structured result, and explicit unsupported or ambiguous outcomes.
+    validations:
+      required: true
+  - type: textarea
+    id: cases
+    attributes:
+      label: Evaluation cases
+      description: Describe ordinary, boundary, ambiguous, unsupported, and failure cases that can run offline.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Fixture provenance and rights
+      description: Explain where fixtures come from and why the project may redistribute them.
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals and side effects
+      description: State what this unit will not do and confirm that it performs no hidden external side effect.
+    validations:
+      required: true
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Readiness
+      options:
+        - label: I can keep this contribution to one cognitive operation.
+          required: true
+        - label: I can provide authorized, non-secret, offline fixtures.
+          required: true
+        - label: I will add the Blueprint, README, versioned dataset, and owned contract test.
+          required: true

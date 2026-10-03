@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.jit-program-v1.schema.json",
+  "title": "PixieCore deterministic JIT program",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["outputs"],
+  "properties": {
+    "outputs": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 64,
+      "propertyNames": { "not": { "enum": ["__proto__", "constructor", "prototype"] } },
+      "additionalProperties": { "$ref": "#/$defs/expression" }
+    }
+  },
+  "$defs": {
+    "expression": {
+      "oneOf": [
+        { "$ref": "#/$defs/input" },
+        { "$ref": "#/$defs/const" },
+        { "$ref": "#/$defs/field" },
+        { "$ref": "#/$defs/arithmetic" },
+        { "$ref": "#/$defs/round" },
+        { "$ref": "#/$defs/compare" },
+        { "$ref": "#/$defs/choose" },
+        { "$ref": "#/$defs/lookup" },
+        { "$ref": "#/$defs/concat" },
+        { "$ref": "#/$defs/compact" },
+        { "$ref": "#/$defs/toNumber" },
+        { "$ref": "#/$defs/toText" }
+      ]
+    },
+    "safeName": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "enum": ["__proto__", "constructor", "prototype"] }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": { "const": "input" },
+        "name": { "$ref": "#/$defs/safeName" }
+      }
+    },
+    "const": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "const": "const" },
+        "value": true
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "of", "name"],
+      "properties": {
+        "kind": { "const": "field" },
+        "of": { "$ref": "#/$defs/expression" },
+        "name": { "$ref": "#/$defs/safeName" }
+      }
+    },
+    "arithmetic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "op", "left", "right"],
+      "properties": {
+        "kind": { "const": "arithmetic" },
+        "op": { "enum": ["add", "subtract", "multiply", "divide"] },
+        "left": { "$ref": "#/$defs/expression" },
+        "right": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "round": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "mode", "of"],
+      "properties": {
+        "kind": { "const": "round" },
+        "mode": { "enum": ["ceil", "floor", "nearest"] },
+        "of": { "$ref": "#/$defs/expression" },
+        "digits": { "type": "integer", "minimum": -12, "maximum": 12 }
+      }
+    },
+    "compare": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "op", "left", "right"],
+      "properties": {
+        "kind": { "const": "compare" },
+        "op": { "enum": ["lt", "lte", "gt", "gte", "eq", "neq"] },
+        "left": { "$ref": "#/$defs/expression" },
+        "right": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "choose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "when", "then", "otherwise"],
+      "properties": {
+        "kind": { "const": "choose" },
+        "when": { "$ref": "#/$defs/expression" },
+        "then": { "$ref": "#/$defs/expression" },
+        "otherwise": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "lookup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "table", "key"],
+      "properties": {
+        "kind": { "const": "lookup" },
+        "table": {
+          "type": "object",
+          "maxProperties": 128,
+          "propertyNames": { "$ref": "#/$defs/safeName" },
+          "additionalProperties": true
+        },
+        "key": { "$ref": "#/$defs/expression" },
+        "fallback": true
+      }
+    },
+    "concat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "parts"],
+      "properties": {
+        "kind": { "const": "concat" },
+        "parts": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/expression" } }
+      }
+    },
+    "compact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "parts"],
+      "properties": {
+        "kind": { "const": "compact" },
+        "parts": { "type": "array", "maxItems": 128, "items": { "$ref": "#/$defs/expression" } }
+      }
+    },
+    "toNumber": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "of"],
+      "properties": {
+        "kind": { "const": "toNumber" },
+        "of": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "toText": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "of"],
+      "properties": {
+        "kind": { "const": "toText" },
+        "of": { "$ref": "#/$defs/expression" }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.pixiecore/
+.env
+logs/
+coverage/
+build/
+benchmarks/results/
+*.tsbuildinfo

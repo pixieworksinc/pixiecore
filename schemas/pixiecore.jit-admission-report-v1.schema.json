@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.jit-admission-report-v1.schema.json",
+  "title": "PixieCore JIT admission report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "seed", "measured_at", "blueprint", "dataset", "provider", "model", "program_digest", "promoted", "summary", "cases"],
+  "properties": {
+    "schema": { "const": "pixiecore.jit-admission-report/v1" },
+    "seed": { "$ref": "#/$defs/text" },
+    "measured_at": { "$ref": "#/$defs/timestamp" },
+    "blueprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "source_digest"],
+      "properties": {
+        "name": { "$ref": "#/$defs/text" },
+        "version": { "$ref": "#/$defs/semver" },
+        "source_digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "digest"],
+      "properties": {
+        "name": { "$ref": "#/$defs/text" },
+        "version": { "$ref": "#/$defs/semver" },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "provider": { "$ref": "#/$defs/text" },
+    "model": { "$ref": "#/$defs/text" },
+    "program_digest": { "$ref": "#/$defs/digest" },
+    "promoted": { "type": "boolean" },
+    "refusal_reason": { "enum": ["no_cases", "program_error", "model_error", "expectation_mismatch", "model_mismatch"] },
+    "summary": { "$ref": "#/$defs/summary" },
+    "cases": { "type": "array", "items": { "$ref": "#/$defs/case" } }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "promoted": { "const": false } } },
+      "then": {
+        "properties": { "refusal_reason": true },
+        "required": ["refusal_reason"]
+      },
+      "else": { "not": { "required": ["refusal_reason"] } }
+    }
+  ],
+  "$defs": {
+    "text": { "type": "string", "pattern": "\\S" },
+    "semver": { "type": "string", "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$" },
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "timestamp": { "type": "string", "format": "date-time", "pattern": "Z$" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_count", "run_count", "correct", "agreed", "program_errors", "model_errors"],
+      "properties": {
+        "case_count": { "type": "integer", "minimum": 0 },
+        "run_count": { "type": "integer", "minimum": 0 },
+        "correct": { "type": "integer", "minimum": 0 },
+        "agreed": { "type": "integer", "minimum": 0 },
+        "program_errors": { "type": "integer", "minimum": 0 },
+        "model_errors": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "runs", "correct", "agreed", "program_errors", "model_errors", "divergences"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" },
+        "runs": { "type": "integer", "minimum": 1 },
+        "correct": { "type": "integer", "minimum": 0 },
+        "agreed": { "type": "integer", "minimum": 0 },
+        "program_errors": { "type": "integer", "minimum": 0 },
+        "model_errors": { "type": "integer", "minimum": 0 },
+        "divergences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["against", "pointer", "reason"],
+            "properties": {
+              "against": { "enum": ["expectation", "model"] },
+              "pointer": { "type": "string" },
+              "reason": { "$ref": "#/$defs/text" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

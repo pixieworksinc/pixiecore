@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/examples/benchmarks/openai-blueprint-run-manifest-v1.schema.json",
+  "title": "PixieCore OpenAI Blueprint run manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "provider", "endpoint", "model", "release", "pricing", "data_policy", "datasets", "phases"],
+  "properties": {
+    "$schema": { "const": "./openai-blueprint-run-manifest-v1.schema.json" },
+    "schema": { "const": "pixiecore.openai-blueprint-run-manifest/v1" },
+    "provider": { "const": "openai" },
+    "endpoint": { "const": "https://api.openai.com/v1" },
+    "model": { "$ref": "#/$defs/text" },
+    "release": { "$ref": "#/$defs/text" },
+    "pricing": { "$ref": "#/$defs/pricing" },
+    "data_policy": { "$ref": "#/$defs/dataPolicy" },
+    "datasets": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/dataset" } },
+    "phases": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/phase" } }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "path": {
+      "allOf": [
+        { "$ref": "#/$defs/text" },
+        { "type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$" }
+      ]
+    },
+    "pricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "input_per_million_tokens", "output_per_million_tokens", "source", "verified_at"],
+      "properties": {
+        "currency": { "const": "USD" },
+        "input_per_million_tokens": { "type": "number", "minimum": 0 },
+        "output_per_million_tokens": { "type": "number", "minimum": 0 },
+        "source": { "const": "https://developers.openai.com/api/docs/pricing" },
+        "verified_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$" }
+      }
+    },
+    "dataPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sensitivity", "remote_transmission", "artifact_values"],
+      "properties": {
+        "sensitivity": { "const": "synthetic" },
+        "remote_transmission": { "const": "allowed-after-explicit-confirmation" },
+        "artifact_values": { "const": "value-free-diagnostics-only" }
+      }
+    },
+    "attachment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "kind", "path"],
+      "properties": {
+        "case_id": { "$ref": "#/$defs/text" },
+        "kind": { "enum": ["native-pdf", "scanned-pdf", "multi-page-pdf", "rotated-pdf", "blank-pdf", "table-pdf", "screenshot"] },
+        "path": { "$ref": "#/$defs/path" }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "role", "path", "case_count", "comparison_modes", "sensitivity", "attachments"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" },
+        "role": { "enum": ["extractor", "classifier", "summarizer", "validator", "verifier", "converter", "translator", "router"] },
+        "path": { "$ref": "#/$defs/path" },
+        "case_count": { "type": "integer", "minimum": 1 },
+        "comparison_modes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["exact", "fields", "schema", "set", "numeric_tolerance", "custom"] } },
+        "sensitivity": { "const": "synthetic" },
+        "attachments": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/attachment" } }
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "runs", "dataset_ids", "max_calls", "budget_usd", "artifact_directory"],
+      "properties": {
+        "id": { "enum": ["canary", "baseline", "repeated"] },
+        "runs": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "dataset_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "case_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/text" } },
+        "max_calls": { "type": "integer", "minimum": 1, "maximum": 213 },
+        "budget_usd": { "type": "number", "exclusiveMinimum": 0, "maximum": 25 },
+        "artifact_directory": { "$ref": "#/$defs/path" }
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.blueprint-package-v1.schema.json",
+  "title": "PixieCore data-only Blueprint package metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "package", "compatibility", "blueprints", "files"],
+  "properties": {
+    "schema": { "const": "pixiecore.blueprint-package/v1" },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "namespace", "version", "license"],
+      "properties": {
+        "name": { "$ref": "#/$defs/namespacedId" },
+        "namespace": { "$ref": "#/$defs/namespacedId" },
+        "version": { "$ref": "#/$defs/semver" },
+        "license": { "$ref": "#/$defs/text" }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pop"],
+      "properties": {
+        "pop": { "$ref": "#/$defs/text" },
+        "pixiecore": { "$ref": "#/$defs/text" }
+      }
+    },
+    "blueprints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "version", "path"],
+        "properties": {
+          "id": { "$ref": "#/$defs/namespacedId" },
+          "version": { "$ref": "#/$defs/semver" },
+          "path": { "$ref": "#/$defs/relativePath" }
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/relativePath" },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^sha256-[A-Za-z0-9+/]{43}=$"
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/namespacedId" },
+      "additionalProperties": { "$ref": "#/$defs/text" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": { "$ref": "#/$defs/text" },
+        "commit": { "type": "string", "pattern": "^[0-9a-fA-F]{7,64}$" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "Ed25519" },
+        "keyId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "value": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "namespacedId": {
+      "type": "string",
+      "pattern": "^(?!pixiecore\\.)(?:[a-z0-9]+(?:[._-][a-z0-9]+)+)$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "relativePath": {
+      "type": "string",
+      "pattern": "^(?![\\\\/])(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$))\\S+$"
+    }
+  }
+}

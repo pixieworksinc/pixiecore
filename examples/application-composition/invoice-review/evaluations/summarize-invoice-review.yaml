@@ -1,0 +1,25 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Summarize invoice review
+version: 1.0.0
+blueprint: { path: ../blueprints/summarize-invoice-review.yaml, version: 1.0.1 }
+tags: [application-composition, invoice-review, summarizer]
+cases:
+  - id: matched-invoice-review
+    tags: [canonical]
+    inputs:
+      invoice:
+        invoice_number: INV-204
+        supplier: Northwind LLC
+        purchase_order: PO-91
+        currency: USD
+        subtotal: 100
+        tax: 8
+        total: 108
+      classification: { document_type: invoice }
+      validation: { valid: true, issues: [] }
+      verification: { status: matched, mismatches: [] }
+    expected_output:
+      recommendation: ready_for_human_review
+      summary: Invoice INV-204 matches the supplied ledger record and passed validation.
+      reason_codes: []
+    comparison: { mode: exact }

@@ -1,0 +1,13 @@
+schema: pixiecore.plugin/v1
+id: example.sample-provider
+name: Sample Provider
+version: 0.1.0
+description: Adds an offline example provider.
+entry: ./sample-provider.js
+requires: {}
+optional_requires: {}
+conflicts: {}
+components:
+  - type: provider
+    export: SampleProviderProviderFactory
+    provider_name: sample_provider

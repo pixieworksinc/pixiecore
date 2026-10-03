@@ -1,0 +1,254 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Travel request web-form validation
+version: 1.0.0
+description: Required, type, format, range, and correlation validation boundaries.
+blueprint:
+  path: ../travel-request-form.yaml
+  version: 1.0.1
+tags: [standard-library, validator, travel-request, web-form]
+cases:
+  - id: valid-foreign-request
+    description: A complete foreign request satisfies every field rule.
+    tags: [valid, foreign]
+    inputs:
+      form: &valid_foreign_form
+        employee_id: &valid_employee_id EMP-123456
+        purpose: &valid_purpose_value Customer planning workshop
+        start_date: &valid_start_date '2026-10-12'
+        end_date: &valid_end_date '2026-10-14'
+        destination_country_code: &valid_country_value US
+        estimated_cost: &valid_cost_value 2400
+        currency: &valid_currency_value USD
+      rules: &rules
+        version: 2026.1.0
+        required_fields: [employee_id, purpose, start_date, end_date, destination_country_code, estimated_cost, currency]
+        employee_id_pattern: '^EMP-\d{6}$'
+        purpose_min_length: 10
+        date_format: yyyy-mm-dd
+        country_code_pattern: '^[A-Z]{2}$'
+        estimated_cost_min: 0
+        estimated_cost_max: 50000
+        allowed_currencies: [USD, JPY, EUR, GBP]
+        domestic_country_code: JP
+        domestic_currency: JPY
+        correlation_rules: [date_order, domestic_currency]
+    expected_output:
+      form_valid: true
+      rules_version: 2026.1.0
+      field_results:
+        - &valid_employee { field: employee_id, valid: true, error_codes: [] }
+        - &valid_purpose { field: purpose, valid: true, error_codes: [] }
+        - &valid_start { field: start_date, valid: true, error_codes: [] }
+        - &valid_end { field: end_date, valid: true, error_codes: [] }
+        - &valid_country { field: destination_country_code, valid: true, error_codes: [] }
+        - &valid_cost { field: estimated_cost, valid: true, error_codes: [] }
+        - &valid_currency { field: currency, valid: true, error_codes: [] }
+    comparison: { mode: exact }
+
+  - id: missing-required-fields
+    description: Null and blank required values report only required.
+    tags: [invalid, required]
+    inputs:
+      form:
+        employee_id: null
+        purpose: '   '
+        start_date: null
+        end_date: ''
+        destination_country_code: null
+        estimated_cost: null
+        currency: ' '
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - { field: employee_id, valid: false, error_codes: [required] }
+        - { field: purpose, valid: false, error_codes: [required] }
+        - { field: start_date, valid: false, error_codes: [required] }
+        - { field: end_date, valid: false, error_codes: [required] }
+        - { field: destination_country_code, valid: false, error_codes: [required] }
+        - { field: estimated_cost, valid: false, error_codes: [required] }
+        - { field: currency, valid: false, error_codes: [required] }
+    comparison: { mode: exact }
+
+  - id: wrong-field-types
+    description: Non-missing values with wrong JSON types stop at invalid_type.
+    tags: [invalid, type]
+    inputs:
+      form:
+        employee_id: 123456
+        purpose: [Customer visit]
+        start_date: true
+        end_date: { value: '2026-10-14' }
+        destination_country_code: 840
+        estimated_cost: '2400'
+        currency: [USD]
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - { field: employee_id, valid: false, error_codes: [invalid_type] }
+        - { field: purpose, valid: false, error_codes: [invalid_type] }
+        - { field: start_date, valid: false, error_codes: [invalid_type] }
+        - { field: end_date, valid: false, error_codes: [invalid_type] }
+        - { field: destination_country_code, valid: false, error_codes: [invalid_type] }
+        - { field: estimated_cost, valid: false, error_codes: [invalid_type] }
+        - { field: currency, valid: false, error_codes: [invalid_type] }
+    comparison: { mode: exact }
+
+  - id: independent-format-errors
+    description: Independent field formats and a real calendar date are checked separately.
+    tags: [invalid, format, calendar]
+    inputs:
+      form:
+        employee_id: EMP-12
+        purpose: Trip
+        start_date: 2026/02/01
+        end_date: '2026-02-30'
+        destination_country_code: us
+        estimated_cost: 100
+        currency: CAD
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - { field: employee_id, valid: false, error_codes: [invalid_employee_id_format] }
+        - { field: purpose, valid: false, error_codes: [purpose_too_short] }
+        - { field: start_date, valid: false, error_codes: [invalid_date_format] }
+        - { field: end_date, valid: false, error_codes: [invalid_calendar_date] }
+        - { field: destination_country_code, valid: false, error_codes: [invalid_country_code_format] }
+        - *valid_cost
+        - { field: currency, valid: false, error_codes: [unsupported_currency] }
+    comparison: { mode: exact }
+
+  - id: reversed-date-range
+    description: A valid start after a valid end marks both date fields.
+    tags: [invalid, correlation, date-order]
+    inputs:
+      form:
+        employee_id: *valid_employee_id
+        purpose: *valid_purpose_value
+        start_date: '2026-10-15'
+        end_date: '2026-10-14'
+        destination_country_code: *valid_country_value
+        estimated_cost: *valid_cost_value
+        currency: *valid_currency_value
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - *valid_employee
+        - *valid_purpose
+        - { field: start_date, valid: false, error_codes: [date_order] }
+        - { field: end_date, valid: false, error_codes: [date_order] }
+        - *valid_country
+        - *valid_cost
+        - *valid_currency
+    comparison: { mode: exact }
+
+  - id: cost-below-minimum
+    description: The inclusive minimum rejects a negative cost.
+    tags: [invalid, range, minimum]
+    inputs:
+      form:
+        employee_id: *valid_employee_id
+        purpose: *valid_purpose_value
+        start_date: *valid_start_date
+        end_date: *valid_end_date
+        destination_country_code: *valid_country_value
+        estimated_cost: -0.01
+        currency: *valid_currency_value
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - *valid_employee
+        - *valid_purpose
+        - *valid_start
+        - *valid_end
+        - *valid_country
+        - { field: estimated_cost, valid: false, error_codes: [cost_below_minimum] }
+        - *valid_currency
+    comparison: { mode: exact }
+
+  - id: cost-above-maximum
+    description: The inclusive maximum rejects a cost above the policy cap.
+    tags: [invalid, range, maximum]
+    inputs:
+      form:
+        employee_id: *valid_employee_id
+        purpose: *valid_purpose_value
+        start_date: *valid_start_date
+        end_date: *valid_end_date
+        destination_country_code: *valid_country_value
+        estimated_cost: 50000.01
+        currency: *valid_currency_value
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - *valid_employee
+        - *valid_purpose
+        - *valid_start
+        - *valid_end
+        - *valid_country
+        - { field: estimated_cost, valid: false, error_codes: [cost_above_maximum] }
+        - *valid_currency
+    comparison: { mode: exact }
+
+  - id: domestic-currency-mismatch
+    description: A valid domestic country and currency can still violate correlation policy.
+    tags: [invalid, correlation, domestic-currency]
+    inputs:
+      form:
+        employee_id: *valid_employee_id
+        purpose: *valid_purpose_value
+        start_date: *valid_start_date
+        end_date: *valid_end_date
+        destination_country_code: JP
+        estimated_cost: *valid_cost_value
+        currency: USD
+      rules: *rules
+    expected_output:
+      form_valid: false
+      rules_version: 2026.1.0
+      field_results:
+        - *valid_employee
+        - *valid_purpose
+        - *valid_start
+        - *valid_end
+        - *valid_country
+        - *valid_cost
+        - { field: currency, valid: false, error_codes: [domestic_currency_mismatch] }
+    comparison: { mode: exact }
+
+  - id: valid-zero-cost-domestic
+    description: Zero is a valid numeric boundary and JPY satisfies domestic correlation.
+    tags: [valid, boundary, domestic]
+    inputs:
+      form:
+        employee_id: *valid_employee_id
+        purpose: *valid_purpose_value
+        start_date: *valid_start_date
+        end_date: *valid_end_date
+        destination_country_code: JP
+        estimated_cost: 0
+        currency: JPY
+      rules: *rules
+    expected_output:
+      form_valid: true
+      rules_version: 2026.1.0
+      field_results:
+        - *valid_employee
+        - *valid_purpose
+        - *valid_start
+        - *valid_end
+        - *valid_country
+        - *valid_cost
+        - *valid_currency
+    comparison: { mode: exact }

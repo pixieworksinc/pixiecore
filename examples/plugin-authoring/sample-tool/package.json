@@ -1,0 +1,13 @@
+{
+  "name": "@example/pixiecore-plugin-sample-tool",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": ["sample-tool.js", "sample-tool.yaml", "src/**/*.js"],
+  "peerDependencies": { "@pixieworks/pixiecore": "^0.1.0" },
+  "devDependencies": { "typescript": "^5.9.2" },
+  "scripts": {
+    "typecheck": "tsc --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 --strict *.ts src/**/*.ts",
+    "test": "node --test tests/**/*.test.js"
+  }
+}

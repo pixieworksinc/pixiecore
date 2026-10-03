@@ -1,0 +1,280 @@
+name: Publish package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact signed numeric tag and package version to publish
+        required: true
+        type: string
+      confirmation:
+        description: Type publish:<version> after environment approval is available
+        required: true
+        type: string
+      candidate_run_id:
+        description: Successful release-candidate workflow run at the signed tag source
+        required: true
+        type: string
+      candidate_artifact_id:
+        description: Exact immutable artifact ID whose SHA256 is in the signed tag
+        required: true
+        type: string
+      authentication:
+        description: Use bootstrap only for the separately approved first 0.1.0 publication
+        required: true
+        type: choice
+        default: oidc
+        options: [oidc, bootstrap]
+      bootstrap_confirmation:
+        description: For bootstrap only, type bootstrap:0.1.0; otherwise leave empty
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-pixiecore
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Verify approved release candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      revision: ${{ steps.release_source.outputs.revision }}
+      tag_object: ${{ steps.release_source.outputs.tag_object }}
+      artifact_id: ${{ steps.release_artifact.outputs.artifact-id }}
+
+    steps:
+      - name: Check out signed tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Assert approved release context
+        id: release_source
+        env:
+          PIXIECORE_RELEASE_CONFIRMATION: ${{ inputs.confirmation }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+          PIXIECORE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+          PIXIECORE_PUBLICATION_MODE: ${{ inputs.authentication }}
+          PIXIECORE_BOOTSTRAP_CONFIRMATION: ${{ inputs.bootstrap_confirmation }}
+        run: |
+          test "$GITHUB_REPOSITORY" = "pixieworksinc/pixiecore"
+          test "$PIXIECORE_REPOSITORY_PRIVATE" = "false"
+          test "$GITHUB_REF_TYPE" = "tag"
+          test "$GITHUB_REF_NAME" = "$PIXIECORE_RELEASE_VERSION"
+          test "$PIXIECORE_RELEASE_CONFIRMATION" = "publish:$PIXIECORE_RELEASE_VERSION"
+          node --input-type=module -e 'import { assertPublicationMode } from "./scripts/release/verify-registry.mjs"; assertPublicationMode(process.env.PIXIECORE_PUBLICATION_MODE, process.env.PIXIECORE_RELEASE_VERSION, process.env.PIXIECORE_BOOTSTRAP_CONFIRMATION)'
+          node --input-type=module -e 'import { assertStableReleaseVersion } from "./scripts/release/verify-artifact.mjs"; assertStableReleaseVersion(process.env.PIXIECORE_RELEASE_VERSION)'
+          tag_object="$(git rev-parse --verify "refs/tags/$GITHUB_REF_NAME")"
+          test "$(git cat-file -t "$tag_object")" = "tag"
+          git cat-file -p "$tag_object" | grep -Eq '^-----BEGIN (PGP|SSH) SIGNATURE-----$'
+          release_commit="$(git rev-parse "$tag_object^{commit}")"
+          test "$release_commit" = "$(git rev-parse HEAD)"
+          test "$release_commit" = "$GITHUB_SHA"
+          test "$release_commit" = "$(git rev-parse origin/0.1.x)"
+          printf 'revision=%s\n' "$release_commit" >> "$GITHUB_OUTPUT"
+          printf 'tag_object=%s\n' "$tag_object" >> "$GITHUB_OUTPUT"
+
+      - name: Verify candidate source and signed tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PIXIECORE_CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+          PIXIECORE_CANDIDATE_ARTIFACT: ${{ inputs.candidate_artifact_id }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+          PIXIECORE_RELEASE_REVISION: ${{ steps.release_source.outputs.revision }}
+        run: >-
+          node scripts/release/verify-promotion.mjs --check-source
+          --run-id="$PIXIECORE_CANDIDATE_RUN"
+          --artifact-id="$PIXIECORE_CANDIDATE_ARTIFACT"
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="$PIXIECORE_RELEASE_REVISION"
+          --tag-object="${{ steps.release_source.outputs.tag_object }}"
+
+      - name: Download approved candidate by immutable ID
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ inputs.candidate_artifact_id }}
+          run-id: ${{ inputs.candidate_run_id }}
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: release
+
+      - name: Verify signed candidate bytes
+        env:
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+          PIXIECORE_RELEASE_REVISION: ${{ steps.release_source.outputs.revision }}
+        run: >-
+          node scripts/release/verify-promotion.mjs
+          --tag-object="${{ steps.release_source.outputs.tag_object }}"
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="$PIXIECORE_RELEASE_REVISION"
+          --output=release
+
+      - name: Upload immutable release artifact
+        id: release_artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pixiecore-release-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release/
+          if-no-files-found: error
+          retention-days: 90
+
+  publish:
+    name: Publish verified package
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: release
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Check out release verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.build.outputs.tag_object }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js for trusted publishing
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Ensure supported npm CLI
+        run: |
+          npm install --global npm@11.21.0 --ignore-scripts --registry=https://registry.npmjs.org
+          test "$(npm --version)" = "11.21.0"
+          node -e 'const [major, minor, patch] = process.argv[1].split(".").map(Number); if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) process.exit(1)' "$(npm --version)"
+
+      - name: Download immutable release artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact_id }}
+          merge-multiple: true
+          path: release
+
+      - name: Verify transferred release artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          node scripts/release/verify-promotion.mjs --check-current-tag
+          --tag-object="${{ needs.build.outputs.tag_object }}"
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="${{ needs.build.outputs.revision }}"
+          --output=release
+
+      - name: Check existing registry version
+        id: registry_version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+          PIXIECORE_PUBLICATION_MODE: ${{ inputs.authentication }}
+          PIXIECORE_BOOTSTRAP_CONFIRMATION: ${{ inputs.bootstrap_confirmation }}
+        run: >-
+          node scripts/release/verify-registry.mjs --check-existing
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="${{ needs.build.outputs.revision }}"
+          --output=release >> "$GITHUB_OUTPUT"
+
+      - name: Publish immutable package through OIDC
+        if: steps.registry_version.outputs.publish_required == 'true' && inputs.authentication == 'oidc'
+        run: |
+          tarball="$(node -p "require('./release/release-manifest.json').tarball")"
+          npm publish "./release/$tarball" --access public --tag latest --registry=https://registry.npmjs.org
+
+      - name: Bootstrap first package with provenance
+        if: steps.registry_version.outputs.publish_required == 'true' && inputs.authentication == 'bootstrap'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+        run: |
+          test -n "$NODE_AUTH_TOKEN" || { echo 'Missing release environment bootstrap credential'; exit 1; }
+          umask 077
+          npm_config_userconfig="$(mktemp "$RUNNER_TEMP/pixiecore-npmrc.XXXXXX")"
+          export npm_config_userconfig
+          trap 'rm -f "$npm_config_userconfig"' EXIT
+          printf '%s\n' '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > "$npm_config_userconfig"
+          tarball="$(node -p "require('./release/release-manifest.json').tarball")"
+          npm publish "./release/$tarball" --ignore-scripts --provenance --access public --tag latest --registry=https://registry.npmjs.org
+
+      - name: Verify anonymously published package bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          npm run verify:registry-artifact --
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="${{ needs.build.outputs.revision }}"
+          --output=release
+
+  github_release:
+    name: Create GitHub release
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: release
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out release verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.build.outputs.tag_object }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Download immutable release artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact_id }}
+          merge-multiple: true
+          path: release
+
+      - name: Verify release assets again
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          node scripts/release/verify-promotion.mjs --check-current-tag
+          --tag-object="${{ needs.build.outputs.tag_object }}"
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="${{ needs.build.outputs.revision }}"
+          --output=release
+
+      - name: Create GitHub release with verified artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          node scripts/release/github-release.mjs \
+            --version="$PIXIECORE_RELEASE_VERSION" \
+            --source-revision="${{ needs.build.outputs.revision }}" \
+            --output=release

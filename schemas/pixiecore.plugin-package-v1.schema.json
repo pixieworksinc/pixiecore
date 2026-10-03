@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PixieCore plugin distribution metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "plugin", "compatibility", "files"],
+  "properties": {
+    "schema": { "const": "pixiecore.plugin-package/v1" },
+    "plugin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "manifest", "entry"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^(?!pixiecore\\.)(?:[a-z0-9]+(?:[._-][a-z0-9]+)+)$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+        },
+        "manifest": { "$ref": "#/$defs/relativePath" },
+        "entry": { "$ref": "#/$defs/relativePath" }
+      }
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pixiecore"],
+      "properties": { "pixiecore": { "$ref": "#/$defs/nonEmptyString" } }
+    },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "$ref": "#/$defs/relativePath" },
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^sha256-[A-Za-z0-9+/]{43}=$"
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": { "$ref": "#/$defs/nonEmptyString" },
+        "commit": { "type": "string", "pattern": "^[0-9a-fA-F]{7,64}$" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "keyId", "value"],
+      "properties": {
+        "algorithm": { "const": "Ed25519" },
+        "keyId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "value": { "type": "string", "pattern": "^[A-Za-z0-9+/]+={0,2}$" }
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": { "type": "string", "pattern": "\\S" },
+    "relativePath": {
+      "type": "string",
+      "pattern": "^(?![\\\\/])(?!.*(?:^|[\\\\/])\\.\\.(?:[\\\\/]|$))\\S+$"
+    }
+  }
+}

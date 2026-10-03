@@ -1,0 +1,17 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.roles
+name: PixieCore Roles
+version: '0.1.0'
+description: Provides PixieCore's constructor-visible default agent role.
+entry: ./roles.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: agent_role
+    export: DefaultAgentRole
+    roles_supported:
+      - assistant
+      - default

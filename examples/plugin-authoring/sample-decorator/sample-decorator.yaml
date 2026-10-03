@@ -1,0 +1,14 @@
+schema: pixiecore.plugin/v1
+id: example.sample-decorator
+name: Sample Decorator
+version: 0.1.0
+description: Adds an offline example decorator.
+entry: ./sample-decorator.js
+requires: {}
+optional_requires: {}
+conflicts: {}
+components:
+  - type: decorator
+    export: SampleDecoratorDecorator
+    priority: 100
+    stage: after

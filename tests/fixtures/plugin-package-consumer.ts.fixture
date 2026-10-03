@@ -1,0 +1,135 @@
+import type {
+  AgentRolePlugin,
+  AgentRoleResult,
+  AssistantMessage,
+  AzureTokenProvider,
+  Blueprint,
+  BlueprintPermissions,
+  DecoratorContext,
+  DecoratorStage,
+  FileContentPart,
+  GenerateRequest,
+  GenerateResponse,
+  ImageContentPart,
+  InputPlaceholder,
+  InputType,
+  LoggerPort,
+  LoggingOptions,
+  LogLevel,
+  LogRecord,
+  Message,
+  MessageContent,
+  MessageContentPart,
+  OutputDecorator,
+  Provider,
+  ProviderFactory,
+  ProviderName,
+  ProviderPlugin,
+  RegisteredTool,
+  RuntimeOptions,
+  SystemMessage,
+  TextContentPart,
+  ToolCall,
+  ToolChoice,
+  ToolDefinition,
+  ToolHandler,
+  ToolMessage,
+  PixieCorePlugin,
+  UserMessage,
+} from '@pixieworks/pixiecore/plugin';
+
+// @ts-expect-error Bootstrap activators are not a third-party authoring contract.
+import type { PluginActivator } from '@pixieworks/pixiecore/plugin';
+// @ts-expect-error Scoped core service tokens are not a third-party authoring contract.
+import type { ServiceToken } from '@pixieworks/pixiecore/plugin';
+// @ts-expect-error Manager policy and status types stay on the compatibility root only.
+import type { PluginManagerOptions } from '@pixieworks/pixiecore/plugin';
+
+const role: AgentRolePlugin = {
+  supportedRoles: ['consumer'],
+  apply(renderedPrompt): AgentRoleResult {
+    return { messages: [{ role: 'user', content: renderedPrompt }] };
+  },
+};
+
+const decorator: OutputDecorator = {
+  priority: 10,
+  stage: 'after',
+  validate(context) {
+    return context;
+  },
+};
+
+const tool: RegisteredTool = {
+  name: 'consumer_tool',
+  description: 'Consumer tool',
+  parameters: { type: 'object' },
+  execute: async () => ({ ok: true }),
+};
+
+const provider: Provider = {
+  name: 'consumer_provider',
+  model: 'consumer-model',
+  supportsTools: true,
+  supportsMultimodal: false,
+  supportsVision: () => false,
+  supportsFileInput: () => false,
+  getModelList: async () => ['consumer-model'],
+  generate: async request => ({ content: JSON.stringify({ messages: request.messages.length }) }),
+};
+
+const providerFactory: ProviderFactory = {
+  name: provider.name,
+  create: () => provider,
+};
+
+const plugin: PixieCorePlugin = {
+  agentRoles: [role],
+  decorators: [decorator],
+  tools: [tool],
+  providers: [providerFactory],
+};
+
+type CompletePluginAuthoringSurface = readonly [
+  AgentRolePlugin,
+  AgentRoleResult,
+  AssistantMessage,
+  AzureTokenProvider,
+  Blueprint,
+  BlueprintPermissions,
+  DecoratorContext,
+  DecoratorStage,
+  FileContentPart,
+  GenerateRequest,
+  GenerateResponse,
+  ImageContentPart,
+  InputPlaceholder,
+  InputType,
+  LoggerPort,
+  LoggingOptions,
+  LogLevel,
+  LogRecord,
+  Message,
+  MessageContent,
+  MessageContentPart,
+  OutputDecorator,
+  Provider,
+  ProviderFactory,
+  ProviderName,
+  ProviderPlugin,
+  RegisteredTool,
+  RuntimeOptions,
+  SystemMessage,
+  TextContentPart,
+  ToolCall,
+  ToolChoice,
+  ToolDefinition,
+  ToolHandler,
+  ToolMessage,
+  PixieCorePlugin,
+  UserMessage,
+];
+
+declare const completePluginAuthoringSurface: CompletePluginAuthoringSurface;
+void completePluginAuthoringSurface;
+void plugin;

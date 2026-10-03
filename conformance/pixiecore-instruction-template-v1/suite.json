@@ -1,0 +1,72 @@
+{
+  "schema": "pixiecore.instruction-template-conformance/v1",
+  "canonical_syntax": "{{ name }}",
+  "legacy_syntax": "{name}",
+  "portable_name_pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+  "render_cases": [
+    {
+      "id": "mustache.spaced",
+      "template": "Hello {{ name }}.",
+      "inputs": { "name": "Ada" },
+      "expected": "Hello Ada.",
+      "portable": true
+    },
+    {
+      "id": "mustache.compact",
+      "template": "count={{count}} active={{ active }}",
+      "inputs": { "count": 3, "active": false },
+      "expected": "count=3 active=false",
+      "portable": true
+    },
+    {
+      "id": "mustache.json-and-null",
+      "template": "payload={{ payload }}\noptional={{ optional }}",
+      "inputs": { "payload": { "id": 7 }, "optional": null },
+      "expected": "payload={\"id\":7}\noptional=",
+      "portable": true
+    },
+    {
+      "id": "mustache.preserve-surrounding-text",
+      "template": "Feature: Preserve text\n\n    Given first  value\n      When resolving {{ value }}\n      Then keep trailing spaces  ",
+      "inputs": { "value": "fixture-value" },
+      "expected": "Feature: Preserve text\n\n    Given first  value\n      When resolving fixture-value\n      Then keep trailing spaces  ",
+      "portable": true
+    },
+    {
+      "id": "legacy.single-brace",
+      "template": "Hello {name}.",
+      "inputs": { "name": "Ada" },
+      "expected": "Hello Ada.",
+      "portable": false,
+      "extension_id": "pixiecore.input-binding.single-brace/v1"
+    },
+    {
+      "id": "compatibility.flat-dotted-name",
+      "template": "value={{ legacy.name }}",
+      "inputs": { "legacy.name": "kept" },
+      "expected": "value=kept",
+      "portable": false,
+      "extension_id": "pixiecore.input-binding.flat-dotted-name/v1"
+    }
+  ],
+  "validation_cases": [
+    {
+      "id": "validation.declared",
+      "template": "Hello {{ name }}.",
+      "declared_inputs": ["name"],
+      "expected_undeclared": []
+    },
+    {
+      "id": "validation.undeclared",
+      "template": "Hello {{ name }} from {{ city }}.",
+      "declared_inputs": ["name"],
+      "expected_undeclared": ["city"]
+    },
+    {
+      "id": "validation.json-literal",
+      "template": "Return JSON shaped like {\"type\":\"object\"}.",
+      "declared_inputs": [],
+      "expected_undeclared": []
+    }
+  ]
+}

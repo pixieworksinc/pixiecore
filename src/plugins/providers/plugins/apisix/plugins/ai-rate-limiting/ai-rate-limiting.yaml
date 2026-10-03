@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.apisix.ai-rate-limiting
+name: PixieCore APISIX AI Rate Limiting
+version: '0.1.0'
+description: Contributes declarative ai-rate-limiting configuration for Apache APISIX.
+entry: ./ai-rate-limiting.js
+
+requires:
+  pixiecore.providers.apisix: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: extension
+    export: aiRateLimitingContribution
+    extension_point: pixiecore.providers.apisix.plugin

@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 8 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      npm_config_engine_strict: "true"
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - "22.13.0"
+          - "24"
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Install and run documentation tooling before selecting the runtime lane.
+      - name: Set up development Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Node engine policy
+        run: npm run check:node-engines
+
+      - name: Check source and API documentation
+        run: npm run check:source-docs && npm run check:api-docs
+
+      - name: Build and pack runtime candidate
+        env:
+          PIXIECORE_BLUEPRINT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: >-
+          npm run prepack &&
+          npm run prepare:release-artifact --
+          --version="$(node -p 'require("./package.json").version')"
+          --source-revision="$GITHUB_SHA"
+          --output=runtime-candidate
+
+      - name: Select tested runtime Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          package-manager-cache: false
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Check production dependency licenses
+        run: npm run check:licenses
+
+      - name: Check security release evidence and SBOM
+        run: npm run check:security-release
+
+      - name: Check generated core plugin catalog
+        run: npm run check:core-plugin-catalog
+
+      - name: Type-check source and tests
+        run: npm run typecheck
+
+      - name: Check architecture boundaries
+        run: npm run check:architecture
+
+      - name: Check Blueprint version transitions
+        env:
+          PIXIECORE_BLUEPRINT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: npm run check:blueprint-versions
+
+      - name: Check documentation drift
+        run: npm run check:docs
+
+      - name: Build package
+        run: npm run build
+
+      - name: Verify POP Core 0.1 conformance
+        run: node scripts/check-pop-conformance.mjs
+
+      - name: Verify independent POP validator
+        run: npm run check:conformance:independent
+
+      - name: Run reference Blueprint quality gates
+        run: npm run check:quality-gates
+
+      - name: Run offline test suite
+        run: npm test
+
+      - name: Enforce coverage floor
+        if: matrix.node-version == '24'
+        run: npm run test:coverage
+
+      - name: Verify packed artifact
+        run: >-
+          npm run verify:package --
+          --artifact-directory=runtime-candidate
+          --version="$(node -p 'require("./package.json").version')"
+          --source-revision="$GITHUB_SHA"
+
+  stability:
+    name: Repeated stability check
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      npm_config_engine_strict: "true"
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run independent seeded suites
+        env:
+          TEST_STABILITY_RUNS: "5"
+        run: npm run test:stability

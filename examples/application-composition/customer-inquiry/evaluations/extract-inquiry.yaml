@@ -1,0 +1,21 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Extract customer inquiry fields
+version: 1.0.0
+blueprint:
+  path: ../blueprints/extract-inquiry.yaml
+  version: 1.0.1
+tags: [application-composition, customer-inquiry, extractor]
+cases:
+  - id: complete-web-inquiry
+    tags: [canonical]
+    inputs:
+      source_text: >-
+        Customer: C-1842. Channel: web. Locale: en-US. Subject: Duplicate
+        invoice. Message: Invoice INV-77 was charged twice.
+    expected_output:
+      customer_id: C-1842
+      channel: web
+      locale: en-US
+      subject: Duplicate invoice
+      message: Invoice INV-77 was charged twice.
+    comparison: { mode: exact }

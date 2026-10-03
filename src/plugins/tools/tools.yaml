@@ -1,0 +1,15 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.tools
+name: PixieCore Tools
+version: '0.1.0'
+description: Provides PixieCore's scope-local tool-name service.
+entry: ./tools.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createToolService
+    service_id: pixiecore.service.tools

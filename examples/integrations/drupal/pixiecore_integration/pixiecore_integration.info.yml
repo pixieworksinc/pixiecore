@@ -1,0 +1,5 @@
+name: PixieCore Integration Example
+type: module
+description: Calls a separately operated PixieCore REST service from Drupal.
+package: PixieCore examples
+core_version_requirement: ^10.3 || ^11

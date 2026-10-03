@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.mcp-server
+name: PixieCore MCP Server
+version: '0.1.0'
+description: Exposes PixieCore blueprint execution through an MCP server.
+entry: ./mcp-server.js
+
+requires:
+  pixiecore.runtime: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createMcpServerService
+    service_id: pixiecore.service.mcp-server

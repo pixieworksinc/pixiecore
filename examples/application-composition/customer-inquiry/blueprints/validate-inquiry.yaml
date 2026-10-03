@@ -1,0 +1,61 @@
+name: Validate customer inquiry completeness
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: inquiry
+    type: object
+    required: true
+  - name: classification
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [inquiry, classification]
+  properties:
+    inquiry:
+      type: object
+      additionalProperties: false
+      required: [customer_id, channel, locale, subject, message]
+      properties:
+        customer_id: { type: [string, 'null'] }
+        channel: { type: [string, 'null'], enum: [email, chat, web, phone, null] }
+        locale: { type: [string, 'null'] }
+        subject: { type: [string, 'null'] }
+        message: { type: [string, 'null'] }
+    classification:
+      type: object
+      additionalProperties: false
+      required: [category, priority]
+      properties:
+        category: { type: string, enum: [billing, technical, account, other] }
+        priority: { type: string, enum: [urgent, normal] }
+prompt: |
+  Validate whether the extracted inquiry is ready for routing. customer_id,
+  channel, subject, and message must each be non-blank strings. The
+  classification category and priority must be present. locale is optional.
+
+  Inquiry: {{ inquiry }}
+  Classification: {{ classification }}
+
+  Return valid=true and no issues when complete. Otherwise return valid=false
+  and one stable issue code per missing or blank field. Do not repair values or
+  route the inquiry. Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [valid, issues]
+  properties:
+    valid: { type: boolean }
+    issues:
+      type: array
+      uniqueItems: true
+      items:
+        type: string
+        enum:
+          - missing_customer_id
+          - missing_channel
+          - missing_subject
+          - missing_message
+          - missing_classification

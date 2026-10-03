@@ -1,0 +1,222 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Travel purpose translation and localization
+version: 1.0.0
+description: Exact protected-term preservation across English and Japanese localization.
+blueprint:
+  path: ../travel-purpose-localizer.yaml
+  version: 1.0.1
+tags: [standard-library, translator, localizer, travel-purpose]
+cases:
+  - id: english-to-japanese-all-protected-kinds
+    description: English prose is translated while five protected value kinds remain exact.
+    tags: [en-ja, protected-terms]
+    inputs:
+      source_text: 'Alex Morgan from Northstar Labs will meet in New York for request TR-204 with a budget of USD 1,250.00.'
+      source_language: en
+      target: { language: ja, locale: ja-JP }
+      protected_terms:
+        - { kind: person, value: Alex Morgan }
+        - { kind: organization, value: Northstar Labs }
+        - { kind: place, value: New York }
+        - { kind: identifier, value: TR-204 }
+        - { kind: amount, value: 'USD 1,250.00' }
+      policy: &localization_policy
+        version: 2026.1.0
+        protected_term_matching: exact_case_sensitive
+        preserve_line_breaks: true
+        style: business_formal
+        max_output_characters: 1000
+    expected_output:
+      status: localized
+      localized_text: 'Northstar LabsのAlex Morganが、申請TR-204、予算USD 1,250.00でNew Yorkにて面談します。'
+      source_language: en
+      target_language: ja
+      target_locale: ja-JP
+      policy_version: 2026.1.0
+      protected_term_results:
+        - { kind: person, value: Alex Morgan, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: organization, value: Northstar Labs, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: place, value: New York, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: identifier, value: TR-204, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: amount, value: 'USD 1,250.00', preserved: true, source_occurrences: 1, output_occurrences: 1 }
+      changes:
+        - { kind: translation, source_fragment: 'will meet in', localized_fragment: 'にて面談します' }
+    comparison: { mode: exact }
+
+  - id: japanese-to-english-approval-comment
+    description: Japanese approval prose becomes formal English without changing evidence values.
+    tags: [ja-en, protected-terms]
+    inputs:
+      source_text: '承認者はTaylor Reedです。Londonでの会議費用はGBP 800.00、申請IDはREQ-88です。'
+      source_language: ja
+      target: { language: en, locale: en-US }
+      protected_terms:
+        - { kind: person, value: Taylor Reed }
+        - { kind: place, value: London }
+        - { kind: amount, value: 'GBP 800.00' }
+        - { kind: identifier, value: REQ-88 }
+      policy: *localization_policy
+    expected_output:
+      status: localized
+      localized_text: 'The approver is Taylor Reed. The meeting in London costs GBP 800.00, and the request ID is REQ-88.'
+      source_language: ja
+      target_language: en
+      target_locale: en-US
+      policy_version: 2026.1.0
+      protected_term_results:
+        - { kind: person, value: Taylor Reed, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: place, value: London, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: amount, value: 'GBP 800.00', preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: identifier, value: REQ-88, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+      changes:
+        - { kind: translation, source_fragment: '承認者は', localized_fragment: 'The approver is' }
+        - { kind: punctuation, source_fragment: '。', localized_fragment: '.' }
+    comparison: { mode: exact }
+
+  - id: same-language-unchanged-japanese
+    description: Same-language text requiring no locale change is copied exactly.
+    tags: [unchanged, ja-ja]
+    inputs:
+      source_text: 'Tokyoでの会議を承認してください。申請IDはJP-10です。'
+      source_language: ja
+      target: { language: ja, locale: ja-JP }
+      protected_terms:
+        - { kind: place, value: Tokyo }
+        - { kind: identifier, value: JP-10 }
+      policy: *localization_policy
+    expected_output:
+      status: unchanged
+      localized_text: 'Tokyoでの会議を承認してください。申請IDはJP-10です。'
+      source_language: ja
+      target_language: ja
+      target_locale: ja-JP
+      policy_version: 2026.1.0
+      protected_term_results:
+        - { kind: place, value: Tokyo, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: identifier, value: JP-10, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+      changes: []
+    comparison: { mode: exact }
+
+  - id: preserve-line-breaks
+    description: Translation preserves the exact line-break count and order.
+    tags: [en-ja, line-breaks]
+    inputs:
+      source_text: |
+        Review request AP-77.
+        Meet Aurora Systems in Paris.
+      source_language: en
+      target: { language: ja, locale: ja-JP }
+      protected_terms:
+        - { kind: identifier, value: AP-77 }
+        - { kind: organization, value: Aurora Systems }
+        - { kind: place, value: Paris }
+      policy: *localization_policy
+    expected_output:
+      status: localized
+      localized_text: |
+        申請AP-77を確認してください。
+        ParisでAurora Systemsと面談します。
+      source_language: en
+      target_language: ja
+      target_locale: ja-JP
+      policy_version: 2026.1.0
+      protected_term_results:
+        - { kind: identifier, value: AP-77, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: organization, value: Aurora Systems, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: place, value: Paris, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+      changes:
+        - { kind: translation, source_fragment: 'Review request', localized_fragment: '申請を確認してください' }
+    comparison: { mode: exact }
+
+  - id: repeated-person-name
+    description: Every repeated exact occurrence survives translation.
+    tags: [en-ja, repeated-term]
+    inputs:
+      source_text: 'Jordan Lee will meet Jordan Lee in Chicago.'
+      source_language: en
+      target: { language: ja, locale: ja-JP }
+      protected_terms:
+        - { kind: person, value: Jordan Lee }
+        - { kind: place, value: Chicago }
+      policy: *localization_policy
+    expected_output:
+      status: localized
+      localized_text: 'Jordan LeeがChicagoでJordan Leeと面談します。'
+      source_language: en
+      target_language: ja
+      target_locale: ja-JP
+      policy_version: 2026.1.0
+      protected_term_results:
+        - { kind: person, value: Jordan Lee, preserved: true, source_occurrences: 2, output_occurrences: 2 }
+        - { kind: place, value: Chicago, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+      changes:
+        - { kind: translation, source_fragment: 'will meet', localized_fragment: 'と面談します' }
+    comparison: { mode: exact }
+
+  - id: no-protected-terms
+    description: Generic prose may be translated with an empty protection list.
+    tags: [en-ja, empty-protection]
+    inputs:
+      source_text: 'Please approve the customer workshop.'
+      source_language: en
+      target: { language: ja, locale: ja-JP }
+      protected_terms: []
+      policy: *localization_policy
+    expected_output:
+      status: localized
+      localized_text: '顧客ワークショップを承認してください。'
+      source_language: en
+      target_language: ja
+      target_locale: ja-JP
+      policy_version: 2026.1.0
+      protected_term_results: []
+      changes:
+        - { kind: translation, source_fragment: 'Please approve the customer workshop.', localized_fragment: '顧客ワークショップを承認してください。' }
+    comparison: { mode: exact }
+
+  - id: japanese-to-english-organization-and-amount
+    description: Organization and amount formatting remain exact in English output.
+    tags: [ja-en, amount]
+    inputs:
+      source_text: 'Blue Harborへの出張費はJPY 45,000です。'
+      source_language: ja
+      target: { language: en, locale: en-US }
+      protected_terms:
+        - { kind: organization, value: Blue Harbor }
+        - { kind: amount, value: 'JPY 45,000' }
+      policy: *localization_policy
+    expected_output:
+      status: localized
+      localized_text: 'The travel expense for Blue Harbor is JPY 45,000.'
+      source_language: ja
+      target_language: en
+      target_locale: en-US
+      policy_version: 2026.1.0
+      protected_term_results:
+        - { kind: organization, value: Blue Harbor, preserved: true, source_occurrences: 1, output_occurrences: 1 }
+        - { kind: amount, value: 'JPY 45,000', preserved: true, source_occurrences: 1, output_occurrences: 1 }
+      changes:
+        - { kind: translation, source_fragment: 'への出張費は', localized_fragment: 'The travel expense for' }
+    comparison: { mode: exact }
+
+  - id: unprotected-date-localization
+    description: An unprotected Japanese date may use the target locale's long form.
+    tags: [ja-en, date-format]
+    inputs:
+      source_text: '会議日は2026年2月4日です。'
+      source_language: ja
+      target: { language: en, locale: en-US }
+      protected_terms: []
+      policy: *localization_policy
+    expected_output:
+      status: localized
+      localized_text: 'The meeting date is February 4, 2026.'
+      source_language: ja
+      target_language: en
+      target_locale: en-US
+      policy_version: 2026.1.0
+      protected_term_results: []
+      changes:
+        - { kind: translation, source_fragment: '会議日は', localized_fragment: 'The meeting date is' }
+        - { kind: date_format, source_fragment: '2026年2月4日', localized_fragment: 'February 4, 2026' }
+    comparison: { mode: exact }

@@ -1,0 +1,109 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Explicit Gregorian date normalization
+version: 1.0.0
+description: Canonical supported and rejected date-normalization boundaries.
+blueprint:
+  path: ../date-normalizer.yaml
+  version: 1.0.2
+tags: [standard-library, converter, date]
+cases:
+  - id: japanese-gregorian
+    description: Japanese Gregorian year-month-day notation is supported.
+    tags: [supported, ja-JP]
+    inputs:
+      date_text: 2026年2月4日
+    expected_output:
+      status: converted
+      normalized_date: '2026-02-04'
+      reason_code: none
+    comparison: { mode: exact }
+  - id: iso-date
+    description: Canonical ISO date remains unchanged.
+    tags: [supported, iso]
+    inputs:
+      date_text: '2026-12-31'
+    expected_output:
+      status: converted
+      normalized_date: '2026-12-31'
+      reason_code: none
+    comparison: { mode: exact }
+  - id: year-first-slashes
+    description: A four-digit year first makes slash order unambiguous.
+    tags: [supported, numeric]
+    inputs:
+      date_text: 2026/2/4
+    expected_output:
+      status: converted
+      normalized_date: '2026-02-04'
+      reason_code: none
+    comparison: { mode: exact }
+  - id: leap-day-valid
+    description: A Gregorian leap day is accepted in a leap year.
+    tags: [supported, boundary, leap-year]
+    inputs:
+      date_text: 2024年2月29日
+    expected_output:
+      status: converted
+      normalized_date: '2024-02-29'
+      reason_code: none
+    comparison: { mode: exact }
+  - id: leap-day-invalid
+    description: February 29 is rejected in a non-leap year.
+    tags: [rejected, boundary, leap-year]
+    inputs:
+      date_text: 2025年2月29日
+    expected_output:
+      status: invalid
+      normalized_date: null
+      reason_code: invalid_date
+    comparison: { mode: exact }
+  - id: invalid-month
+    description: A month outside the Gregorian range is invalid.
+    tags: [rejected, boundary]
+    inputs:
+      date_text: 2026年13月4日
+    expected_output:
+      status: invalid
+      normalized_date: null
+      reason_code: invalid_date
+    comparison: { mode: exact }
+  - id: ambiguous-month-day-order
+    description: Numeric month/day order is not inferred.
+    tags: [rejected, ambiguous]
+    inputs:
+      date_text: 02/04/2026
+    expected_output:
+      status: ambiguous
+      normalized_date: null
+      reason_code: ambiguous_numeric_order
+    comparison: { mode: exact }
+  - id: japanese-era-unsupported
+    description: Era conversion is outside the v1 contract.
+    tags: [rejected, calendar]
+    inputs:
+      date_text: 令和8年2月4日
+    expected_output:
+      status: unsupported
+      normalized_date: null
+      reason_code: unsupported_calendar
+    comparison: { mode: exact }
+  - id: timezone-bearing-unsupported
+    description: A timestamp is not silently projected into a calendar date.
+    tags: [rejected, timezone]
+    inputs:
+      date_text: '2026-02-04T23:30:00-08:00'
+    expected_output:
+      status: unsupported
+      normalized_date: null
+      reason_code: unsupported_time_or_timezone
+    comparison: { mode: exact }
+  - id: relative-date-needs-reference
+    description: Relative dates require explicit reference semantics.
+    tags: [rejected, relative]
+    inputs:
+      date_text: tomorrow
+    expected_output:
+      status: ambiguous
+      normalized_date: null
+      reason_code: relative_date_requires_reference
+    comparison: { mode: exact }

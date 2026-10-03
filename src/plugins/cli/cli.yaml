@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.cli
+name: PixieCore CLI
+version: '0.1.0'
+description: Registers PixieCore's CLI commands without executing them.
+entry: ./cli.js
+
+requires:
+  pixiecore.runtime: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: command
+    export: createCliCommandService
+    command_names: [application, blueprint, execute, execute-yaml, serve, mcp, plugin]

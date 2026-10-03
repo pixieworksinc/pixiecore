@@ -1,0 +1,169 @@
+name: Extract travel document fields with evidence
+version: 1.1.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: file_path
+    type: file
+    required: false
+    description: Exactly one PDF document path, URL, data URL, or provider file ID.
+  - name: image_path
+    type: image
+    required: false
+    description: Exactly one screenshot path, URL, or image data URL.
+  - name: requested_fields
+    type: array
+    required: true
+    description: Travel-form fields to extract from the supplied attachment.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [file_path, image_path, requested_fields]
+  properties:
+    file_path:
+      type: [string, 'null']
+      minLength: 1
+      pattern: '\S'
+    image_path:
+      type: [string, 'null']
+      minLength: 1
+      pattern: '\S'
+    requested_fields:
+      type: array
+      minItems: 1
+      uniqueItems: true
+      items:
+        type: string
+        enum:
+          - traveler_name
+          - document_number
+          - trip_start_date
+          - trip_end_date
+          - destination
+          - business_purpose
+          - estimated_amount
+          - currency
+  oneOf:
+    - properties:
+        file_path: { type: string }
+        image_path: { type: 'null' }
+    - properties:
+        file_path: { type: 'null' }
+        image_path: { type: string }
+prompt: |
+  Inspect exactly one supplied PDF or screenshot and extract only these travel
+  form fields: {{ requested_fields }}.
+
+  Policy:
+  - Treat a screenshot as page 1. For a PDF, use its one-based page number.
+  - Return one field result for every requested field, in the requested order.
+  - Copy values from the attachment. Do not normalize dates, classify cities,
+    convert currencies, calculate totals, or infer values from outside facts.
+  - An extracted value requires verbatim evidence_text from the same page.
+  - Use status=not_found when the document is readable but does not contain the
+    field. Use status=unreadable when the relevant content cannot be read.
+  - Do not invent evidence, silently repair uncertain OCR, or use filenames as
+    evidence. If OCR text is uncertain, return unreadable for that field.
+  - Set the document status to complete only when every requested field is
+    extracted, partial when some fields are not_found or unreadable, and
+    unreadable when no requested field can be read.
+  - Add warnings only for observed conditions: ocr_required, rotated_page,
+    blank_page, table_layout, or low_confidence.
+
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [status, document_type, fields, warnings]
+  properties:
+    status:
+      type: string
+      enum: [complete, partial, unreadable]
+    document_type:
+      type: string
+      enum: [travel_request, unknown]
+    fields:
+      type: array
+      minItems: 1
+      items:
+        oneOf:
+          - type: object
+            additionalProperties: false
+            required: [name, status, value, source]
+            properties:
+              name: { $ref: '#/$defs/fieldName' }
+              status: { const: extracted }
+              value:
+                type: string
+                minLength: 1
+                pattern: '\S'
+              source: { $ref: '#/$defs/sourceEvidence' }
+          - type: object
+            additionalProperties: false
+            required: [name, status, value, source]
+            properties:
+              name: { $ref: '#/$defs/fieldName' }
+              status:
+                type: string
+                enum: [not_found, unreadable]
+              value: { type: 'null' }
+              source: { type: 'null' }
+    warnings:
+      type: array
+      items:
+        type: object
+        additionalProperties: false
+        required: [code, page, message]
+        properties:
+          code:
+            type: string
+            enum: [ocr_required, rotated_page, blank_page, table_layout, low_confidence]
+          page:
+            type: [integer, 'null']
+            minimum: 1
+          message:
+            type: string
+            minLength: 1
+            pattern: '\S'
+  $defs:
+    fieldName:
+      type: string
+      enum:
+        - traveler_name
+        - document_number
+        - trip_start_date
+        - trip_end_date
+        - destination
+        - business_purpose
+        - estimated_amount
+        - currency
+    sourceEvidence:
+      type: object
+      additionalProperties: false
+      required: [page, evidence_text]
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        evidence_text:
+          type: string
+          minLength: 1
+          pattern: '\S'
+examples:
+  - input:
+      file_path: travel-request.pdf
+      image_path: null
+      requested_fields: [traveler_name, destination]
+    output:
+      status: complete
+      document_type: travel_request
+      fields:
+        - name: traveler_name
+          status: extracted
+          value: Morgan Ellis
+          source: { page: 1, evidence_text: Morgan Ellis }
+        - name: destination
+          status: extracted
+          value: Paris, France
+          source: { page: 1, evidence_text: Paris, France }
+      warnings: []

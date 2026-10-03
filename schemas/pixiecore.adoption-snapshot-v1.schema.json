@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.adoption-snapshot-v1.schema.json",
+  "title": "PixieCore monthly adoption snapshot v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "period", "published_at", "scope", "metrics"],
+  "properties": {
+    "schema": { "const": "pixiecore.adoption-snapshot/v1" },
+    "period": { "type": "string", "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])$" },
+    "published_at": { "type": "string", "format": "date-time" },
+    "scope": { "$ref": "#/$defs/text" },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "installs",
+        "active_projects",
+        "external_contributors",
+        "published_blueprints",
+        "case_studies"
+      ],
+      "properties": {
+        "installs": { "$ref": "#/$defs/metric" },
+        "active_projects": { "$ref": "#/$defs/metric" },
+        "external_contributors": { "$ref": "#/$defs/metric" },
+        "published_blueprints": { "$ref": "#/$defs/metric" },
+        "case_studies": { "$ref": "#/$defs/metric" }
+      }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "value", "source", "note"],
+      "properties": {
+        "status": { "enum": ["verified", "not_collected", "not_applicable"] },
+        "value": { "type": ["integer", "null"], "minimum": 0 },
+        "source": { "oneOf": [{ "$ref": "#/$defs/source" }, { "type": "null" }] },
+        "note": { "$ref": "#/$defs/text" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "const": "verified" } },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "value": { "type": "integer", "minimum": 0 },
+              "source": { "$ref": "#/$defs/source" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": { "enum": ["not_collected", "not_applicable"] }
+            },
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "value": { "type": "null" },
+              "source": { "type": "null" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

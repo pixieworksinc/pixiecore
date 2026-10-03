@@ -1,0 +1,20 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Validate invoice fields and arithmetic
+version: 1.0.0
+blueprint: { path: ../blueprints/validate-invoice.yaml, version: 1.0.1 }
+tags: [application-composition, invoice-review, validator]
+cases:
+  - id: valid-arithmetic
+    tags: [canonical]
+    inputs:
+      fields:
+        invoice_number: INV-204
+        supplier: Northwind LLC
+        purchase_order: PO-91
+        currency: USD
+        subtotal: 100
+        tax: 8
+        total: 108
+      rules: { version: 1.0.0, amount_tolerance: 0.01 }
+    expected_output: { valid: true, issues: [], rules_version: 1.0.0 }
+    comparison: { mode: exact }

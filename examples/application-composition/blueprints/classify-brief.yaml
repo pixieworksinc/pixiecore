@@ -1,0 +1,44 @@
+name: Classify publication brief
+version: '1.0.1'
+role: assistant
+input_placeholders:
+  - name: title
+    type: string
+    required: true
+  - name: audience
+    type: string
+    required: true
+  - name: facts
+    type: array
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [title, audience, facts]
+  properties:
+    title: { type: string, minLength: 1 }
+    audience: { type: string, minLength: 1 }
+    facts:
+      type: array
+      minItems: 1
+      items: { type: string, minLength: 1 }
+prompt: |
+  Classify this publication brief into exactly one category: operations,
+  policy, product, or other.
+
+  Title: {{ title }}
+  Audience: {{ audience }}
+  Facts: {{ facts }}
+
+  Return the category and a short rationale as JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [category, rationale]
+  properties:
+    category:
+      type: string
+      enum: [operations, policy, product, other]
+    rationale:
+      type: string
+      minLength: 1

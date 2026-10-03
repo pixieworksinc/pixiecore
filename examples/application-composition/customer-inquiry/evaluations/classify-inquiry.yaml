@@ -1,0 +1,22 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Classify customer inquiry
+version: 1.0.0
+blueprint:
+  path: ../blueprints/classify-inquiry.yaml
+  version: 1.0.1
+tags: [application-composition, customer-inquiry, classifier]
+cases:
+  - id: urgent-billing-inquiry
+    tags: [canonical]
+    inputs:
+      subject: Duplicate invoice
+      message: Invoice INV-77 was charged twice and requires immediate review.
+      policy:
+        version: 1.0.0
+        urgent_terms: [immediate]
+    expected_output:
+      category: billing
+      priority: urgent
+      rationale: The message concerns a duplicate invoice and contains the configured urgent term.
+      policy_version: 1.0.0
+    comparison: { mode: exact }

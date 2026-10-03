@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.apisix.ai-rag
+name: PixieCore APISIX AI RAG
+version: '0.1.0'
+description: Contributes declarative ai-rag configuration for Apache APISIX.
+entry: ./ai-rag.js
+
+requires:
+  pixiecore.providers.apisix: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: extension
+    export: aiRagContribution
+    extension_point: pixiecore.providers.apisix.plugin

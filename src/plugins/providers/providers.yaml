@@ -1,0 +1,17 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers
+name: PixieCore Providers
+version: '0.1.0'
+description: Provides shared transport support for PixieCore's provider-family plugins.
+entry: ./providers.js
+
+requires:
+  pixiecore.logging: ^0.1.0
+  pixiecore.multimodal: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createProviderSupport
+    service_id: pixiecore.service.providers.support

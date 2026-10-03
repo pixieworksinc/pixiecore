@@ -1,0 +1,26 @@
+import { MultiServerMCPClient } from '@langchain/mcp-adapters';
+import { createAgent } from 'langchain';
+
+const model = process.env.LANGCHAIN_MODEL;
+if (!model) throw new Error('LANGCHAIN_MODEL is required');
+
+const client = new MultiServerMCPClient({
+  pixiecore: {
+    transport: 'stdio',
+    command: 'npx',
+    args: ['--package', '@pixieworks/pixiecore', 'pixiecore', 'mcp', 'serve'],
+    cwd: process.cwd(),
+    env: process.env,
+  },
+});
+
+const tools = await client.getTools();
+const agent = createAgent({ model, tools });
+const result = await agent.invoke({
+  messages: [{
+    role: 'user',
+    content: 'Run the PixieCore Blueprint at ./blueprints/expense-category.yaml for the supplied input.',
+  }],
+});
+
+console.log(result);

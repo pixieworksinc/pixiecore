@@ -1,0 +1,155 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Travel approval CSV routing
+version: 1.0.0
+description: Priority, boundary, ambiguity, no-match, and unavailable-user routing boundaries.
+blueprint:
+  path: ../travel-approval-routing.yaml
+  version: 1.0.2
+tags: [standard-library, router, orchestrator, travel-approval, csv]
+cases:
+  - id: domestic-standard
+    description: A domestic Level C request selects the domestic manager.
+    tags: [routed, domestic]
+    inputs:
+      request: { country_code: JP, destination_level: C, estimated_cost: 1200, currency: JPY }
+      routing_table_version: &table_version 2026.1.0
+      routing_csv: &routing_csv |
+        rule_id,priority,rule_enabled,user_enabled,country_code,destination_level,amount_min,amount_max,currency,next_user
+        route:domestic-standard,10,true,true,JP,C,0,5000,JPY,domestic-manager@example.test
+        route:level-a-high,10,true,true,*,A,5000.01,*,USD,travel-director@example.test
+        route:level-a-standard,20,true,true,*,A,0,5000,USD,supervisor-a@example.test
+        route:foreign-default,50,true,true,*,B,0,*,*,global-supervisor@example.test
+        route:disabled-vip,5,true,false,US,A,10000,*,USD,vp-approval@example.test
+        route:uk-project-one,5,true,true,GB,A,0,1000,GBP,approver-one@example.test
+        route:uk-project-two,5,true,true,GB,A,0,1000,GBP,approver-two@example.test
+        route:retired,1,false,true,*,*,0,*,*,retired-approver@example.test
+    expected_output:
+      status: routed
+      next_user: domestic-manager@example.test
+      matched_rule: route:domestic-standard
+      matched_priority: 10
+      reason_code: best_priority_match
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: level-a-standard
+    description: A Level A request within the standard range selects its supervisor.
+    tags: [routed, priority]
+    inputs:
+      request: { country_code: US, destination_level: A, estimated_cost: 3000, currency: USD }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: routed
+      next_user: supervisor-a@example.test
+      matched_rule: route:level-a-standard
+      matched_priority: 20
+      reason_code: best_priority_match
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: level-a-high-lower-boundary
+    description: The high-cost lower bound is inclusive and outranks the standard row.
+    tags: [routed, amount-boundary]
+    inputs:
+      request: { country_code: US, destination_level: A, estimated_cost: 5000.01, currency: USD }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: routed
+      next_user: travel-director@example.test
+      matched_rule: route:level-a-high
+      matched_priority: 10
+      reason_code: best_priority_match
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: level-a-standard-upper-boundary
+    description: The standard amount upper bound is inclusive.
+    tags: [routed, amount-boundary]
+    inputs:
+      request: { country_code: US, destination_level: A, estimated_cost: 5000, currency: USD }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: routed
+      next_user: supervisor-a@example.test
+      matched_rule: route:level-a-standard
+      matched_priority: 20
+      reason_code: best_priority_match
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: foreign-default
+    description: A Level B request uses the foreign default while the disabled rule is ignored.
+    tags: [routed, wildcard, disabled-rule]
+    inputs:
+      request: { country_code: DE, destination_level: B, estimated_cost: 2400, currency: EUR }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: routed
+      next_user: global-supervisor@example.test
+      matched_rule: route:foreign-default
+      matched_priority: 50
+      reason_code: best_priority_match
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: no-match
+    description: A request outside every active condition remains unrouted.
+    tags: [no-match]
+    inputs:
+      request: { country_code: DE, destination_level: C, estimated_cost: 2400, currency: EUR }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: no_match
+      next_user: null
+      matched_rule: null
+      matched_priority: null
+      reason_code: no_matching_rule
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: same-priority-ambiguous
+    description: Equal best-priority UK rows return both candidates without a selection.
+    tags: [ambiguous, same-priority]
+    inputs:
+      request: { country_code: GB, destination_level: A, estimated_cost: 900, currency: GBP }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: ambiguous
+      next_user: null
+      matched_rule: null
+      matched_priority: 5
+      reason_code: same_priority_matches
+      routing_table_version: 2026.1.0
+      candidates:
+        - { rule_id: 'route:uk-project-one', priority: 5, next_user: approver-one@example.test }
+        - { rule_id: 'route:uk-project-two', priority: 5, next_user: approver-two@example.test }
+    comparison: { mode: exact }
+
+  - id: best-user-disabled
+    description: A disabled user at the best priority blocks silent fallback.
+    tags: [unavailable, disabled-user, priority]
+    inputs:
+      request: { country_code: US, destination_level: A, estimated_cost: 12000, currency: USD }
+      routing_table_version: *table_version
+      routing_csv: *routing_csv
+    expected_output:
+      status: unavailable
+      next_user: vp-approval@example.test
+      matched_rule: route:disabled-vip
+      matched_priority: 5
+      reason_code: disabled_user
+      routing_table_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }

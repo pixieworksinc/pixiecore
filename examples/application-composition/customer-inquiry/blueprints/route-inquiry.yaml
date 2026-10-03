@@ -1,0 +1,79 @@
+name: Route customer inquiry by policy
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: request
+    type: object
+    required: true
+  - name: policy
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [request, policy]
+  properties:
+    request:
+      type: object
+      additionalProperties: false
+      required: [category, priority, customer_tier]
+      properties:
+        category: { type: string, enum: [billing, technical, account, other] }
+        priority: { type: string, enum: [urgent, normal] }
+        customer_tier: { type: string, enum: [standard, premium] }
+    policy:
+      type: object
+      additionalProperties: false
+      required: [version, rules]
+      properties:
+        version: { type: string, pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$' }
+        rules:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, category, priority, customer_tier, queue, owner, sla_hours]
+            properties:
+              id: { type: string, pattern: '^[a-z0-9][a-z0-9:.-]*$' }
+              category: { type: string, enum: [billing, technical, account, other, '*'] }
+              priority: { type: string, enum: [urgent, normal, '*'] }
+              customer_tier: { type: string, enum: [standard, premium, '*'] }
+              queue: { type: string, minLength: 1, pattern: '\S' }
+              owner: { type: string, minLength: 1, pattern: '\S' }
+              sla_hours: { type: integer, minimum: 1 }
+prompt: |
+  Select a routing rule using only the supplied policy. A rule matches when each
+  condition equals the request or is `*`. If exactly one rule matches, return
+  it. If none match, return no_match. If multiple rules match, return ambiguous.
+  Never use rule order as a tie breaker.
+
+  Request: {{ request }}
+  Policy: {{ policy }}
+
+  Return the exact policy version. Recommend a queue and owner only; do not
+  notify anyone or mutate another system. Return only JSON matching the output
+  schema.
+output_schema:
+  oneOf:
+    - type: object
+      additionalProperties: false
+      required: [status, queue, owner, rule_id, sla_hours, policy_version]
+      properties:
+        status: { const: routed }
+        queue: { type: string, minLength: 1, pattern: '\S' }
+        owner: { type: string, minLength: 1, pattern: '\S' }
+        rule_id: { type: string, pattern: '^[a-z0-9][a-z0-9:.-]*$' }
+        sla_hours: { type: integer, minimum: 1 }
+        policy_version: { type: string, minLength: 1 }
+    - type: object
+      additionalProperties: false
+      required: [status, queue, owner, rule_id, sla_hours, policy_version]
+      properties:
+        status: { type: string, enum: [no_match, ambiguous] }
+        queue: { type: 'null' }
+        owner: { type: 'null' }
+        rule_id: { type: 'null' }
+        sla_hours: { type: 'null' }
+        policy_version: { type: string, minLength: 1 }

@@ -1,0 +1,24 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.runtime
+name: PixieCore Runtime
+version: '0.1.0'
+description: Provides PixieCore's scope-local runtime execution services.
+entry: ./runtime.js
+
+requires:
+  pixiecore.logging: ^0.1.0
+  pixiecore.validation: ^0.1.0
+  pixiecore.multimodal: ^0.1.0
+  pixiecore.tools: ^0.1.0
+  pixiecore.roles: ^0.1.0
+  pixiecore.permissions: ^0.1.0
+  pixiecore.self-evaluation: ^0.1.0
+  pixiecore.providers: ^0.1.0
+  pixiecore.mcp: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createRuntimeService
+    service_id: pixiecore.service.runtime

@@ -1,0 +1,19 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Verify invoice against ledger record
+version: 1.0.0
+blueprint: { path: ../blueprints/verify-invoice.yaml, version: 1.0.1 }
+tags: [application-composition, invoice-review, verifier]
+cases:
+  - id: exact-ledger-match
+    tags: [canonical]
+    inputs:
+      invoice: &invoice
+        invoice_number: INV-204
+        supplier: Northwind LLC
+        purchase_order: PO-91
+        currency: USD
+        total: 108
+      ledger_record: *invoice
+      policy: { version: 1.0.0, amount_tolerance: 0.01 }
+    expected_output: { status: matched, mismatches: [], policy_version: 1.0.0 }
+    comparison: { mode: exact }

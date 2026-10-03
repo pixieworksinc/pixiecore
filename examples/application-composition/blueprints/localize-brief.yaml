@@ -1,0 +1,31 @@
+name: Localize publication brief summary
+version: '1.0.1'
+role: assistant
+input_placeholders:
+  - name: summary
+    type: string
+    required: true
+  - name: locale
+    type: string
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [summary, locale]
+  properties:
+    summary: { type: string, minLength: 1 }
+    locale: { type: string, minLength: 2 }
+prompt: |
+  Localize only locale-dependent wording in this summary for {{ locale }}. Preserve
+  names, identifiers, numbers, and facts exactly.
+
+  {{ summary }}
+
+  Return the locale and localized summary as JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [locale, localized_summary]
+  properties:
+    locale: { type: string, minLength: 2 }
+    localized_summary: { type: string, minLength: 1 }

@@ -1,0 +1,39 @@
+name: Extract publication brief facts
+version: '1.0.1'
+role: assistant
+input_placeholders:
+  - name: source_text
+    type: string
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [source_text]
+  properties:
+    source_text:
+      type: string
+      minLength: 1
+prompt: |
+  Extract a short title, the intended audience, and only facts explicitly
+  present in this source text:
+
+  {{ source_text }}
+
+  Do not infer missing facts. Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [title, audience, facts]
+  properties:
+    title:
+      type: string
+      minLength: 1
+    audience:
+      type: string
+      minLength: 1
+    facts:
+      type: array
+      minItems: 1
+      items:
+        type: string
+        minLength: 1

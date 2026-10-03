@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.instruction-template-conformance-report-v1.schema.json",
+  "title": "PixieCore instruction-template conformance report v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "adapter_protocol",
+    "suite",
+    "capability",
+    "implementation",
+    "summary",
+    "portable_summary",
+    "extension_summary",
+    "cases",
+    "conformant"
+  ],
+  "properties": {
+    "schema": { "const": "pixiecore.instruction-template-conformance-report/v1" },
+    "adapter_protocol": { "const": "pixiecore.instruction-template-adapter/1" },
+    "suite": { "const": "pixiecore.instruction-template-conformance/v1" },
+    "capability": { "const": "pop.runtime.mustache-input-binding" },
+    "implementation": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$" }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "portable_summary": { "$ref": "#/$defs/summary" },
+    "extension_summary": { "$ref": "#/$defs/summary" },
+    "cases": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/renderCase" },
+          { "$ref": "#/$defs/validationCase" }
+        ]
+      }
+    },
+    "conformant": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "caseBase": {
+      "type": "object",
+      "required": ["id", "kind", "portable", "passed", "expected", "observed"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$" },
+        "kind": { "enum": ["render", "validation"] },
+        "portable": { "type": "boolean" },
+        "extension_id": { "$ref": "#/$defs/extensionId" },
+        "passed": { "type": "boolean" },
+        "expected": { "type": "object" },
+        "observed": { "type": "object" }
+      },
+      "allOf": [{ "$ref": "#/$defs/extensionIdentity" }]
+    },
+    "extensionId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*(?:/[a-z0-9][a-z0-9.-]*)$"
+    },
+    "extensionIdentity": {
+      "if": { "type": "object", "properties": { "portable": { "const": false } }, "required": ["portable"] },
+      "else": {
+        "type": "object",
+        "not": {
+          "type": "object",
+          "properties": { "extension_id": {} },
+          "required": ["extension_id"]
+        }
+      }
+    },
+    "renderObservation": {
+      "type": "object",
+      "required": [
+        "rendered_instruction",
+        "blueprint_role",
+        "effective_message_role",
+        "provider_request_count"
+      ],
+      "properties": {
+        "rendered_instruction": { "type": "string" },
+        "blueprint_role": { "type": "string", "minLength": 1 },
+        "effective_message_role": { "type": ["string", "null"] },
+        "provider_request_count": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "validationObservation": {
+      "type": "object",
+      "required": ["accepted", "undeclared_inputs", "provider_request_count"],
+      "properties": {
+        "accepted": { "type": "boolean" },
+        "undeclared_inputs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "provider_request_count": { "type": "integer", "minimum": 0 },
+        "error_code": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "renderCase": {
+      "type": "object",
+      "allOf": [
+        { "$ref": "#/$defs/caseBase" },
+        {
+          "properties": {
+            "kind": { "const": "render" },
+            "expected": { "$ref": "#/$defs/renderObservation" },
+            "observed": { "$ref": "#/$defs/renderObservation" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    },
+    "validationCase": {
+      "type": "object",
+      "allOf": [
+        { "$ref": "#/$defs/caseBase" },
+        {
+          "properties": {
+            "kind": { "const": "validation" },
+            "expected": { "$ref": "#/$defs/validationObservation" },
+            "observed": { "$ref": "#/$defs/validationObservation" }
+          }
+        }
+      ],
+      "unevaluatedProperties": false
+    }
+  }
+}

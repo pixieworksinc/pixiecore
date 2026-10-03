@@ -1,0 +1,86 @@
+name: Summarize invoice review
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: invoice
+    type: object
+    required: true
+  - name: classification
+    type: object
+    required: true
+  - name: validation
+    type: object
+    required: true
+  - name: verification
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [invoice, classification, validation, verification]
+  properties:
+    invoice:
+      type: object
+      additionalProperties: false
+      required: [invoice_number, supplier, purchase_order, currency, subtotal, tax, total]
+      properties:
+        invoice_number: { type: [string, 'null'] }
+        supplier: { type: [string, 'null'] }
+        purchase_order: { type: [string, 'null'] }
+        currency: { type: [string, 'null'] }
+        subtotal: { type: [number, 'null'] }
+        tax: { type: [number, 'null'] }
+        total: { type: [number, 'null'] }
+    classification:
+      type: object
+      additionalProperties: false
+      required: [document_type]
+      properties:
+        document_type: { type: string, enum: [invoice, credit_note, other] }
+    validation:
+      type: object
+      additionalProperties: false
+      required: [valid, issues]
+      properties:
+        valid: { type: boolean }
+        issues: { type: array, items: { type: string } }
+    verification:
+      type: object
+      additionalProperties: false
+      required: [status, mismatches]
+      properties:
+        status: { type: string, enum: [matched, mismatch] }
+        mismatches:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [field, invoice_value, ledger_value]
+            properties:
+              field: { type: string, enum: [invoice_number, supplier, purchase_order, currency, total] }
+              invoice_value: { type: [string, number] }
+              ledger_value: { type: [string, number] }
+prompt: |
+  Produce a factual review summary from the supplied results. Return
+  recommendation=ready_for_human_review only for a valid invoice whose ledger
+  fields match; otherwise return manual_review. List stable reason codes from
+  validation issues and mismatch field names. Do not approve or pay anything.
+
+  Invoice: {{ invoice }}
+  Classification: {{ classification }}
+  Validation: {{ validation }}
+  Verification: {{ verification }}
+
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [recommendation, summary, reason_codes]
+  properties:
+    recommendation: { type: string, enum: [ready_for_human_review, manual_review] }
+    summary: { type: string, minLength: 1, pattern: '\S' }
+    reason_codes:
+      type: array
+      uniqueItems: true
+      items: { type: string, minLength: 1, pattern: '\S' }

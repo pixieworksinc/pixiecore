@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pop:schema:conformance-suite:0.1",
+  "title": "POP Conformance Suite 0.1",
+  "description": "Language-neutral validation, comparison, runtime-boundary, and capability fixtures for POP Core 0.1.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "specification", "validation", "comparison", "runtime", "capability"],
+  "properties": {
+    "schema": { "const": "pop.conformance-suite/0.1" },
+    "specification": { "const": "pop-core/0.1" },
+    "validation": {
+      "type": "array",
+      "minItems": 8,
+      "items": { "$ref": "#/$defs/validationCase" }
+    },
+    "comparison": {
+      "type": "array",
+      "minItems": 8,
+      "items": { "$ref": "#/$defs/comparisonCase" }
+    },
+    "runtime": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "$ref": "#/$defs/runtimeCase" }
+    },
+    "capability": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "$ref": "#/$defs/capabilityCase" }
+    }
+  },
+  "$defs": {
+    "caseId": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)+$"
+    },
+    "namespacedId": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^(?!pop\\.)(?:[a-z0-9]+(?:[._-][a-z0-9]+)+)$"
+    },
+    "validationCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "artifact", "document", "expected_valid"],
+      "properties": {
+        "id": { "$ref": "#/$defs/caseId" },
+        "artifact": {
+          "enum": ["blueprint", "evaluation_dataset", "evaluation_result", "blueprint_package"]
+        },
+        "document": true,
+        "expected_valid": { "type": "boolean" }
+      }
+    },
+    "comparisonCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "comparison", "expected_output", "actual_output", "expected_semantic_valid"],
+      "properties": {
+        "id": { "$ref": "#/$defs/caseId" },
+        "comparison": { "type": "object" },
+        "output_schema": { "type": "object" },
+        "expected_output": { "type": "object" },
+        "actual_output": { "type": "object" },
+        "expected_semantic_valid": { "type": "boolean" }
+      }
+    },
+    "runtimeCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "blueprint", "inputs", "generated_output", "expected"],
+      "properties": {
+        "id": { "$ref": "#/$defs/caseId" },
+        "blueprint": { "type": "object" },
+        "inputs": { "type": "object" },
+        "generated_output": true,
+        "expected": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["outcome", "output"],
+              "properties": {
+                "outcome": { "const": "success" },
+                "output": { "type": "object" }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["outcome", "stage"],
+              "properties": {
+                "outcome": { "const": "validation_error" },
+                "stage": { "enum": ["input", "output"] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "capabilityCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "blueprint", "supported_capabilities", "expected"],
+      "properties": {
+        "id": { "$ref": "#/$defs/caseId" },
+        "blueprint": { "type": "object" },
+        "supported_capabilities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/namespacedId" }
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["supported"],
+          "properties": {
+            "supported": { "type": "boolean" },
+            "missing_capability": { "$ref": "#/$defs/namespacedId" }
+          },
+          "allOf": [
+            {
+              "if": { "properties": { "supported": { "const": false } } },
+              "then": {
+                "required": ["missing_capability"],
+                "properties": { "missing_capability": { "$ref": "#/$defs/namespacedId" } }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

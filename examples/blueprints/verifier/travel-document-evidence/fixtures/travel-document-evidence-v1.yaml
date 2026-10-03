@@ -1,0 +1,24 @@
+traveler_name:
+  status: found
+  value: Alex Morgan
+  evidence: { page: 1, text: 'Traveler: Alex Morgan' }
+document_number:
+  status: found
+  value: TR-2026-0042
+  evidence: { page: 1, text: 'Request: TR-2026-0042' }
+start_date:
+  status: found
+  value: '2026-09-14'
+  evidence: { page: 1, text: 'Start: 2026-09-14' }
+end_date:
+  status: found
+  value: '2026-09-18'
+  evidence: { page: 1, text: 'End: 2026-09-18' }
+total_amount:
+  status: found
+  value: 2840.5
+  evidence: { page: 2, text: 'Total: USD 2,840.50' }
+currency:
+  status: found
+  value: USD
+  evidence: { page: 2, text: 'Total: USD 2,840.50' }

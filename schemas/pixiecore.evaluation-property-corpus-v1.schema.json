@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.evaluation-property-corpus-v1.schema.json",
+  "title": "PixieCore seeded evaluation property corpus v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "seed", "cases_per_kind", "cases"],
+  "properties": {
+    "schema": {
+      "const": "pixiecore.evaluation-property-corpus/v1"
+    },
+    "seed": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cases_per_kind": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "ordinal", "value", "tags"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": ["date", "amount", "locale", "unicode", "whitespace", "boundary"]
+        },
+        "ordinal": { "type": "integer", "minimum": 0 },
+        "value": {},
+        "tags": {
+          "type": "array",
+          "minItems": 4,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

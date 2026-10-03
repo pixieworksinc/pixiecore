@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.application-trace-v1.schema.json",
+  "title": "PixieCore application trace v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "trace_id", "started_at", "duration_ms", "result", "nodes"],
+  "properties": {
+    "schema": { "const": "pixiecore.application-trace/v1" },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "started_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "duration_ms": { "type": "number", "minimum": 0 },
+    "result": { "enum": ["succeeded", "failed", "cancelled"] },
+    "nodes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "blueprint_version",
+        "started_at",
+        "duration_ms",
+        "result",
+        "provider_usage"
+      ],
+      "properties": {
+        "node_id": { "type": "string", "minLength": 1 },
+        "blueprint_version": { "type": "string", "minLength": 1 },
+        "started_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+        },
+        "duration_ms": { "type": "number", "minimum": 0 },
+        "result": { "enum": ["succeeded", "failed", "cancelled"] },
+        "provider_usage": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/providerUsage" }
+        },
+        "error_code": { "type": "string", "minLength": 1 }
+      }
+    },
+    "providerUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model", "calls"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "calls": { "type": "integer", "minimum": 0 },
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 },
+        "total_tokens": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

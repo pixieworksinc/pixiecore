@@ -1,0 +1,263 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Travel destination policy classification
+version: 1.0.0
+description: Listed-city, alias, country, default, ambiguity, and unknown boundaries.
+blueprint:
+  path: ../travel-destination-level.yaml
+  version: 1.0.2
+tags: [standard-library, classifier, travel-policy, destination]
+cases:
+  - id: new-york-listed
+    description: Canonical matching trims whitespace and ignores case.
+    tags: [level-a, listed, normalization]
+    inputs:
+      destination: { city: ' new york ', country_code: US }
+      policy: &travel_policy
+        version: 2026.1.0
+        domestic_country_codes: [JP]
+        domestic_default_level: C
+        foreign_default_level: B
+        locations:
+          - id: city:new-york-us
+            canonical_city: New York
+            country_code: US
+            level: A
+            aliases: [NY, NYC, New York City]
+          - id: city:san-francisco-us
+            canonical_city: San Francisco
+            country_code: US
+            level: A
+            aliases: [SF, San Fran]
+          - id: city:los-angeles-us
+            canonical_city: Los Angeles
+            country_code: US
+            level: A
+            aliases: [LA, L.A.]
+          - id: city:chicago-us
+            canonical_city: Chicago
+            country_code: US
+            level: A
+            aliases: [CHI]
+          - id: city:london-gb
+            canonical_city: London
+            country_code: GB
+            level: A
+            aliases: [London UK]
+          - id: city:paris-fr
+            canonical_city: Paris
+            country_code: FR
+            level: A
+            aliases: [Paris France]
+          - id: city:paris-us
+            canonical_city: Paris
+            country_code: US
+            level: B
+            aliases: [Paris Texas, Paris TX]
+    expected_output: &new_york_result
+      status: classified
+      level: A
+      canonical_city: New York
+      country_code: US
+      matched_rule: city:new-york-us
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: san-francisco-alias
+    description: A unique alias can classify without a country code.
+    tags: [level-a, alias]
+    inputs:
+      destination: { city: SF, country_code: null }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: A
+      canonical_city: San Francisco
+      country_code: US
+      matched_rule: city:san-francisco-us
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: los-angeles-listed
+    description: Los Angeles is explicitly listed as Level A.
+    tags: [level-a, listed]
+    inputs:
+      destination: { city: Los Angeles, country_code: US }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: A
+      canonical_city: Los Angeles
+      country_code: US
+      matched_rule: city:los-angeles-us
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: chicago-listed
+    description: Chicago is explicitly listed as Level A.
+    tags: [level-a, listed]
+    inputs:
+      destination: { city: Chicago, country_code: US }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: A
+      canonical_city: Chicago
+      country_code: US
+      matched_rule: city:chicago-us
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: london-listed
+    description: A unique London match is Level A without country inference.
+    tags: [level-a, listed]
+    inputs:
+      destination: { city: London, country_code: null }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: A
+      canonical_city: London
+      country_code: GB
+      matched_rule: city:london-gb
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: paris-france-listed
+    description: Country code selects the listed Paris in France.
+    tags: [level-a, listed, same-name]
+    inputs:
+      destination: { city: Paris, country_code: FR }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: A
+      canonical_city: Paris
+      country_code: FR
+      matched_rule: city:paris-fr
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: berlin-foreign-default
+    description: An unlisted foreign city uses the policy foreign default.
+    tags: [level-b, default, foreign]
+    inputs:
+      destination: { city: Berlin, country_code: DE }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: B
+      canonical_city: Berlin
+      country_code: DE
+      matched_rule: default:foreign
+      reason_code: foreign_default
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: tokyo-domestic-default
+    description: An unlisted Japanese city uses the domestic default.
+    tags: [level-c, default, domestic]
+    inputs:
+      destination: { city: Tokyo, country_code: JP }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: C
+      canonical_city: Tokyo
+      country_code: JP
+      matched_rule: default:domestic
+      reason_code: domestic_default
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: osaka-domestic-default
+    description: The domestic rule applies to other Japanese cities too.
+    tags: [level-c, default, domestic]
+    inputs:
+      destination: { city: Osaka, country_code: JP }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: C
+      canonical_city: Osaka
+      country_code: JP
+      matched_rule: default:domestic
+      reason_code: domestic_default
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: new-york-alias
+    description: NYC resolves through the explicit alias list.
+    tags: [level-a, alias]
+    inputs:
+      destination: { city: NYC, country_code: null }
+      policy: *travel_policy
+    expected_output: *new_york_result
+    comparison: { mode: exact }
+
+  - id: paris-country-ambiguous
+    description: A same-name city without country remains ambiguous.
+    tags: [ambiguous, same-name, non-inference]
+    inputs:
+      destination: { city: Paris, country_code: null }
+      policy: *travel_policy
+    expected_output:
+      status: ambiguous
+      level: null
+      canonical_city: null
+      country_code: null
+      matched_rule: null
+      reason_code: ambiguous_location
+      policy_version: 2026.1.0
+      candidates:
+        - { canonical_city: Paris, country_code: FR, level: A, matched_rule: city:paris-fr }
+        - { canonical_city: Paris, country_code: US, level: B, matched_rule: city:paris-us }
+    comparison: { mode: exact }
+
+  - id: paris-united-states
+    description: Country code selects the same-name policy location in the US.
+    tags: [level-b, listed, same-name]
+    inputs:
+      destination: { city: Paris, country_code: US }
+      policy: *travel_policy
+    expected_output:
+      status: classified
+      level: B
+      canonical_city: Paris
+      country_code: US
+      matched_rule: city:paris-us
+      reason_code: listed_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }
+
+  - id: unknown-without-country
+    description: An unknown city without a country is not assigned a level.
+    tags: [unknown, non-inference]
+    inputs:
+      destination: { city: Atlantis, country_code: null }
+      policy: *travel_policy
+    expected_output:
+      status: unknown
+      level: null
+      canonical_city: null
+      country_code: null
+      matched_rule: null
+      reason_code: insufficient_location
+      policy_version: 2026.1.0
+      candidates: []
+    comparison: { mode: exact }

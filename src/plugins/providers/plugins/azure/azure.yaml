@@ -1,0 +1,20 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.azure
+name: PixieCore Azure Providers
+version: '0.1.0'
+description: Provides Azure OpenAI and Azure Native provider factories.
+entry: ./azure.js
+
+requires:
+  pixiecore.providers: ^0.1.0
+optional_requires:
+  pixiecore.providers.anthropic: ^0.1.0
+conflicts: {}
+
+components:
+  - type: provider
+    export: createAzureOpenAIProviderFactory
+    provider_name: azure_openai
+  - type: provider
+    export: createAzureNativeProviderFactory
+    provider_name: azure_native

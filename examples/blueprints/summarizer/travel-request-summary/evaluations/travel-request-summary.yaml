@@ -1,0 +1,220 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Factual travel request summaries
+version: 2.0.0
+description: Length, traceability, missing-fact, zero-value, and language-preservation boundaries.
+blueprint:
+  path: ../travel-request-summary.yaml
+  version: 1.0.2
+tags: [standard-library, summarizer, travel-request, traceability]
+cases:
+  - id: complete-request
+    description: Every supplied fact appears in a traceable approval summary.
+    tags: [complete, traceability]
+    inputs:
+      request: &complete_request
+        purpose: Customer contract renewal meetings
+        start_date: '2026-09-14'
+        end_date: '2026-09-18'
+        destinations: ['San Francisco, US', 'Los Angeles, US']
+        total_cost: { amount: 2840.5, currency: USD }
+        approval_notes: [Hotel cap exception requires review]
+      max_characters: 240
+    expected_output:
+      status: summarized
+      summary: 'Customer contract renewal meetings in San Francisco, US and Los Angeles, US from 2026-09-14 to 2026-09-18. Estimated cost: USD 2,840.50. Review required: hotel cap exception.'
+      character_count: 174
+      claims:
+        - text: 'Customer contract renewal meetings in San Francisco, US and Los Angeles, US from 2026-09-14 to 2026-09-18.'
+          source_fields: [request.purpose, request.start_date, request.end_date, request.destinations]
+        - text: 'Estimated cost: USD 2,840.50.'
+          source_fields: [request.total_cost.amount, request.total_cost.currency]
+        - text: 'Review required: hotel cap exception.'
+          source_fields: [request.approval_notes]
+      omitted_source_fields: []
+      missing_source_fields: []
+    comparison: &traceable_summary
+      mode: custom
+      comparator: pixiecore.traceable-summary-v1
+      config:
+        source_fields: &summary_source_fields
+          - request.purpose
+          - request.start_date
+          - request.end_date
+          - request.destinations
+          - request.total_cost.amount
+          - request.total_cost.currency
+          - request.approval_notes
+        priority:
+          - request.purpose
+          - request.start_date
+          - request.end_date
+          - request.destinations
+          - request.total_cost.amount
+          - request.total_cost.currency
+          - request.approval_notes
+
+  - id: constrained-length
+    description: A short limit preserves core trip facts and records supplied omissions.
+    tags: [length, omitted]
+    inputs:
+      request: *complete_request
+      max_characters: 120
+    expected_output:
+      status: summarized
+      summary: 'Contract renewal meetings: San Francisco, US and Los Angeles, US, 2026-09-14 to 2026-09-18.'
+      character_count: 91
+      claims:
+        - text: 'Contract renewal meetings: San Francisco, US and Los Angeles, US, 2026-09-14 to 2026-09-18.'
+          source_fields: [request.purpose, request.start_date, request.end_date, request.destinations]
+      omitted_source_fields: [request.total_cost.amount, request.total_cost.currency, request.approval_notes]
+      missing_source_fields: []
+    comparison: *traceable_summary
+
+  - id: dates-only
+    description: Missing facts are reported rather than invented.
+    tags: [partial, missing]
+    inputs:
+      request:
+        purpose: null
+        start_date: '2026-10-01'
+        end_date: '2026-10-03'
+        destinations: []
+        total_cost: null
+        approval_notes: []
+      max_characters: 120
+    expected_output:
+      status: summarized
+      summary: 'Travel dates: 2026-10-01 to 2026-10-03.'
+      character_count: 39
+      claims:
+        - text: 'Travel dates: 2026-10-01 to 2026-10-03.'
+          source_fields: [request.start_date, request.end_date]
+      omitted_source_fields: []
+      missing_source_fields: [request.purpose, request.destinations, request.total_cost.amount, request.total_cost.currency, request.approval_notes]
+    comparison: *traceable_summary
+
+  - id: zero-cost
+    description: A numeric zero is a supplied fact, not a missing value.
+    tags: [zero, cost]
+    inputs:
+      request:
+        purpose: Internal planning workshop
+        start_date: null
+        end_date: null
+        destinations: [Tokyo]
+        total_cost: { amount: 0, currency: JPY }
+        approval_notes: []
+      max_characters: 120
+    expected_output:
+      status: summarized
+      summary: 'Internal planning workshop in Tokyo. Estimated cost: JPY 0.'
+      character_count: 59
+      claims:
+        - text: 'Internal planning workshop in Tokyo.'
+          source_fields: [request.purpose, request.destinations]
+        - text: 'Estimated cost: JPY 0.'
+          source_fields: [request.total_cost.amount, request.total_cost.currency]
+      omitted_source_fields: []
+      missing_source_fields: [request.start_date, request.end_date, request.approval_notes]
+    comparison: *traceable_summary
+
+  - id: japanese-source-language
+    description: Japanese source facts stay Japanese and remain traceable.
+    tags: [language-preservation, unicode]
+    inputs:
+      request:
+        purpose: 顧客向け製品説明会への参加
+        start_date: '2026-11-05'
+        end_date: '2026-11-06'
+        destinations: [東京]
+        total_cost: { amount: 125000, currency: JPY }
+        approval_notes: [部門長の事前承認が必要]
+      max_characters: 160
+    expected_output:
+      status: summarized
+      summary: '顧客向け製品説明会への参加。東京、2026-11-05〜2026-11-06。費用見込みはJPY 125,000。承認上の注意: 部門長の事前承認が必要。'
+      character_count: 77
+      claims:
+        - text: '顧客向け製品説明会への参加。東京、2026-11-05〜2026-11-06。'
+          source_fields: [request.purpose, request.start_date, request.end_date, request.destinations]
+        - text: '費用見込みはJPY 125,000。'
+          source_fields: [request.total_cost.amount, request.total_cost.currency]
+        - text: '承認上の注意: 部門長の事前承認が必要。'
+          source_fields: [request.approval_notes]
+      omitted_source_fields: []
+      missing_source_fields: []
+    comparison: *traceable_summary
+
+  - id: approval-note-only
+    description: An approval note can be summarized without fabricating trip details.
+    tags: [partial, approval-note]
+    inputs:
+      request:
+        purpose: null
+        start_date: null
+        end_date: null
+        destinations: []
+        total_cost: null
+        approval_notes: [Visa documentation must be confirmed]
+      max_characters: 100
+    expected_output:
+      status: summarized
+      summary: 'Approval note: visa documentation must be confirmed.'
+      character_count: 52
+      claims:
+        - text: 'Approval note: visa documentation must be confirmed.'
+          source_fields: [request.approval_notes]
+      omitted_source_fields: []
+      missing_source_fields: [request.purpose, request.start_date, request.end_date, request.destinations, request.total_cost.amount, request.total_cost.currency]
+    comparison: *traceable_summary
+
+  - id: destination-only
+    description: Destination facts remain independently useful and attributable.
+    tags: [partial, destination]
+    inputs:
+      request:
+        purpose: null
+        start_date: null
+        end_date: null
+        destinations: [London, Paris]
+        total_cost: null
+        approval_notes: []
+      max_characters: 80
+    expected_output:
+      status: summarized
+      summary: 'Destinations: London and Paris.'
+      character_count: 31
+      claims:
+        - text: 'Destinations: London and Paris.'
+          source_fields: [request.destinations]
+      omitted_source_fields: []
+      missing_source_fields: [request.purpose, request.start_date, request.end_date, request.total_cost.amount, request.total_cost.currency, request.approval_notes]
+    comparison: *traceable_summary
+
+  - id: no-facts
+    description: An empty normalized request returns a typed insufficient result.
+    tags: [insufficient, non-inference]
+    inputs:
+      request:
+        purpose: null
+        start_date: null
+        end_date: null
+        destinations: []
+        total_cost: null
+        approval_notes: []
+      max_characters: 120
+    expected_output:
+      status: insufficient_facts
+      summary: null
+      character_count: 0
+      claims: []
+      omitted_source_fields: []
+      missing_source_fields:
+        - request.purpose
+        - request.start_date
+        - request.end_date
+        - request.destinations
+        - request.total_cost.amount
+        - request.total_cost.currency
+        - request.approval_notes
+    comparison: *traceable_summary

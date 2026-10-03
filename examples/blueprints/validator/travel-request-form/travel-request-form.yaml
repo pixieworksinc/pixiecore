@@ -1,0 +1,235 @@
+name: Validate normalized travel request form
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: form
+    type: object
+    required: true
+    description: One web-form submission whose values may be invalid.
+  - name: rules
+    type: object
+    required: true
+    description: Versioned validation rules supplied by the application.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [form, rules]
+  properties:
+    form:
+      type: object
+      additionalProperties: false
+      required:
+        - employee_id
+        - purpose
+        - start_date
+        - end_date
+        - destination_country_code
+        - estimated_cost
+        - currency
+      properties:
+        employee_id: {}
+        purpose: {}
+        start_date: {}
+        end_date: {}
+        destination_country_code: {}
+        estimated_cost: {}
+        currency: {}
+    rules:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - required_fields
+        - employee_id_pattern
+        - purpose_min_length
+        - date_format
+        - country_code_pattern
+        - estimated_cost_min
+        - estimated_cost_max
+        - allowed_currencies
+        - domestic_country_code
+        - domestic_currency
+        - correlation_rules
+      properties:
+        version:
+          type: string
+          pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$'
+        required_fields:
+          type: array
+          uniqueItems: true
+          items: { $ref: '#/$defs/fieldName' }
+        employee_id_pattern:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        purpose_min_length:
+          type: integer
+          minimum: 1
+          maximum: 500
+        date_format: { const: yyyy-mm-dd }
+        country_code_pattern:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        estimated_cost_min: { type: number }
+        estimated_cost_max: { type: number }
+        allowed_currencies:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: { type: string, pattern: '^[A-Z]{3}$' }
+        domestic_country_code: { type: string, pattern: '^[A-Z]{2}$' }
+        domestic_currency: { type: string, pattern: '^[A-Z]{3}$' }
+        correlation_rules:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum: [date_order, domestic_currency]
+  $defs:
+    fieldName:
+      type: string
+      enum:
+        - employee_id
+        - purpose
+        - start_date
+        - end_date
+        - destination_country_code
+        - estimated_cost
+        - currency
+prompt: |
+  Validate exactly one normalized travel-request web form against the supplied
+  versioned rules.
+
+  Form: {{ form }}
+  Rules: {{ rules }}
+
+  Evaluate fields in this canonical order:
+  employee_id, purpose, start_date, end_date, destination_country_code,
+  estimated_cost, currency.
+
+  Field rules:
+  1. A required field is missing when it is null or a blank string. Return only
+     error code required for that field.
+  2. Non-missing employee_id, purpose, dates, country code, and currency must
+     be strings. estimated_cost must be a number. A wrong type returns only
+     invalid_type for that field.
+  3. Apply employee_id_pattern exactly. Purpose must contain at least
+     purpose_min_length Unicode code points after trimming.
+  4. Dates must use yyyy-mm-dd and be real Gregorian dates. Distinguish
+     invalid_date_format from invalid_calendar_date.
+  5. Apply country_code_pattern exactly. Currency must be one of
+     allowed_currencies. estimated_cost must be within the inclusive configured
+     minimum and maximum.
+  6. Apply a correlation rule only when every field it uses is individually
+     valid. date_order adds date_order to both start_date and end_date when the
+     start is after the end. domestic_currency adds domestic_currency_mismatch
+     to currency when the destination country is domestic_country_code but the
+     currency differs from domestic_currency.
+  7. A field is valid exactly when error_codes is empty. form_valid is true
+     exactly when every field result is valid. It is only an aggregate and does
+     not replace field-level results.
+
+  Return every field exactly once in canonical order and the exact rules
+  version. Do not normalize or repair values, inspect attachments, compare
+  evidence, approve the request, or route it. Return only JSON matching the
+  output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [form_valid, rules_version, field_results]
+  properties:
+    form_valid: { type: boolean }
+    rules_version:
+      type: string
+      minLength: 1
+    field_results:
+      type: array
+      minItems: 7
+      maxItems: 7
+      uniqueItems: true
+      items:
+        oneOf:
+          - $ref: '#/$defs/validField'
+          - $ref: '#/$defs/invalidField'
+  $defs:
+    fieldName:
+      type: string
+      enum:
+        - employee_id
+        - purpose
+        - start_date
+        - end_date
+        - destination_country_code
+        - estimated_cost
+        - currency
+    errorCode:
+      type: string
+      enum:
+        - required
+        - invalid_type
+        - invalid_employee_id_format
+        - purpose_too_short
+        - invalid_date_format
+        - invalid_calendar_date
+        - invalid_country_code_format
+        - cost_below_minimum
+        - cost_above_maximum
+        - unsupported_currency
+        - date_order
+        - domestic_currency_mismatch
+    validField:
+      type: object
+      additionalProperties: false
+      required: [field, valid, error_codes]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        valid: { const: true }
+        error_codes: { type: array, maxItems: 0 }
+    invalidField:
+      type: object
+      additionalProperties: false
+      required: [field, valid, error_codes]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        valid: { const: false }
+        error_codes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: { $ref: '#/$defs/errorCode' }
+examples:
+  - input:
+      form:
+        employee_id: EMP-123456
+        purpose: Customer planning workshop
+        start_date: '2026-10-12'
+        end_date: '2026-10-14'
+        destination_country_code: US
+        estimated_cost: 2400
+        currency: USD
+      rules:
+        version: 2026.1.0
+        required_fields: [employee_id, purpose, start_date, end_date, destination_country_code, estimated_cost, currency]
+        employee_id_pattern: '^EMP-\d{6}$'
+        purpose_min_length: 10
+        date_format: yyyy-mm-dd
+        country_code_pattern: '^[A-Z]{2}$'
+        estimated_cost_min: 0
+        estimated_cost_max: 50000
+        allowed_currencies: [USD, JPY, EUR, GBP]
+        domestic_country_code: JP
+        domestic_currency: JPY
+        correlation_rules: [date_order, domestic_currency]
+    output:
+      form_valid: true
+      rules_version: 2026.1.0
+      field_results:
+        - { field: employee_id, valid: true, error_codes: [] }
+        - { field: purpose, valid: true, error_codes: [] }
+        - { field: start_date, valid: true, error_codes: [] }
+        - { field: end_date, valid: true, error_codes: [] }
+        - { field: destination_country_code, valid: true, error_codes: [] }
+        - { field: estimated_cost, valid: true, error_codes: [] }
+        - { field: currency, valid: true, error_codes: [] }

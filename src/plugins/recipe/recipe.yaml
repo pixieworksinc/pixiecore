@@ -1,0 +1,15 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.recipe
+name: PixieCore Recipe
+version: '0.1.0'
+description: Provides PixieCore's mandatory locked standard composition.
+entry: ./recipe.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createRecipeService
+    service_id: pixiecore.service.recipe

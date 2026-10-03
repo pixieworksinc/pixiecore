@@ -1,0 +1,21 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Extract invoice fields
+version: 1.0.0
+blueprint: { path: ../blueprints/extract-invoice.yaml, version: 1.0.1 }
+tags: [application-composition, invoice-review, extractor]
+cases:
+  - id: complete-invoice
+    tags: [canonical]
+    inputs:
+      source_text: >-
+        Invoice INV-204 from Northwind LLC for PO-91. Currency USD. Subtotal
+        100.00. Tax 8.00. Total 108.00.
+    expected_output:
+      invoice_number: INV-204
+      supplier: Northwind LLC
+      purchase_order: PO-91
+      currency: USD
+      subtotal: 100
+      tax: 8
+      total: 108
+    comparison: { mode: exact }

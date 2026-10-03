@@ -1,0 +1,68 @@
+name: Validate invoice fields and arithmetic
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: fields
+    type: object
+    required: true
+  - name: rules
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [fields, rules]
+  properties:
+    fields:
+      type: object
+      additionalProperties: false
+      required: [invoice_number, supplier, purchase_order, currency, subtotal, tax, total]
+      properties:
+        invoice_number: { type: [string, 'null'] }
+        supplier: { type: [string, 'null'] }
+        purchase_order: { type: [string, 'null'] }
+        currency: { type: [string, 'null'] }
+        subtotal: { type: [number, 'null'] }
+        tax: { type: [number, 'null'] }
+        total: { type: [number, 'null'] }
+    rules:
+      type: object
+      additionalProperties: false
+      required: [version, amount_tolerance]
+      properties:
+        version: { type: string, pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$' }
+        amount_tolerance: { type: number, minimum: 0 }
+prompt: |
+  Validate required invoice fields and arithmetic using only the supplied
+  rules. invoice_number, supplier, purchase_order, currency, subtotal, tax,
+  and total are required. subtotal plus tax must equal total within the
+  inclusive amount_tolerance.
+
+  Fields: {{ fields }}
+  Rules: {{ rules }}
+
+  Return stable issue codes and the exact rules version. Do not repair values,
+  compare a ledger record, or approve payment. Return only JSON matching the
+  output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [valid, issues, rules_version]
+  properties:
+    valid: { type: boolean }
+    issues:
+      type: array
+      uniqueItems: true
+      items:
+        type: string
+        enum:
+          - missing_invoice_number
+          - missing_supplier
+          - missing_purchase_order
+          - missing_currency
+          - missing_subtotal
+          - missing_tax
+          - missing_total
+          - amount_mismatch
+    rules_version: { type: string, minLength: 1 }

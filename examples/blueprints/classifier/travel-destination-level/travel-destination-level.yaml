@@ -1,0 +1,229 @@
+name: Classify travel destination by policy level
+version: 1.0.2
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: destination
+    type: object
+    required: true
+    description: One destination city with an optional ISO country code.
+  - name: policy
+    type: object
+    required: true
+    description: Versioned travel-level policy supplied by the application.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [destination, policy]
+  properties:
+    destination:
+      type: object
+      additionalProperties: false
+      required: [city, country_code]
+      properties:
+        city:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        country_code:
+          type: [string, 'null']
+          pattern: '^[A-Z]{2}$'
+    policy:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - domestic_country_codes
+        - domestic_default_level
+        - foreign_default_level
+        - locations
+      properties:
+        version:
+          type: string
+          pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$'
+        domestic_country_codes:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: { type: string, pattern: '^[A-Z]{2}$' }
+        domestic_default_level: { $ref: '#/$defs/level' }
+        foreign_default_level: { $ref: '#/$defs/level' }
+        locations:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, canonical_city, country_code, level, aliases]
+            properties:
+              id:
+                type: string
+                pattern: '^[a-z0-9][a-z0-9:.-]*$'
+              canonical_city:
+                type: string
+                minLength: 1
+                pattern: '\S'
+              country_code: { type: string, pattern: '^[A-Z]{2}$' }
+              level: { $ref: '#/$defs/level' }
+              aliases:
+                type: array
+                uniqueItems: true
+                items:
+                  type: string
+                  minLength: 1
+                  pattern: '\S'
+  $defs:
+    level: { type: string, enum: [A, B, C] }
+prompt: |
+  Classify exactly one travel destination using only the supplied policy.
+
+  Destination: {{ destination }}
+  Policy: {{ policy }}
+
+  Matching and classification rules, in order:
+  1. Trim surrounding city whitespace and compare the city case-insensitively
+     against each policy canonical_city and alias. Do not use fuzzy matching.
+  2. When country_code is supplied, discard location matches with a different
+     country_code. When it is absent, apply no country filter: a unique
+     canonical_city or alias match still resolves to that policy location and
+     its declared country. Do not guess a country when there is no unique match.
+  3. One location match returns that location's canonical city, country, level,
+     and exact id as matched_rule with reason_code=listed_location.
+  4. More than one location match returns status=ambiguous and every matching
+     candidate. Do not choose the better-known city.
+  5. With no location match and a supplied domestic country code, use the
+     domestic default with matched_rule=default:domestic. With another supplied
+     country code, use the foreign default with matched_rule=default:foreign.
+     Preserve the trimmed input city as canonical_city.
+  6. With no location match and no country code, return status=unknown. Do not
+     infer a country, continent, or level from the city name.
+
+  Return the exact policy version used. Do not modify the policy, call external
+  geocoding, calculate expenses, validate an application, or route approval.
+  Return only JSON matching the output schema.
+output_schema:
+  oneOf:
+    - $ref: '#/$defs/classifiedResult'
+    - $ref: '#/$defs/ambiguousResult'
+    - $ref: '#/$defs/unknownResult'
+  $defs:
+    level: { type: string, enum: [A, B, C] }
+    candidate:
+      type: object
+      additionalProperties: false
+      required: [canonical_city, country_code, level, matched_rule]
+      properties:
+        canonical_city:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        country_code: { type: string, pattern: '^[A-Z]{2}$' }
+        level: { $ref: '#/$defs/level' }
+        matched_rule:
+          type: string
+          minLength: 1
+          pattern: '\S'
+    classifiedResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - level
+        - canonical_city
+        - country_code
+        - matched_rule
+        - reason_code
+        - policy_version
+        - candidates
+      properties:
+        status: { const: classified }
+        level: { $ref: '#/$defs/level' }
+        canonical_city:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        country_code: { type: string, pattern: '^[A-Z]{2}$' }
+        matched_rule:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        reason_code:
+          type: string
+          enum: [listed_location, domestic_default, foreign_default]
+        policy_version:
+          type: string
+          minLength: 1
+        candidates: { type: array, maxItems: 0 }
+    ambiguousResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - level
+        - canonical_city
+        - country_code
+        - matched_rule
+        - reason_code
+        - policy_version
+        - candidates
+      properties:
+        status: { const: ambiguous }
+        level: { type: 'null' }
+        canonical_city: { type: 'null' }
+        country_code: { type: 'null' }
+        matched_rule: { type: 'null' }
+        reason_code: { const: ambiguous_location }
+        policy_version:
+          type: string
+          minLength: 1
+        candidates:
+          type: array
+          minItems: 2
+          uniqueItems: true
+          items: { $ref: '#/$defs/candidate' }
+    unknownResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - level
+        - canonical_city
+        - country_code
+        - matched_rule
+        - reason_code
+        - policy_version
+        - candidates
+      properties:
+        status: { const: unknown }
+        level: { type: 'null' }
+        canonical_city: { type: 'null' }
+        country_code: { type: 'null' }
+        matched_rule: { type: 'null' }
+        reason_code: { const: insufficient_location }
+        policy_version:
+          type: string
+          minLength: 1
+        candidates: { type: array, maxItems: 0 }
+examples:
+  - input:
+      destination: { city: NYC, country_code: null }
+      policy:
+        version: 1.0.0
+        domestic_country_codes: [JP]
+        domestic_default_level: C
+        foreign_default_level: B
+        locations:
+          - id: city:new-york-us
+            canonical_city: New York
+            country_code: US
+            level: A
+            aliases: [NYC]
+    output:
+      status: classified
+      level: A
+      canonical_city: New York
+      country_code: US
+      matched_rule: city:new-york-us
+      reason_code: listed_location
+      policy_version: 1.0.0
+      candidates: []

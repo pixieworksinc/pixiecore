@@ -1,0 +1,13 @@
+schema: pixiecore.plugin/v1
+id: example.sample-tool
+name: Sample Tool
+version: 0.1.0
+description: Adds an offline example tool.
+entry: ./sample-tool.js
+requires: {}
+optional_requires: {}
+conflicts: {}
+components:
+  - type: tool
+    export: SampleToolTool
+    tool_name: sample_tool

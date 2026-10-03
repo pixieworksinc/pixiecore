@@ -1,0 +1,75 @@
+name: Verify invoice against ledger record
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: invoice
+    type: object
+    required: true
+  - name: ledger_record
+    type: object
+    required: true
+  - name: policy
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [invoice, ledger_record, policy]
+  properties:
+    invoice:
+      type: object
+      additionalProperties: false
+      required: [invoice_number, supplier, purchase_order, currency, total]
+      properties:
+        invoice_number: { type: string, minLength: 1 }
+        supplier: { type: string, minLength: 1 }
+        purchase_order: { type: string, minLength: 1 }
+        currency: { type: string, pattern: '^[A-Z]{3}$' }
+        total: { type: number, minimum: 0 }
+    ledger_record:
+      type: object
+      additionalProperties: false
+      required: [invoice_number, supplier, purchase_order, currency, total]
+      properties:
+        invoice_number: { type: string, minLength: 1 }
+        supplier: { type: string, minLength: 1 }
+        purchase_order: { type: string, minLength: 1 }
+        currency: { type: string, pattern: '^[A-Z]{3}$' }
+        total: { type: number, minimum: 0 }
+    policy:
+      type: object
+      additionalProperties: false
+      required: [version, amount_tolerance]
+      properties:
+        version: { type: string, pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$' }
+        amount_tolerance: { type: number, minimum: 0 }
+prompt: |
+  Compare invoice_number, supplier, purchase_order, and currency exactly.
+  Compare total using the inclusive amount_tolerance. Return every mismatched
+  field with both values. Use only the supplied records and policy.
+
+  Invoice: {{ invoice }}
+  Ledger record: {{ ledger_record }}
+  Policy: {{ policy }}
+
+  Return status=matched only when no mismatch exists. Do not update the ledger
+  or approve payment. Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [status, mismatches, policy_version]
+  properties:
+    status: { type: string, enum: [matched, mismatch] }
+    mismatches:
+      type: array
+      uniqueItems: true
+      items:
+        type: object
+        additionalProperties: false
+        required: [field, invoice_value, ledger_value]
+        properties:
+          field: { type: string, enum: [invoice_number, supplier, purchase_order, currency, total] }
+          invoice_value: { type: [string, number] }
+          ledger_value: { type: [string, number] }
+    policy_version: { type: string, minLength: 1 }

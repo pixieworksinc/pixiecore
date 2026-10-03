@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.apisix.ai-proxy-multi
+name: PixieCore APISIX AI Proxy Multi
+version: '0.1.0'
+description: Contributes declarative ai-proxy-multi configuration for Apache APISIX.
+entry: ./ai-proxy-multi.js
+
+requires:
+  pixiecore.providers.apisix: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: extension
+    export: aiProxyMultiContribution
+    extension_point: pixiecore.providers.apisix.plugin

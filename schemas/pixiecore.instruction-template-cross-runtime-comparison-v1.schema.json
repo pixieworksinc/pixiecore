@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.instruction-template-cross-runtime-comparison-v1.schema.json",
+  "title": "PixieCore instruction-template cross-runtime comparison v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "adapter_protocol",
+    "suite",
+    "capability",
+    "baseline",
+    "candidate",
+    "portable_summary",
+    "extension_summary",
+    "cases",
+    "compatible"
+  ],
+  "properties": {
+    "schema": {
+      "const": "pixiecore.instruction-template-cross-runtime-comparison/v1"
+    },
+    "adapter_protocol": {
+      "const": "pixiecore.instruction-template-adapter/1"
+    },
+    "suite": {
+      "const": "pixiecore.instruction-template-conformance/v1"
+    },
+    "capability": {
+      "const": "pop.runtime.mustache-input-binding"
+    },
+    "baseline": { "$ref": "#/$defs/implementation" },
+    "candidate": { "$ref": "#/$defs/implementation" },
+    "portable_summary": { "$ref": "#/$defs/summary" },
+    "extension_summary": { "$ref": "#/$defs/summary" },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/case" }
+    },
+    "compatible": { "type": "boolean" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "implementation": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "failed"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "portable",
+        "baseline_passed",
+        "candidate_passed",
+        "expected_equal",
+        "observed_equal",
+        "passed"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:[.-][a-z0-9]+)*$"
+        },
+        "kind": { "enum": ["render", "validation"] },
+        "portable": { "type": "boolean" },
+        "extension_id": { "$ref": "#/$defs/extensionId" },
+        "baseline_passed": { "type": "boolean" },
+        "candidate_passed": { "type": "boolean" },
+        "expected_equal": { "type": "boolean" },
+        "observed_equal": { "type": "boolean" },
+        "passed": { "type": "boolean" }
+      },
+      "allOf": [{ "$ref": "#/$defs/extensionIdentity" }],
+      "additionalProperties": false
+    },
+    "extensionId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)*(?:/[a-z0-9][a-z0-9.-]*)$"
+    },
+    "extensionIdentity": {
+      "if": { "type": "object", "properties": { "portable": { "const": false } }, "required": ["portable"] },
+      "else": {
+        "type": "object",
+        "not": {
+          "type": "object",
+          "properties": { "extension_id": {} },
+          "required": ["extension_id"]
+        }
+      }
+    }
+  }
+}

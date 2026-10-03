@@ -1,0 +1,40 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Validate customer inquiry completeness
+version: 1.0.0
+blueprint:
+  path: ../blueprints/validate-inquiry.yaml
+  version: 1.0.1
+tags: [application-composition, customer-inquiry, validator]
+cases:
+  - id: complete-inquiry
+    tags: [canonical]
+    inputs:
+      inquiry:
+        customer_id: C-1842
+        channel: web
+        locale: en-US
+        subject: Duplicate invoice
+        message: Invoice INV-77 was charged twice.
+      classification:
+        category: billing
+        priority: urgent
+    expected_output:
+      valid: true
+      issues: []
+    comparison: { mode: exact }
+  - id: missing-customer
+    tags: [negative]
+    inputs:
+      inquiry:
+        customer_id: null
+        channel: web
+        locale: en-US
+        subject: Duplicate invoice
+        message: Invoice INV-77 was charged twice.
+      classification:
+        category: billing
+        priority: normal
+    expected_output:
+      valid: false
+      issues: [missing_customer_id]
+    comparison: { mode: exact }

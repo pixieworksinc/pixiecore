@@ -1,0 +1,43 @@
+name: Summarize publication brief
+version: '1.0.1'
+role: assistant
+input_placeholders:
+  - name: title
+    type: string
+    required: true
+  - name: facts
+    type: array
+    required: true
+  - name: category
+    type: string
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [title, facts, category]
+  properties:
+    title: { type: string, minLength: 1 }
+    facts:
+      type: array
+      minItems: 1
+      items: { type: string, minLength: 1 }
+    category:
+      type: string
+      enum: [operations, policy, product, other]
+prompt: |
+  Write one concise publication summary using every supplied fact without
+  adding new facts.
+
+  Title: {{ title }}
+  Category: {{ category }}
+  Facts: {{ facts }}
+
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [summary]
+  properties:
+    summary:
+      type: string
+      minLength: 1

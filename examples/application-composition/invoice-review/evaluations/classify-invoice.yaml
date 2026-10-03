@@ -1,0 +1,21 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Classify invoice document
+version: 1.0.0
+blueprint: { path: ../blueprints/classify-invoice.yaml, version: 1.0.1 }
+tags: [application-composition, invoice-review, classifier]
+cases:
+  - id: positive-invoice
+    tags: [canonical]
+    inputs:
+      fields:
+        invoice_number: INV-204
+        supplier: Northwind LLC
+        purchase_order: PO-91
+        currency: USD
+        subtotal: 100
+        tax: 8
+        total: 108
+    expected_output:
+      document_type: invoice
+      rationale: A positive total and invoice number are present.
+    comparison: { mode: exact }

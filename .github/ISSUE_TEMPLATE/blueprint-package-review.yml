@@ -1,0 +1,72 @@
+name: Third-party Blueprint package review
+description: Submit a signed data-only Blueprint package for ecosystem review.
+title: "blueprint package: "
+labels:
+  - blueprint
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not attach private keys, credentials, confidential data, or fixtures without redistribution rights. Read docs/blueprints/blueprint-publishing.md first.
+  - type: input
+    id: package
+    attributes:
+      label: Package name and version
+      placeholder: example.travel-blueprints 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source and exact commit
+      placeholder: https://example.invalid/source.git at 0123456789abcdef
+    validations:
+      required: true
+  - type: input
+    id: publisher_key
+    attributes:
+      label: Publisher key ID and distribution reference
+      description: Provide the Ed25519 public-key ID and an independently verifiable location. Never provide the private key.
+    validations:
+      required: true
+  - type: textarea
+    id: license
+    attributes:
+      label: License and fixture rights
+      description: State SPDX expressions, notices, fixture sources, and redistribution authority.
+    validations:
+      required: true
+  - type: textarea
+    id: quality
+    attributes:
+      label: Quality evidence
+      description: State evidence kind, provider/model, dataset/version, score, passed/total cases, runs, seeds, and benchmark artifact for remote claims.
+    validations:
+      required: true
+  - type: textarea
+    id: lifecycle
+    attributes:
+      label: Compatibility and lifecycle evidence
+      description: Record verification, dependencies, collisions, install, enable/disable, upgrade, rollback, tamper, and wrong-key tests.
+    validations:
+      required: true
+  - type: textarea
+    id: ownership
+    attributes:
+      label: Owner, security contact, and maintenance plan
+      description: Include deprecation, revocation, malware response, and key-rotation plans.
+    validations:
+      required: true
+  - type: checkboxes
+    id: declarations
+    attributes:
+      label: Declarations
+      options:
+        - label: The package is data-only and contains no executable or install hook.
+          required: true
+        - label: I control the declared namespace and publisher signing key.
+          required: true
+        - label: I am authorized to redistribute every submitted file and fixture.
+          required: true
+        - label: Offline fixture accuracy is not presented as remote model quality.
+          required: true

@@ -1,0 +1,11 @@
+name: Hello
+version: '1.0.1'
+role: assistant
+input_placeholders:
+  - name: name
+    type: string
+    required: true
+prompt: |
+  Greet {{ name }} warmly. Return only JSON matching the output schema.
+output_schema: |
+  {"type":"object","properties":{"greeting":{"type":"string"}},"required":["greeting"],"additionalProperties":false}

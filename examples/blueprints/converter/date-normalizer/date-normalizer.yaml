@@ -1,0 +1,72 @@
+name: Normalize explicit Gregorian date
+version: 1.0.2
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: date_text
+    type: string
+    required: true
+    description: One explicit calendar date to normalize.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [date_text]
+  properties:
+    date_text:
+      type: string
+      minLength: 1
+      pattern: '\S'
+prompt: |
+  Normalize exactly one explicit calendar date from {{ date_text }}.
+
+  Policy:
+  - Use the proleptic Gregorian calendar and return yyyy-mm-dd.
+  - Accept an explicit four-digit year with Japanese 年/月/日 notation,
+    ISO yyyy-mm-dd, or an unambiguous year-first numeric separator.
+  - Ignore surrounding whitespace, but do not infer omitted year, month, or day.
+  - Validate the real calendar date, including Gregorian leap-year rules.
+  - Do not convert Japanese era dates such as 令和, 平成, or 昭和.
+  - Do not guess month/day order in values such as 02/04/2026.
+  - Do not resolve relative dates such as today or tomorrow without a reference.
+    Return status=ambiguous and reason_code=relative_date_requires_reference for
+    these values. A relative date is not status=invalid.
+  - Do not convert times, UTC offsets, or timezone-bearing timestamps because
+    choosing a timezone could change the calendar day.
+
+  Return status=converted, normalized_date, and reason_code=none only when the
+  date is explicit, supported, and valid. Otherwise return normalized_date=null
+  with the matching status and reason_code. Return only JSON matching the
+  output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [status, normalized_date, reason_code]
+  properties:
+    status:
+      type: string
+      enum: [converted, invalid, ambiguous, unsupported]
+    normalized_date:
+      type: [string, 'null']
+      pattern: '^\d{4}-\d{2}-\d{2}$'
+    reason_code:
+      type: string
+      enum:
+        - none
+        - invalid_date
+        - ambiguous_numeric_order
+        - unsupported_calendar
+        - unsupported_time_or_timezone
+        - relative_date_requires_reference
+examples:
+  - input:
+      date_text: 2026年2月4日
+    output:
+      status: converted
+      normalized_date: '2026-02-04'
+      reason_code: none
+  - input:
+      date_text: 2025年2月29日
+    output:
+      status: invalid
+      normalized_date: null
+      reason_code: invalid_date

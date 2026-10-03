@@ -1,0 +1,21 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Extract publication brief facts
+version: 1.0.0
+blueprint:
+  path: ../blueprints/extract-brief.yaml
+  version: '1.0.1'
+tags: [application-composition, extractor]
+cases:
+  - id: explicit-release-facts
+    tags: [canonical]
+    inputs:
+      source_text: >-
+        Title: Orion export. Audience: application developers. Fact: Release
+        Orion adds a typed publication export.
+    expected_output:
+      title: Orion export
+      audience: application developers
+      facts:
+        - Release Orion adds a typed publication export.
+    comparison:
+      mode: exact

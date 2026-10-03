@@ -1,0 +1,21 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Classify publication brief
+version: 1.0.0
+blueprint:
+  path: ../blueprints/classify-brief.yaml
+  version: '1.0.1'
+tags: [application-composition, classifier]
+cases:
+  - id: product-release
+    tags: [canonical]
+    inputs:
+      title: Orion export
+      audience: application developers
+      facts:
+        - Release Orion adds a typed publication export.
+    expected_output:
+      category: product
+      rationale: The brief announces a product capability.
+    comparison:
+      mode: fields
+      pointers: [/category]

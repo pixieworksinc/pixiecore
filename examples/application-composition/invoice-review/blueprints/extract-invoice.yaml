@@ -1,0 +1,36 @@
+name: Extract invoice fields
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: source_text
+    type: string
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [source_text]
+  properties:
+    source_text: { type: string, minLength: 1, pattern: '\S' }
+prompt: |
+  Extract only explicitly stated invoice fields from this document text:
+
+  {{ source_text }}
+
+  Return invoice_number, supplier, purchase_order, currency, subtotal, tax, and
+  total. Preserve identifiers and currency exactly. Parse explicit decimal
+  amounts as numbers. Use null when a field is absent or unreadable. Do not
+  classify, validate arithmetic, compare another record, or infer values.
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [invoice_number, supplier, purchase_order, currency, subtotal, tax, total]
+  properties:
+    invoice_number: { type: [string, 'null'] }
+    supplier: { type: [string, 'null'] }
+    purchase_order: { type: [string, 'null'] }
+    currency: { type: [string, 'null'], pattern: '^[A-Z]{3}$' }
+    subtotal: { type: [number, 'null'], minimum: 0 }
+    tax: { type: [number, 'null'], minimum: 0 }
+    total: { type: [number, 'null'], minimum: 0 }

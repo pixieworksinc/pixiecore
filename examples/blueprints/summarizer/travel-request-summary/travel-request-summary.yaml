@@ -1,0 +1,205 @@
+name: Summarize travel request for approval
+version: 1.0.2
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: request
+    type: object
+    required: true
+    description: Normalized travel-request facts supplied by the application.
+  - name: max_characters
+    type: integer
+    required: true
+    description: Maximum Unicode code points allowed in the summary.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [request, max_characters]
+  properties:
+    request:
+      type: object
+      additionalProperties: false
+      required:
+        - purpose
+        - start_date
+        - end_date
+        - destinations
+        - total_cost
+        - approval_notes
+      properties:
+        purpose:
+          type: [string, 'null']
+          minLength: 1
+          pattern: '\S'
+        start_date:
+          type: [string, 'null']
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        end_date:
+          type: [string, 'null']
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        destinations:
+          type: array
+          maxItems: 10
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            pattern: '\S'
+        total_cost:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [amount, currency]
+              properties:
+                amount: { type: number, minimum: 0 }
+                currency: { type: string, pattern: '^[A-Z]{3}$' }
+        approval_notes:
+          type: array
+          maxItems: 10
+          uniqueItems: true
+          items:
+            type: string
+            minLength: 1
+            pattern: '\S'
+    max_characters:
+      type: integer
+      minimum: 40
+      maximum: 500
+prompt: |
+  Summarize exactly one normalized travel request for an approver.
+
+  Request facts: {{ request }}
+  Maximum summary length: {{ max_characters }} Unicode code points
+
+  Factuality and length rules:
+  1. Use only facts present in request. Do not infer missing dates, locations,
+     costs, currencies, policy decisions, risks, or approval outcomes.
+  2. Preserve identifiers, dates, destination names, amounts, and currencies.
+     Do not translate or localize the facts; use the language already supplied.
+  3. Keep summary at or below max_characters, counting Unicode code points.
+     Prefer purpose, dates, destinations, total cost, then approval notes. If a
+     supplied field cannot fit, list it in omitted_source_fields.
+     max_characters is a hard cap, not a target. Before returning, count the
+     final summary again and remove the lowest-priority included field until
+     both summary length and character_count are at or below the cap.
+  4. Each claims item must be an exact substring of summary and must cite every
+     source field needed to support that text. Claims may paraphrase, but may
+     not introduce information that is absent from the cited fields.
+  5. List unavailable fields in missing_source_fields. A field must appear in
+     exactly one of: a claim's source_fields, omitted_source_fields, or
+     missing_source_fields.
+  6. If every source field is unavailable, return status=insufficient_facts.
+     Otherwise return status=summarized, even when the length limit requires
+     some supplied facts to be omitted.
+
+  This Blueprint only summarizes. It does not validate dates or costs, compare
+  evidence, translate content, approve a request, or route a workflow. Return
+  only JSON matching the output schema.
+output_schema:
+  oneOf:
+    - $ref: '#/$defs/summarizedResult'
+    - $ref: '#/$defs/insufficientResult'
+  $defs:
+    sourceField:
+      type: string
+      enum:
+        - request.purpose
+        - request.start_date
+        - request.end_date
+        - request.destinations
+        - request.total_cost.amount
+        - request.total_cost.currency
+        - request.approval_notes
+    claim:
+      type: object
+      additionalProperties: false
+      required: [text, source_fields]
+      properties:
+        text:
+          type: string
+          minLength: 1
+          pattern: '\S'
+        source_fields:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items: { $ref: '#/$defs/sourceField' }
+    summarizedResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - summary
+        - character_count
+        - claims
+        - omitted_source_fields
+        - missing_source_fields
+      properties:
+        status: { const: summarized }
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 500
+          pattern: '\S'
+        character_count:
+          type: integer
+          minimum: 1
+          maximum: 500
+        claims:
+          type: array
+          minItems: 1
+          items: { $ref: '#/$defs/claim' }
+        omitted_source_fields:
+          type: array
+          uniqueItems: true
+          items: { $ref: '#/$defs/sourceField' }
+        missing_source_fields:
+          type: array
+          uniqueItems: true
+          items: { $ref: '#/$defs/sourceField' }
+    insufficientResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - summary
+        - character_count
+        - claims
+        - omitted_source_fields
+        - missing_source_fields
+      properties:
+        status: { const: insufficient_facts }
+        summary: { type: 'null' }
+        character_count: { const: 0 }
+        claims: { type: array, maxItems: 0 }
+        omitted_source_fields: { type: array, maxItems: 0 }
+        missing_source_fields:
+          type: array
+          minItems: 7
+          maxItems: 7
+          uniqueItems: true
+          items: { $ref: '#/$defs/sourceField' }
+examples:
+  - input:
+      request:
+        purpose: Customer contract renewal meetings
+        start_date: '2026-09-14'
+        end_date: '2026-09-18'
+        destinations: ['San Francisco, US', 'Los Angeles, US']
+        total_cost: { amount: 2840.5, currency: USD }
+        approval_notes: [Hotel cap exception requires review]
+      max_characters: 240
+    output:
+      status: summarized
+      summary: 'Customer contract renewal meetings in San Francisco, US and Los Angeles, US from 2026-09-14 to 2026-09-18. Estimated cost: USD 2,840.50. Review required: hotel cap exception.'
+      character_count: 174
+      claims:
+        - text: 'Customer contract renewal meetings in San Francisco, US and Los Angeles, US from 2026-09-14 to 2026-09-18.'
+          source_fields: [request.purpose, request.start_date, request.end_date, request.destinations]
+        - text: 'Estimated cost: USD 2,840.50.'
+          source_fields: [request.total_cost.amount, request.total_cost.currency]
+        - text: 'Review required: hotel cap exception.'
+          source_fields: [request.approval_notes]
+      omitted_source_fields: []
+      missing_source_fields: []

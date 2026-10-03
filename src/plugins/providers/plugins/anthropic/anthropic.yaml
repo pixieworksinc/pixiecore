@@ -1,0 +1,17 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.anthropic
+name: PixieCore Anthropic Provider
+version: '0.1.0'
+description: Provides the Anthropic provider factory.
+entry: ./anthropic.js
+
+requires:
+  pixiecore.providers: ^0.1.0
+optional_requires:
+  pixiecore.providers.openai: ^0.1.0
+conflicts: {}
+
+components:
+  - type: provider
+    export: createAnthropicProviderFactory
+    provider_name: anthropic

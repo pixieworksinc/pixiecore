@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": false,
+    "noEmit": true,
+    "outDir": "./dist-test",
+    "rootDir": ".",
+    "paths": {
+      "@pixieworks/pixiecore": ["./src/index.ts"],
+      "@pixieworks/pixiecore/api": ["./src/core/kernel/api/index.ts"],
+      "@pixieworks/pixiecore/apisix": ["./src/core/kernel/apisix/index.ts"],
+      "@pixieworks/pixiecore/audit": ["./src/core/kernel/audit/index.ts"],
+      "@pixieworks/pixiecore/application": ["./src/core/kernel/application/index.ts"],
+      "@pixieworks/pixiecore/cache": ["./src/core/kernel/cache/index.ts"],
+      "@pixieworks/pixiecore/data-policy": ["./src/core/kernel/data-policy/index.ts"],
+      "@pixieworks/pixiecore/eval": ["./src/core/kernel/evaluation/index.ts"],
+      "@pixieworks/pixiecore/fallback": ["./src/core/kernel/fallback/index.ts"],
+      "@pixieworks/pixiecore/telemetry": ["./src/core/kernel/telemetry/index.ts"],
+      "@pixieworks/pixiecore/plugin": ["./src/core/contracts/plugin/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "examples/plugin-project/**/tests/**/*.ts"],
+  "exclude": ["dist", "node_modules"]
+}

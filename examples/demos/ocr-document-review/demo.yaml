@@ -1,0 +1,29 @@
+schema: pixiecore.demo/v1
+id: travel-document-ocr-review
+version: 1.0.0
+title: Evidence-first OCR document review
+blueprint: ../../blueprints/extractor/travel-document-fields/travel-document-fields.yaml
+dataset: ../../blueprints/extractor/travel-document-fields/evaluations/travel-document-fields.yaml
+case: scanned-pdf-partial
+fixture: ../../blueprints/extractor/travel-document-fields/fixtures/scanned.pdf
+runner: run.mjs
+modes:
+  offline:
+    command: npm run build && node examples/demos/ocr-document-review/run.mjs --mode=mock
+    evidence: deterministic_contract_rehearsal
+  real:
+    command: node examples/demos/ocr-document-review/run.mjs --mode=real
+    evidence: single_provider_run
+  comparison:
+    command: node examples/demos/ocr-document-review/run.mjs --mode=both
+    evidence: fixture_and_provider_side_by_side
+story:
+  - show the scanned travel-request PDF
+  - inspect one small typed Extractor Blueprint
+  - run the versioned scanned-PDF dataset case
+  - show page evidence and an explicit not_found amount
+  - connect the result to a host-owned form-review workflow
+claims:
+  offline_accuracy: contract_fixture_only
+  remote_provider_quality: not_measured_for_initial_release
+  side_effects: none

@@ -1,0 +1,77 @@
+{
+  "$schema": "./benchmark-dataset-v1.schema.json",
+  "schema": "pixiecore.publication-brief-comparison-dataset/v1",
+  "name": "Publication brief adjacent-pattern comparison",
+  "version": "1.0.0",
+  "sensitivity": "synthetic",
+  "cases": [
+    {
+      "id": "structured-product-release",
+      "input": {
+        "source_text": "Title: Orion typed export release\nAudience: platform operators\nCategory: product\nFacts:\n- Orion 2.0 ships on 2026-09-10.\n- Orion 2.0 adds typed exports.",
+        "locale": "en-US"
+      },
+      "assertions": {
+        "title_terms": ["Orion", "typed export"],
+        "audience_terms": ["platform operators"],
+        "fact_terms": ["Orion 2.0", "2026-09-10", "typed exports"],
+        "category": "product",
+        "summary_terms": ["Orion 2.0", "2026-09-10", "typed exports"],
+        "valid": true,
+        "locale": "en-US",
+        "localized_summary_terms": ["Orion 2.0", "2026-09-10", "typed exports"]
+      }
+    },
+    {
+      "id": "structured-policy-update",
+      "input": {
+        "source_text": "Title: Atlas retention policy\nAudience: records managers\nCategory: policy\nFacts:\n- Atlas records are retained for 18 months.\n- The policy takes effect on 2026-10-01.",
+        "locale": "en-US"
+      },
+      "assertions": {
+        "title_terms": ["Atlas", "retention policy"],
+        "audience_terms": ["records managers"],
+        "fact_terms": ["Atlas", "18 months", "2026-10-01"],
+        "category": "policy",
+        "summary_terms": ["Atlas", "18 months", "2026-10-01"],
+        "valid": true,
+        "locale": "en-US",
+        "localized_summary_terms": ["Atlas", "18 months", "2026-10-01"]
+      }
+    },
+    {
+      "id": "prose-operations-window",
+      "input": {
+        "source_text": "A maintenance notice for database administrators: the Helios cluster will enter read-only mode from 02:00 to 02:20 UTC on 2026-11-05. Existing sessions remain connected during the window.",
+        "locale": "en-US"
+      },
+      "assertions": {
+        "title_terms": ["Helios"],
+        "audience_terms": ["database administrators"],
+        "fact_terms": ["Helios", "02:00", "02:20", "2026-11-05", "Existing sessions"],
+        "category": "operations",
+        "summary_terms": ["Helios", "02:00", "02:20", "2026-11-05"],
+        "valid": true,
+        "locale": "en-US",
+        "localized_summary_terms": ["Helios", "02:00", "02:20", "2026-11-05"]
+      }
+    },
+    {
+      "id": "prose-community-announcement",
+      "input": {
+        "source_text": "Community contributors are invited to the Nova documentation sprint on 2026-12-12. The event is online and registration closes on 2026-12-05.",
+        "locale": "en-US"
+      },
+      "assertions": {
+        "title_terms": ["Nova", "documentation sprint"],
+        "audience_terms": ["Community contributors"],
+        "fact_terms": ["Nova", "2026-12-12", "online", "2026-12-05"],
+        "category": "other",
+        "summary_terms": ["Nova", "2026-12-12", "online", "2026-12-05"],
+        "valid": true,
+        "locale": "en-US",
+        "localized_summary_terms": ["Nova", "2026-12-12", "online", "2026-12-05"]
+      }
+    }
+  ]
+}

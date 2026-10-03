@@ -1,0 +1,15 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.jit
+name: PixieCore Deterministic Promotion
+version: '0.1.0'
+description: Provides a closed data interpreter for evidence-admitted deterministic execution.
+entry: ./jit.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createJitService
+    service_id: pixiecore.service.jit

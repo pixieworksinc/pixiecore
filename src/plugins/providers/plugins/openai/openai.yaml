@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.providers.openai
+name: PixieCore OpenAI Provider
+version: '0.1.0'
+description: Provides the OpenAI provider factory.
+entry: ./openai.js
+
+requires:
+  pixiecore.providers: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: provider
+    export: createOpenAIProviderFactory
+    provider_name: openai

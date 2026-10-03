@@ -1,0 +1,88 @@
+name: Release candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact package version to prepare
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-candidate-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build release candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      npm_config_engine_strict: "true"
+
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Node engine policy
+        run: npm run check:node-engines
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Run release gates
+        run: >-
+          npm run check:licenses &&
+          npm run check:security-release &&
+          npm run typecheck &&
+          npm run check:architecture &&
+          npm run check:docs &&
+          npm run check:source-docs &&
+          npm run check:api-docs &&
+          npm run check:conformance &&
+          npm run check:conformance:independent &&
+          npm test &&
+          npm run test:coverage
+
+      - name: Build release package once
+        run: npm run prepack
+
+      - name: Prepare immutable candidate
+        env:
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          npm run prepare:release-artifact --
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="$GITHUB_SHA"
+          --output=release
+
+      - name: Verify immutable candidate package
+        env:
+          PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
+        run: >-
+          npm run verify:package --
+          --artifact-directory=release
+          --version="$PIXIECORE_RELEASE_VERSION"
+          --source-revision="$GITHUB_SHA"
+
+      - name: Upload release candidate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: pixiecore-release-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: release/
+          if-no-files-found: error
+          retention-days: 90

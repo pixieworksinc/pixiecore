@@ -1,0 +1,23 @@
+schema: pixiecore.application-graph/v1
+name: Publication brief
+version: 1.0.0
+nodes:
+  - id: extract-brief
+    blueprint: ./blueprints/extract-brief.yaml
+    version: '1.0.1'
+  - id: classify-brief
+    blueprint: ./blueprints/classify-brief.yaml
+    version: '1.0.1'
+    depends_on: [extract-brief]
+  - id: summarize-brief
+    blueprint: ./blueprints/summarize-brief.yaml
+    version: '1.0.1'
+    depends_on: [extract-brief, classify-brief]
+  - id: validate-brief
+    blueprint: ./blueprints/validate-brief.yaml
+    version: '1.0.1'
+    depends_on: [extract-brief, summarize-brief]
+  - id: localize-brief
+    blueprint: ./blueprints/localize-brief.yaml
+    version: '1.0.1'
+    depends_on: [summarize-brief]

@@ -1,0 +1,259 @@
+name: Verify travel form against document evidence
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: submitted_fields
+    type: object
+    required: true
+    description: Normalized values submitted through the travel form.
+  - name: extracted_fields
+    type: object
+    required: true
+    description: Typed extraction results with page evidence.
+  - name: comparison_policy
+    type: object
+    required: true
+    description: Versioned exact-string and numeric-tolerance policy.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [submitted_fields, extracted_fields, comparison_policy]
+  properties:
+    submitted_fields:
+      type: object
+      additionalProperties: false
+      required: [traveler_name, document_number, start_date, end_date, total_amount, currency]
+      properties:
+        traveler_name: { type: [string, 'null'] }
+        document_number: { type: [string, 'null'] }
+        start_date:
+          type: [string, 'null']
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        end_date:
+          type: [string, 'null']
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        total_amount: { type: [number, 'null'] }
+        currency:
+          type: [string, 'null']
+          pattern: '^[A-Z]{3}$'
+    extracted_fields:
+      type: object
+      additionalProperties: false
+      required: [traveler_name, document_number, start_date, end_date, total_amount, currency]
+      properties:
+        traveler_name: { $ref: '#/$defs/extraction' }
+        document_number: { $ref: '#/$defs/extraction' }
+        start_date: { $ref: '#/$defs/extraction' }
+        end_date: { $ref: '#/$defs/extraction' }
+        total_amount: { $ref: '#/$defs/extraction' }
+        currency: { $ref: '#/$defs/extraction' }
+    comparison_policy:
+      type: object
+      additionalProperties: false
+      required: [version, string_mode, numeric_tolerance]
+      properties:
+        version:
+          type: string
+          pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$'
+        string_mode: { const: exact }
+        numeric_tolerance:
+          type: number
+          minimum: 0
+  $defs:
+    evidence:
+      type: object
+      additionalProperties: false
+      required: [page, text]
+      properties:
+        page: { type: integer, minimum: 1 }
+        text:
+          type: string
+          minLength: 1
+          pattern: '\S'
+    foundExtraction:
+      type: object
+      additionalProperties: false
+      required: [status, value, evidence]
+      properties:
+        status: { const: found }
+        value: { type: [string, number] }
+        evidence: { $ref: '#/$defs/evidence' }
+    notFoundExtraction:
+      type: object
+      additionalProperties: false
+      required: [status, value, evidence]
+      properties:
+        status: { const: not_found }
+        value: { type: 'null' }
+        evidence: { type: 'null' }
+    unreadableExtraction:
+      type: object
+      additionalProperties: false
+      required: [status, value, evidence]
+      properties:
+        status: { const: unreadable }
+        value: { type: 'null' }
+        evidence: { $ref: '#/$defs/evidence' }
+    extraction:
+      oneOf:
+        - $ref: '#/$defs/foundExtraction'
+        - $ref: '#/$defs/notFoundExtraction'
+        - $ref: '#/$defs/unreadableExtraction'
+prompt: |
+  Verify exactly one set of normalized travel-form values against already
+  extracted document evidence.
+
+  Submitted fields: {{ submitted_fields }}
+  Extracted fields: {{ extracted_fields }}
+  Comparison policy: {{ comparison_policy }}
+
+  Return fields in this canonical order:
+  traveler_name, document_number, start_date, end_date, total_amount, currency.
+
+  Verification rules:
+  1. When a submitted value is null, return unverified with
+     reason_code=missing_submission. Preserve any extracted value and evidence.
+  2. Otherwise, extraction status=not_found returns unverified with
+     reason_code=source_not_found and null extracted value/evidence.
+  3. extraction status=unreadable returns unverified with
+     reason_code=source_unreadable and preserves its page evidence.
+  4. For two numbers, return matched when their absolute difference is at most
+     numeric_tolerance. Use exact_match when equal and
+     numeric_match_within_tolerance when non-equal but within tolerance.
+  5. For all other found values, string_mode=exact requires JSON value and type
+     equality. Do not trim, change case, parse, translate, or normalize.
+  6. Found values outside the policy return mismatched with both values and the
+     extracted evidence.
+  7. overall_status is mismatch when any field mismatches; otherwise incomplete
+     when any field is unverified; otherwise verified.
+
+  Return the exact policy version. Do not extract files, repair form values,
+  validate business rules, approve travel, or route a workflow. Return only
+  JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [overall_status, policy_version, field_results]
+  properties:
+    overall_status:
+      type: string
+      enum: [verified, mismatch, incomplete]
+    policy_version:
+      type: string
+      minLength: 1
+    field_results:
+      type: array
+      minItems: 6
+      maxItems: 6
+      uniqueItems: true
+      items:
+        oneOf:
+          - $ref: '#/$defs/matched'
+          - $ref: '#/$defs/mismatched'
+          - $ref: '#/$defs/missingSubmission'
+          - $ref: '#/$defs/sourceNotFound'
+          - $ref: '#/$defs/sourceUnreadable'
+  $defs:
+    fieldName:
+      type: string
+      enum: [traveler_name, document_number, start_date, end_date, total_amount, currency]
+    value: { type: [string, number] }
+    nullableValue: { type: [string, number, 'null'] }
+    evidence:
+      type: object
+      additionalProperties: false
+      required: [page, text]
+      properties:
+        page: { type: integer, minimum: 1 }
+        text:
+          type: string
+          minLength: 1
+          pattern: '\S'
+    matched:
+      type: object
+      additionalProperties: false
+      required: [field, status, submitted_value, extracted_value, evidence, reason_code]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        status: { const: matched }
+        submitted_value: { $ref: '#/$defs/value' }
+        extracted_value: { $ref: '#/$defs/value' }
+        evidence: { $ref: '#/$defs/evidence' }
+        reason_code:
+          type: string
+          enum: [exact_match, numeric_match_within_tolerance]
+    mismatched:
+      type: object
+      additionalProperties: false
+      required: [field, status, submitted_value, extracted_value, evidence, reason_code]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        status: { const: mismatched }
+        submitted_value: { $ref: '#/$defs/value' }
+        extracted_value: { $ref: '#/$defs/value' }
+        evidence: { $ref: '#/$defs/evidence' }
+        reason_code: { const: value_mismatch }
+    missingSubmission:
+      type: object
+      additionalProperties: false
+      required: [field, status, submitted_value, extracted_value, evidence, reason_code]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        status: { const: unverified }
+        submitted_value: { type: 'null' }
+        extracted_value: { $ref: '#/$defs/nullableValue' }
+        evidence:
+          oneOf:
+            - { $ref: '#/$defs/evidence' }
+            - { type: 'null' }
+        reason_code: { const: missing_submission }
+    sourceNotFound:
+      type: object
+      additionalProperties: false
+      required: [field, status, submitted_value, extracted_value, evidence, reason_code]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        status: { const: unverified }
+        submitted_value: { $ref: '#/$defs/value' }
+        extracted_value: { type: 'null' }
+        evidence: { type: 'null' }
+        reason_code: { const: source_not_found }
+    sourceUnreadable:
+      type: object
+      additionalProperties: false
+      required: [field, status, submitted_value, extracted_value, evidence, reason_code]
+      properties:
+        field: { $ref: '#/$defs/fieldName' }
+        status: { const: unverified }
+        submitted_value: { $ref: '#/$defs/value' }
+        extracted_value: { type: 'null' }
+        evidence: { $ref: '#/$defs/evidence' }
+        reason_code: { const: source_unreadable }
+examples:
+  - input:
+      submitted_fields:
+        traveler_name: Alex Morgan
+        document_number: TR-2026-0042
+        start_date: '2026-09-14'
+        end_date: '2026-09-18'
+        total_amount: 2840.5
+        currency: USD
+      extracted_fields:
+        traveler_name: { status: found, value: Alex Morgan, evidence: { page: 1, text: 'Traveler: Alex Morgan' } }
+        document_number: { status: found, value: TR-2026-0042, evidence: { page: 1, text: 'Request: TR-2026-0042' } }
+        start_date: { status: found, value: '2026-09-14', evidence: { page: 1, text: 'Start: 2026-09-14' } }
+        end_date: { status: found, value: '2026-09-18', evidence: { page: 1, text: 'End: 2026-09-18' } }
+        total_amount: { status: found, value: 2840.5, evidence: { page: 2, text: 'Total: USD 2,840.50' } }
+        currency: { status: found, value: USD, evidence: { page: 2, text: 'Total: USD 2,840.50' } }
+      comparison_policy: { version: 2026.1.0, string_mode: exact, numeric_tolerance: 0.01 }
+    output:
+      overall_status: verified
+      policy_version: 2026.1.0
+      field_results:
+        - { field: traveler_name, status: matched, submitted_value: Alex Morgan, extracted_value: Alex Morgan, evidence: { page: 1, text: 'Traveler: Alex Morgan' }, reason_code: exact_match }
+        - { field: document_number, status: matched, submitted_value: TR-2026-0042, extracted_value: TR-2026-0042, evidence: { page: 1, text: 'Request: TR-2026-0042' }, reason_code: exact_match }
+        - { field: start_date, status: matched, submitted_value: '2026-09-14', extracted_value: '2026-09-14', evidence: { page: 1, text: 'Start: 2026-09-14' }, reason_code: exact_match }
+        - { field: end_date, status: matched, submitted_value: '2026-09-18', extracted_value: '2026-09-18', evidence: { page: 1, text: 'End: 2026-09-18' }, reason_code: exact_match }
+        - { field: total_amount, status: matched, submitted_value: 2840.5, extracted_value: 2840.5, evidence: { page: 2, text: 'Total: USD 2,840.50' }, reason_code: exact_match }
+        - { field: currency, status: matched, submitted_value: USD, extracted_value: USD, evidence: { page: 2, text: 'Total: USD 2,840.50' }, reason_code: exact_match }

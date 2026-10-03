@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "baseUrl": ".",
+    "checkJs": true,
+    "declaration": false,
+    "noEmit": true,
+    "outDir": "./dist-examples",
+    "rootDir": ".",
+    "paths": {
+      "@pixieworks/pixiecore": ["./src/index.ts"],
+      "@pixieworks/pixiecore/api": ["./src/core/kernel/api/index.ts"],
+      "@pixieworks/pixiecore/application": ["./src/core/kernel/application/index.ts"],
+      "@pixieworks/pixiecore/eval": ["./src/core/kernel/evaluation/index.ts"],
+      "@pixieworks/pixiecore/telemetry": ["./src/core/kernel/telemetry/index.ts"],
+      "@pixieworks/pixiecore/plugin": ["./src/core/contracts/plugin/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "examples/**/*.ts", "examples/**/*.mjs"],
+  "exclude": ["dist", "node_modules", "tests", "src/plugins/**/tests"]
+}

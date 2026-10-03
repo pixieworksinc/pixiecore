@@ -1,0 +1,38 @@
+name: Summarize customer inquiry
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: subject
+    type: string
+    required: true
+  - name: message
+    type: string
+    required: true
+  - name: category
+    type: string
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [subject, message, category]
+  properties:
+    subject: { type: string, minLength: 1, pattern: '\S' }
+    message: { type: string, minLength: 1, pattern: '\S' }
+    category: { type: string, enum: [billing, technical, account, other] }
+prompt: |
+  Summarize this customer inquiry in one factual sentence. Preserve identifiers,
+  amounts, dates, product names, and error text exactly. Add no facts and make
+  no routing decision.
+
+  Subject: {{ subject }}
+  Message: {{ message }}
+  Category: {{ category }}
+
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [summary]
+  properties:
+    summary: { type: string, minLength: 1, pattern: '\S' }

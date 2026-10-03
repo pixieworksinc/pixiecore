@@ -1,0 +1,15 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.mcp
+name: PixieCore MCP
+version: '0.1.0'
+description: Provides PixieCore's lazy MCP tool service.
+entry: ./mcp.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createMcpService
+    service_id: pixiecore.service.mcp

@@ -1,0 +1,13 @@
+schema: pixiecore.plugin/v1
+id: example.sample-role
+name: Sample Role
+version: 0.1.0
+description: Adds an offline example role.
+entry: ./sample-role.js
+requires: {}
+optional_requires: {}
+conflicts: {}
+components:
+  - type: agent_role
+    export: SampleRoleRole
+    roles_supported: [sample-role]

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.data-retention-record-v1.schema.json",
+  "title": "PixieCore data retention record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "record_id",
+    "tenant_id",
+    "stage",
+    "blueprint_id",
+    "blueprint_version",
+    "classification",
+    "pii_categories",
+    "policy_id",
+    "policy_version",
+    "disposition",
+    "created_at",
+    "expires_at",
+    "redacted_paths",
+    "reason_codes",
+    "payload"
+  ],
+  "properties": {
+    "schema": { "const": "pixiecore.data-retention-record/v1" },
+    "record_id": { "$ref": "#/$defs/nonBlankString" },
+    "tenant_id": { "$ref": "#/$defs/nonBlankString" },
+    "stage": { "enum": ["input", "output"] },
+    "blueprint_id": { "$ref": "#/$defs/nonBlankString" },
+    "blueprint_version": { "$ref": "#/$defs/nonBlankString" },
+    "classification": { "$ref": "#/$defs/nonBlankString" },
+    "pii_categories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/nonBlankString" }
+    },
+    "policy_id": { "$ref": "#/$defs/nonBlankString" },
+    "policy_version": { "$ref": "#/$defs/nonBlankString" },
+    "disposition": { "enum": ["retain", "discard"] },
+    "created_at": { "$ref": "#/$defs/timestamp" },
+    "expires_at": {
+      "oneOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+    },
+    "redacted_paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/jsonPointer" }
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/nonBlankString" }
+    },
+    "payload": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "array" },
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "disposition": { "const": "retain" } },
+        "required": ["disposition"]
+      },
+      "then": {
+        "properties": {
+          "expires_at": { "$ref": "#/$defs/timestamp" }
+        }
+      },
+      "else": {
+        "properties": {
+          "expires_at": { "type": "null" },
+          "redacted_paths": { "type": "array", "maxItems": 0 },
+          "payload": { "type": "null" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonBlankString": { "type": "string", "minLength": 1 },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    },
+    "jsonPointer": {
+      "type": "string",
+      "pattern": "^(?:|/(?:[^~/]|~[01])*(?:/(?:[^~/]|~[01])*)*)$"
+    }
+  }
+}

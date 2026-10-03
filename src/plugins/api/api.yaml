@@ -1,0 +1,17 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.api
+name: PixieCore API
+version: '0.1.0'
+description: Provides PixieCore's scope-local HTTP server factory.
+entry: ./api.js
+
+requires:
+  pixiecore.logging: ^0.1.0
+  pixiecore.runtime: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createApiService
+    service_id: pixiecore.service.api

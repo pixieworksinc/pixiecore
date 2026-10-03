@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: example.classifier
+name: Example Classifier Role
+version: '0.1.0'
+description: Demonstrates a managed custom classifier role.
+entry: ./classifier.mjs
+
+requires:
+  pixiecore.roles: ^0.1.0
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: agent_role
+    export: ClassifierRole
+    roles_supported: [classifier]

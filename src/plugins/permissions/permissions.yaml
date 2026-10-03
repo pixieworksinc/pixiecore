@@ -1,0 +1,16 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.permissions
+name: PixieCore Permissions
+version: '0.1.0'
+description: Provides PixieCore's constructor-visible permission guard.
+entry: ./permissions.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: decorator
+    export: PermissionGuard
+    priority: 20
+    stage: before

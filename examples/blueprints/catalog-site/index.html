@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PixieCore Blueprint catalog</title>
+  <style>
+    :root { color-scheme: light dark; font: 16px/1.5 system-ui, sans-serif; }
+    body { margin: 0 auto; max-width: 72rem; padding: 2rem; }
+    header p { max-width: 52rem; }
+    form { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); margin: 2rem 0; }
+    label { display: grid; gap: .35rem; font-weight: 600; }
+    input, select { font: inherit; padding: .55rem; }
+    #results { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+    article { border: 1px solid color-mix(in srgb, CanvasText 25%, Canvas); border-radius: .6rem; padding: 1rem; }
+    h2 { font-size: 1.1rem; margin: 0 0 .25rem; }
+    dl { display: grid; grid-template-columns: 5rem 1fr; margin-bottom: 0; }
+    dt { font-weight: 600; }
+    dd { margin: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PixieCore Blueprint catalog</h1>
+    <p>Search packaged reference Blueprints. Offline contract scores prove fixture behavior only. Remote-provider quality appears only when published benchmark evidence exists.</p>
+  </header>
+  <form id="filters">
+    <label>Use case <input name="use" placeholder="OCR, routing, date…"></label>
+    <label>Schema term <input name="schema" placeholder="currency, status…"></label>
+    <label>Quality evidence <select name="quality"><option value="">Any</option></select></label>
+    <label>Provider <select name="provider"><option value="">Any</option></select></label>
+    <label>License <select name="license"><option value="">Any</option></select></label>
+    <label>Minimum score <input name="minScore" type="number" min="0" max="1" step="0.01" placeholder="0.90"></label>
+  </form>
+  <p id="result-count" aria-live="polite"></p>
+  <main id="results"></main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

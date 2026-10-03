@@ -1,0 +1,1617 @@
+import * as api from '@pixieworks/pixiecore/api';
+import * as cache from '@pixieworks/pixiecore/cache';
+import * as conformance from '@pixieworks/pixiecore/conformance';
+import * as dataPolicy from '@pixieworks/pixiecore/data-policy';
+import * as evaluation from '@pixieworks/pixiecore/eval';
+import * as fallback from '@pixieworks/pixiecore/fallback';
+import * as jit from '@pixieworks/pixiecore/jit';
+import * as pixiecoreMcpServer from '@pixieworks/pixiecore/mcp-server';
+import * as rag from '@pixieworks/pixiecore/rag';
+import * as review from '@pixieworks/pixiecore/review';
+import * as telemetry from '@pixieworks/pixiecore/telemetry';
+import * as pixiecore from '@pixieworks/pixiecore';
+import type {
+  InstructionTemplateConformanceOptions,
+  InstructionTemplateConformanceReport,
+  PopConformanceCaseResult,
+  PopConformanceGroup,
+  PopConformanceReport,
+} from '@pixieworks/pixiecore/conformance';
+import type {
+  BlueprintExecutionCacheInput,
+  CacheResolutionStatus,
+  CacheSensitivity,
+  CacheVersionedIdentity,
+  SafeCacheInput,
+  SafeCacheInvalidation,
+  SafeCachePort,
+  SafeCacheRecord,
+  SafeCacheResolution,
+  SafeContentCacheOptions,
+} from '@pixieworks/pixiecore/cache';
+import type {
+  DataPolicyDecision,
+  DataPolicyEvaluationRequest,
+  DataPolicyPort,
+  DataRetentionRecord,
+  PrepareDataRetentionInput,
+} from '@pixieworks/pixiecore/data-policy';
+import type {
+  BlueprintBenchmarkArtifact,
+  BlueprintBenchmarkOptions,
+  BlueprintBenchmarkPricing,
+  BlueprintBenchmarkRunContext,
+  BlueprintBenchmarkRunResult,
+  BlueprintBenchmarkScorecardOptions,
+  BlueprintBenchmarkTarget,
+  BlueprintBenchmarkTargetResult,
+  AgentRolePlugin,
+  AgentRoleResult,
+  AssistantMessage,
+  AzureTokenProvider,
+  Blueprint,
+  BlueprintPermissions,
+  BuiltInProviderName,
+  DecoratorContext,
+  DecoratorStage,
+  ExecuteOptions,
+  FileContentPart,
+  GenerateRequest,
+  GenerateResponse,
+  ImageContentPart,
+  InputPlaceholder,
+  InputType,
+  JsonObject,
+  JsonPrimitive,
+  JsonValue,
+  LoggerPort,
+  LoggingOptions,
+  LogLevel,
+  LogRecord,
+  McpConfig,
+  McpManagerOptions,
+  McpServerConfig,
+  McpServerRuntimePort,
+  Message,
+  MessageContent,
+  MessageContentPart,
+  OutputDecorator,
+  PluginActivationContext,
+  PluginActivator,
+  PluginActivatorFactory,
+  PluginContributionRegistrar,
+  PluginManagerOptions,
+  PluginManifestSchema,
+  PluginOrigin,
+  PluginStatus,
+  PluginStatusDiagnostic,
+  PluginStatusSnapshot,
+  PluginStatusState,
+  Provider,
+  ProviderFactory,
+  ProviderName,
+  ProviderPlugin,
+  RegisteredTool,
+  ResolvedAttachment,
+  RuntimeOptions,
+  SanitizationOptions,
+  ServiceCollisionPolicy,
+  ServiceRegistryPort,
+  ServiceToken,
+  ServiceTokenOptions,
+  SystemMessage,
+  SynchronousPluginActivator,
+  TextContentPart,
+  ToolCall,
+  ToolChoice,
+  ToolDefinition,
+  ToolExecutionResult,
+  ToolHandler,
+  ToolMessage,
+  TruncatedPayload,
+  PixieCoreMcpServer,
+  PixieCoreMcpServerOptions,
+  PixieCorePlugin,
+  UserMessage,
+} from '@pixieworks/pixiecore';
+import type {
+  ApiMessage,
+  ApiOptions,
+  ApiRuntime,
+  ApiUploadedFile,
+  ExecuteRequest,
+  PixieCoreApiServer,
+} from '@pixieworks/pixiecore/api';
+import type {
+  ApplicationControlledTaskContext,
+  ApplicationControlledTaskOptions,
+  ApplicationExecutionControlOptions,
+  ApplicationExecutionControlSnapshot,
+  ApplicationRateLimit,
+} from '@pixieworks/pixiecore/application';
+import type {
+  BlueprintEvaluationCaseResult,
+  BlueprintEvaluationResultArtifact,
+  BlueprintEvaluationRunOptions,
+  BlueprintPlaygroundArtifact,
+  BlueprintPlaygroundExecution,
+  BlueprintPlaygroundMode,
+  BlueprintPlaygroundRunOptions,
+  BlueprintProviderPricing,
+  BlueprintProviderUsage,
+  CreateEvaluationPropertyCorpusOptions,
+  EvaluationComparisonResult,
+  EvaluationPropertyCase,
+  EvaluationPropertyCorpus,
+  EvaluationPropertyKind,
+} from '@pixieworks/pixiecore/eval';
+import type {
+  FallbackQualityEvidence,
+  ProviderFallbackAttempt,
+  ProviderFallbackExecutionContext,
+  ProviderFallbackExecutionOptions,
+  ProviderFallbackExecutionResult,
+  ProviderFallbackPolicy,
+  ProviderFallbackReceipt,
+  ProviderFallbackTarget,
+} from '@pixieworks/pixiecore/fallback';
+import type {
+  JitAdmissionReport,
+  JitProgram,
+  JitPromotionFile,
+  PublicJitAdmissionOptions,
+} from '@pixieworks/pixiecore/jit';
+import type {
+  CreateRagChunkMetadataInput,
+  RagAuthorizationPort,
+  RagAuthorizationRequest,
+  RagChunk,
+  RagChunkMetadata,
+  RagRetrievalBoundaryOptions,
+  RagRetrievalMatch,
+  RagRetrievalScope,
+  RagRetrievalToolFactory,
+  RagRetrievalToolOptions,
+  RagStorePort,
+  RagStoreRetrievalRequest,
+} from '@pixieworks/pixiecore/rag';
+import type {
+  CreateReviewHandoffInput,
+  CreateReviewReceiptInput,
+  HumanReviewHandoff,
+  HumanReviewReceipt,
+  ReviewDecision,
+} from '@pixieworks/pixiecore/review';
+import type {
+  ExecutionTelemetry,
+  ExecutionTelemetryRecorderOptions,
+  TelemetryPricingRule,
+  TelemetryUnitOptions,
+} from '@pixieworks/pixiecore/telemetry';
+
+const conformanceReportPromise: Promise<PopConformanceReport> =
+  conformance.runPopConformanceSuite();
+const conformanceGroup: PopConformanceGroup = 'runtime';
+const conformanceCase: PopConformanceCaseResult = {
+  id: 'consumer.runtime',
+  group: conformanceGroup,
+  passed: true,
+};
+void conformanceReportPromise;
+void conformanceCase;
+
+const instructionConformanceOptions: InstructionTemplateConformanceOptions = {};
+const instructionConformanceReportPromise: Promise<InstructionTemplateConformanceReport> =
+  conformance.runInstructionTemplateConformanceSuite(instructionConformanceOptions);
+void instructionConformanceReportPromise;
+
+type RootValueSurface = readonly [
+  typeof pixiecore.AgentRoleNotFoundError,
+  typeof pixiecore.attachmentBytes,
+  typeof pixiecore.BlueprintValidationError,
+  typeof pixiecore.BlueprintValidator,
+  typeof pixiecore.BUILT_IN_PROVIDER_NAMES,
+  typeof pixiecore.captureLogs,
+  typeof pixiecore.cleanGeminiSchema,
+  typeof pixiecore.ConfigurationError,
+  typeof pixiecore.configureLogging,
+  typeof pixiecore.contentParts,
+  typeof pixiecore.contentText,
+  typeof pixiecore.convertToolCallNames,
+  typeof pixiecore.createProvider,
+  typeof pixiecore.DefaultAgentRole,
+  typeof pixiecore.enhanceMessagesWithMultimodal,
+  typeof pixiecore.extractPdfText,
+  typeof pixiecore.generateTraceId,
+  typeof pixiecore.getConfig,
+  typeof pixiecore.getLogger,
+  typeof pixiecore.getLoggingConfig,
+  typeof pixiecore.getRuntimeEnvironment,
+  typeof pixiecore.getTraceId,
+  typeof pixiecore.InputTypeError,
+  typeof pixiecore.InputValidationError,
+  typeof pixiecore.InputValidator,
+  typeof pixiecore.isBuiltInProviderName,
+  typeof pixiecore.LLMAPIError,
+  typeof pixiecore.logExecutionComplete,
+  typeof pixiecore.logExecutionRetry,
+  typeof pixiecore.logExecutionStart,
+  typeof pixiecore.LoggingConfig,
+  typeof pixiecore.logLlmRequest,
+  typeof pixiecore.logLlmResponse,
+  typeof pixiecore.logToolExecution,
+  typeof pixiecore.logValidationResult,
+  typeof pixiecore.makeDataUrl,
+  typeof pixiecore.makeSafeToolName,
+  typeof pixiecore.MaxRetryExceededError,
+  typeof pixiecore.McpConfigError,
+  typeof pixiecore.McpConnectionError,
+  typeof pixiecore.McpManager,
+  typeof pixiecore.McpToolError,
+  typeof pixiecore.mimeFromName,
+  typeof pixiecore.MultimodalNotSupportedError,
+  typeof pixiecore.normalizeAttachmentInput,
+  typeof pixiecore.OutputValidator,
+  typeof pixiecore.parseDataUrl,
+  typeof pixiecore.PermissionGuard,
+  typeof pixiecore.PluginLoadError,
+  typeof pixiecore.PluginManager,
+  typeof pixiecore.PromptProcessor,
+  typeof pixiecore.PromptRuntime,
+  typeof pixiecore.resolveAttachment,
+  typeof pixiecore.RolePermissionError,
+  typeof pixiecore.runWithTraceId,
+  typeof pixiecore.sanitizeLogMessage,
+  typeof pixiecore.sanitizePayload,
+  typeof pixiecore.sanitizeToolNames,
+  typeof pixiecore.SchemaGuard,
+  typeof pixiecore.SchemaValidationError,
+  typeof pixiecore.ScopePermissionError,
+  typeof pixiecore.SelfEvalDecorator,
+  typeof pixiecore.SelfEvaluationError,
+  typeof pixiecore.setTraceId,
+  typeof pixiecore.shouldUseAnthropicPdfTextFallback,
+  typeof pixiecore.ToolExecutionError,
+  typeof pixiecore.truncatePayload,
+  typeof pixiecore.PixieCoreError,
+  typeof pixiecore.PixieCoreLogger,
+  typeof pixiecore.UserPermissionError,
+];
+
+type ApiValueSurface = readonly [
+  typeof api.ApiError,
+  typeof api.createApp,
+  typeof api.EXECUTE_REQUEST_SCHEMA,
+  typeof api.mapApiError,
+  typeof api.OPENAPI_DOCUMENT,
+];
+
+type EvaluationValueSurface = readonly [
+  typeof evaluation.BLUEPRINT_BENCHMARK_SCHEMA,
+  typeof evaluation.compareEvaluationOutput,
+  typeof evaluation.createEvaluationPropertyCorpus,
+  typeof evaluation.EVALUATION_PROPERTY_CORPUS_SCHEMA,
+  typeof evaluation.EvaluationPropertyCorpusError,
+  typeof evaluation.runBlueprintEvaluation,
+  typeof evaluation.runBlueprintBenchmark,
+  typeof evaluation.renderBlueprintBenchmarkScorecard,
+  typeof evaluation.runBlueprintPlayground,
+];
+
+type EvaluationTypeSurface = readonly [
+  BlueprintBenchmarkArtifact,
+  BlueprintBenchmarkOptions,
+  BlueprintBenchmarkPricing,
+  BlueprintBenchmarkRunContext,
+  BlueprintBenchmarkRunResult,
+  BlueprintBenchmarkScorecardOptions,
+  BlueprintBenchmarkTarget,
+  BlueprintBenchmarkTargetResult,
+  BlueprintEvaluationCaseResult,
+  BlueprintEvaluationResultArtifact,
+  BlueprintEvaluationRunOptions,
+  BlueprintPlaygroundArtifact,
+  BlueprintPlaygroundExecution,
+  BlueprintPlaygroundMode,
+  BlueprintPlaygroundRunOptions,
+  BlueprintProviderPricing,
+  BlueprintProviderUsage,
+  CreateEvaluationPropertyCorpusOptions,
+  EvaluationComparisonResult,
+  EvaluationPropertyCase,
+  EvaluationPropertyCorpus,
+  EvaluationPropertyKind,
+];
+
+type McpServerValueSurface = readonly [
+  typeof pixiecoreMcpServer.createPixieCoreMcpServer,
+  typeof pixiecoreMcpServer.servePixieCoreMcpStdio,
+  typeof pixiecoreMcpServer.PIXIECORE_MCP_SERVER_INFO,
+  typeof pixiecoreMcpServer.PIXIECORE_MCP_TOOL_NAMES,
+];
+
+type RootClassSurface = readonly [
+  pixiecore.AgentRoleNotFoundError,
+  pixiecore.BlueprintValidationError,
+  pixiecore.BlueprintValidator,
+  pixiecore.ConfigurationError,
+  pixiecore.DefaultAgentRole,
+  pixiecore.InputTypeError,
+  pixiecore.InputValidationError,
+  pixiecore.InputValidator,
+  pixiecore.LLMAPIError,
+  pixiecore.LoggingConfig,
+  pixiecore.MaxRetryExceededError,
+  pixiecore.McpConfigError,
+  pixiecore.McpConnectionError,
+  pixiecore.McpManager,
+  pixiecore.McpToolError,
+  pixiecore.MultimodalNotSupportedError,
+  pixiecore.OutputValidator,
+  pixiecore.PermissionGuard,
+  pixiecore.PluginLoadError,
+  pixiecore.PluginManager,
+  pixiecore.PromptProcessor,
+  pixiecore.PromptRuntime,
+  pixiecore.RolePermissionError,
+  pixiecore.SchemaGuard,
+  pixiecore.SchemaValidationError,
+  pixiecore.ScopePermissionError,
+  pixiecore.SelfEvalDecorator,
+  pixiecore.SelfEvaluationError,
+  pixiecore.ToolExecutionError,
+  pixiecore.PixieCoreError,
+  pixiecore.PixieCoreLogger,
+  pixiecore.UserPermissionError,
+];
+
+type RootTypeOnlySurface = readonly [
+  AgentRolePlugin,
+  AgentRoleResult,
+  AssistantMessage,
+  AzureTokenProvider,
+  Blueprint,
+  BlueprintPermissions,
+  BuiltInProviderName,
+  DecoratorContext,
+  DecoratorStage,
+  ExecuteOptions,
+  FileContentPart,
+  GenerateRequest,
+  GenerateResponse,
+  ImageContentPart,
+  InputPlaceholder,
+  InputType,
+  JsonObject,
+  JsonPrimitive,
+  JsonValue,
+  LoggerPort,
+  LoggingOptions,
+  LogLevel,
+  LogRecord,
+  McpConfig,
+  McpManagerOptions,
+  McpServerConfig,
+  McpServerRuntimePort,
+  Message,
+  MessageContent,
+  MessageContentPart,
+  OutputDecorator,
+  PluginActivationContext,
+  PluginActivator,
+  PluginActivatorFactory,
+  PluginContributionRegistrar,
+  PluginManagerOptions,
+  PluginManifestSchema,
+  PluginOrigin,
+  PluginStatus,
+  PluginStatusDiagnostic,
+  PluginStatusSnapshot,
+  PluginStatusState,
+  Provider,
+  ProviderFactory,
+  ProviderName,
+  ProviderPlugin,
+  RegisteredTool,
+  ResolvedAttachment,
+  RuntimeOptions,
+  SanitizationOptions,
+  ServiceCollisionPolicy,
+  ServiceRegistryPort,
+  ServiceToken<string>,
+  ServiceTokenOptions,
+  SystemMessage,
+  SynchronousPluginActivator,
+  TextContentPart,
+  ToolCall,
+  ToolChoice,
+  ToolDefinition,
+  ToolExecutionResult,
+  ToolHandler,
+  ToolMessage,
+  TruncatedPayload,
+  PixieCoreMcpServer,
+  PixieCoreMcpServerOptions,
+  PixieCorePlugin,
+  UserMessage,
+];
+
+type ApiTypeSurface = readonly [
+  api.ApiError,
+  ApiMessage,
+  ApiOptions,
+  ApiRuntime,
+  ApiUploadedFile,
+  ExecuteRequest,
+  PixieCoreApiServer,
+];
+
+type Equal<Left, Right> =
+  (<Value>() => Value extends Left ? 1 : 2) extends
+  (<Value>() => Value extends Right ? 1 : 2)
+    ? (<Value>() => Value extends Right ? 1 : 2) extends
+      (<Value>() => Value extends Left ? 1 : 2)
+        ? true
+        : false
+    : false;
+type Compatible<Current, LegacyContract> =
+  Current extends LegacyContract ? true : false;
+type Assert<Condition extends true> = Condition;
+
+interface ExpectedRuntimeConfig {
+  provider: ProviderName;
+  temperature: number;
+  maxRetry: number;
+  requestTimeout: number;
+  maxToolRounds: number;
+  strictValidation: boolean;
+  usePseudoToolCalling: boolean;
+  maxPayloadSize: number;
+  toolChoice?: ToolChoice;
+  model?: string;
+}
+
+interface ExpectedRootFunctionSignatures {
+  attachmentBytes: (
+    attachment: ResolvedAttachment,
+    fetcher?: typeof globalThis.fetch,
+  ) => Promise<Uint8Array>;
+  captureLogs: (logger?: pixiecore.PixieCoreLogger) => {
+    readonly records: LogRecord[];
+    close(): void;
+    [Symbol.dispose](): void;
+  };
+  cleanGeminiSchema: (value: unknown) => unknown;
+  configureLogging: (
+    options?: LoggingOptions | pixiecore.LoggingConfig,
+  ) => pixiecore.LoggingConfig;
+  contentParts: (content: MessageContent) => MessageContentPart[];
+  contentText: (content: MessageContent) => string;
+  convertToolCallNames: (
+    calls: ToolCall[],
+    mapping: Map<string, string>,
+  ) => ToolCall[];
+  createProvider: (name: string, options?: RuntimeOptions) => Provider;
+  enhanceMessagesWithMultimodal: (
+    messages: readonly Message[],
+    inputs: Readonly<Record<string, unknown>>,
+    provider: Provider,
+  ) => Message[];
+  extractPdfText: (
+    attachment: ResolvedAttachment,
+    fetcher?: typeof globalThis.fetch,
+  ) => Promise<string>;
+  generateTraceId: () => string;
+  getConfig: (
+    overrides?: RuntimeOptions,
+    environment?: NodeJS.ProcessEnv,
+  ) => ExpectedRuntimeConfig;
+  getLogger: (name?: string) => pixiecore.PixieCoreLogger;
+  getLoggingConfig: (
+    overrides?: RuntimeOptions,
+    environment?: NodeJS.ProcessEnv,
+  ) => pixiecore.LoggingConfig;
+  getRuntimeEnvironment: (environment?: NodeJS.ProcessEnv) => NodeJS.ProcessEnv;
+  getTraceId: () => string;
+  isBuiltInProviderName: (name: string) => name is BuiltInProviderName;
+  logExecutionComplete: (
+    status: string,
+    output: unknown,
+    durationMs: number,
+    errorCount?: number,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  logExecutionRetry: (
+    owner: 'runtime' | 'application' | 'host',
+    reason: string,
+    attempt: number,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  logExecutionStart: (
+    blueprint: string,
+    inputs: unknown,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  logLlmRequest: (
+    provider: string,
+    model: string,
+    request: unknown,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  logLlmResponse: (
+    provider: string,
+    model: string,
+    response: unknown,
+    durationMs: number,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  logToolExecution: (
+    tool: string,
+    args: unknown,
+    result: unknown,
+    durationMs: number,
+    error?: string | null,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  logValidationResult: (
+    kind: string,
+    passed: boolean,
+    error?: string,
+    logger?: pixiecore.PixieCoreLogger,
+  ) => void;
+  makeDataUrl: (mediaType: string, data: Uint8Array) => string;
+  makeSafeToolName: (
+    name: string,
+    existing?: Set<string>,
+    maxLength?: number,
+  ) => string;
+  mimeFromName: (name: string, kind: 'image' | 'file') => string;
+  normalizeAttachmentInput: (
+    value: unknown,
+    name: 'image_path' | 'file_path',
+  ) => string[];
+  parseDataUrl: (value: string) => {
+    mediaType: string;
+    data: Uint8Array;
+  } | undefined;
+  resolveAttachment: (
+    part: ImageContentPart | FileContentPart,
+    fetcher?: typeof globalThis.fetch,
+  ) => Promise<ResolvedAttachment>;
+  runWithTraceId: <Value>(traceId: string, task: () => Value) => Value;
+  sanitizeLogMessage: (message: string, options?: SanitizationOptions) => string;
+  sanitizePayload: <Value>(payload: Value, options?: SanitizationOptions) => Value;
+  sanitizeToolNames: (tools: ToolDefinition[]) => {
+    tools: ToolDefinition[];
+    mapping: Map<string, string>;
+  };
+  setTraceId: (traceId: string | null) => void;
+  shouldUseAnthropicPdfTextFallback: (model: string) => boolean;
+  truncatePayload: <Value>(payload: Value, maxSize?: number) => Value | TruncatedPayload;
+}
+
+type RootFunctionSignatureContracts = readonly [
+  Assert<Compatible<typeof pixiecore.attachmentBytes, ExpectedRootFunctionSignatures['attachmentBytes']>>,
+  Assert<Compatible<typeof pixiecore.captureLogs, ExpectedRootFunctionSignatures['captureLogs']>>,
+  Assert<Compatible<typeof pixiecore.cleanGeminiSchema, ExpectedRootFunctionSignatures['cleanGeminiSchema']>>,
+  Assert<Compatible<typeof pixiecore.configureLogging, ExpectedRootFunctionSignatures['configureLogging']>>,
+  Assert<Compatible<typeof pixiecore.contentParts, ExpectedRootFunctionSignatures['contentParts']>>,
+  Assert<Compatible<typeof pixiecore.contentText, ExpectedRootFunctionSignatures['contentText']>>,
+  Assert<Compatible<typeof pixiecore.convertToolCallNames, ExpectedRootFunctionSignatures['convertToolCallNames']>>,
+  Assert<Compatible<typeof pixiecore.createProvider, ExpectedRootFunctionSignatures['createProvider']>>,
+  Assert<Compatible<typeof pixiecore.enhanceMessagesWithMultimodal, ExpectedRootFunctionSignatures['enhanceMessagesWithMultimodal']>>,
+  Assert<Compatible<typeof pixiecore.extractPdfText, ExpectedRootFunctionSignatures['extractPdfText']>>,
+  Assert<Compatible<typeof pixiecore.generateTraceId, ExpectedRootFunctionSignatures['generateTraceId']>>,
+  Assert<Compatible<typeof pixiecore.getConfig, ExpectedRootFunctionSignatures['getConfig']>>,
+  Assert<Compatible<typeof pixiecore.getLogger, ExpectedRootFunctionSignatures['getLogger']>>,
+  Assert<Compatible<typeof pixiecore.getLoggingConfig, ExpectedRootFunctionSignatures['getLoggingConfig']>>,
+  Assert<Compatible<typeof pixiecore.getRuntimeEnvironment, ExpectedRootFunctionSignatures['getRuntimeEnvironment']>>,
+  Assert<Compatible<typeof pixiecore.getTraceId, ExpectedRootFunctionSignatures['getTraceId']>>,
+  Assert<Compatible<typeof pixiecore.isBuiltInProviderName, ExpectedRootFunctionSignatures['isBuiltInProviderName']>>,
+  Assert<Compatible<typeof pixiecore.logExecutionComplete, ExpectedRootFunctionSignatures['logExecutionComplete']>>,
+  Assert<Compatible<typeof pixiecore.logExecutionRetry, ExpectedRootFunctionSignatures['logExecutionRetry']>>,
+  Assert<Compatible<typeof pixiecore.logExecutionStart, ExpectedRootFunctionSignatures['logExecutionStart']>>,
+  Assert<Compatible<typeof pixiecore.logLlmRequest, ExpectedRootFunctionSignatures['logLlmRequest']>>,
+  Assert<Compatible<typeof pixiecore.logLlmResponse, ExpectedRootFunctionSignatures['logLlmResponse']>>,
+  Assert<Compatible<typeof pixiecore.logToolExecution, ExpectedRootFunctionSignatures['logToolExecution']>>,
+  Assert<Compatible<typeof pixiecore.logValidationResult, ExpectedRootFunctionSignatures['logValidationResult']>>,
+  Assert<Compatible<typeof pixiecore.makeDataUrl, ExpectedRootFunctionSignatures['makeDataUrl']>>,
+  Assert<Compatible<typeof pixiecore.makeSafeToolName, ExpectedRootFunctionSignatures['makeSafeToolName']>>,
+  Assert<Compatible<typeof pixiecore.mimeFromName, ExpectedRootFunctionSignatures['mimeFromName']>>,
+  Assert<Compatible<typeof pixiecore.normalizeAttachmentInput, ExpectedRootFunctionSignatures['normalizeAttachmentInput']>>,
+  Assert<Compatible<typeof pixiecore.parseDataUrl, ExpectedRootFunctionSignatures['parseDataUrl']>>,
+  Assert<Compatible<typeof pixiecore.resolveAttachment, ExpectedRootFunctionSignatures['resolveAttachment']>>,
+  Assert<Compatible<typeof pixiecore.runWithTraceId, ExpectedRootFunctionSignatures['runWithTraceId']>>,
+  Assert<Compatible<typeof pixiecore.sanitizeLogMessage, ExpectedRootFunctionSignatures['sanitizeLogMessage']>>,
+  Assert<Compatible<typeof pixiecore.sanitizePayload, ExpectedRootFunctionSignatures['sanitizePayload']>>,
+  Assert<Compatible<typeof pixiecore.sanitizeToolNames, ExpectedRootFunctionSignatures['sanitizeToolNames']>>,
+  Assert<Compatible<typeof pixiecore.setTraceId, ExpectedRootFunctionSignatures['setTraceId']>>,
+  Assert<Compatible<typeof pixiecore.shouldUseAnthropicPdfTextFallback, ExpectedRootFunctionSignatures['shouldUseAnthropicPdfTextFallback']>>,
+  Assert<Compatible<typeof pixiecore.truncatePayload, ExpectedRootFunctionSignatures['truncatePayload']>>,
+];
+
+type RootConstantContracts = readonly [
+  Assert<Equal<
+    typeof pixiecore.BUILT_IN_PROVIDER_NAMES,
+    readonly [
+      'openai',
+      'anthropic',
+      'azure_openai',
+      'azure_native',
+      'gemini_native',
+      'gemini_openai',
+      'apisix',
+    ]
+  >>,
+];
+
+type RootConstructorContracts = readonly [
+  Assert<Compatible<
+    typeof pixiecore.AgentRoleNotFoundError,
+    new(message: string) => pixiecore.AgentRoleNotFoundError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.BlueprintValidationError,
+    new(message: string, options?: ErrorOptions) => pixiecore.BlueprintValidationError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.BlueprintValidator,
+    new(options?: { warn?: (message: string) => void }) => pixiecore.BlueprintValidator
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.ConfigurationError,
+    new(message: string, options?: ErrorOptions) => pixiecore.ConfigurationError
+  >>,
+  Assert<Compatible<typeof pixiecore.DefaultAgentRole, new() => pixiecore.DefaultAgentRole>>,
+  Assert<Compatible<
+    typeof pixiecore.InputTypeError,
+    new(message: string) => pixiecore.InputTypeError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.InputValidationError,
+    new(
+      message: string,
+      code?: string,
+      options?: ErrorOptions,
+    ) => pixiecore.InputValidationError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.InputValidator,
+    new(
+      placeholders?: Blueprint['input_placeholders'],
+      strict?: boolean,
+    ) => pixiecore.InputValidator
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.LLMAPIError,
+    new(message: string, options?: ErrorOptions) => pixiecore.LLMAPIError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.LoggingConfig,
+    new(options?: LoggingOptions) => pixiecore.LoggingConfig
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.MaxRetryExceededError,
+    new(message: string) => pixiecore.MaxRetryExceededError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpConfigError,
+    new(message: string, options?: ErrorOptions) => pixiecore.McpConfigError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpConnectionError,
+    new(message: string, options?: ErrorOptions) => pixiecore.McpConnectionError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpManager,
+    new(options?: McpManagerOptions) => pixiecore.McpManager
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpToolError,
+    new(message: string, options?: ErrorOptions) => pixiecore.McpToolError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.MultimodalNotSupportedError,
+    new(message: string) => pixiecore.MultimodalNotSupportedError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.OutputValidator,
+    new(schema: string | Record<string, unknown>) => pixiecore.OutputValidator
+  >>,
+  Assert<Compatible<typeof pixiecore.PermissionGuard, new() => pixiecore.PermissionGuard>>,
+  Assert<Compatible<
+    typeof pixiecore.PluginLoadError,
+    new(message: string, options?: ErrorOptions) => pixiecore.PluginLoadError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.PluginManager,
+    new(
+      pluginsDir?: string | string[],
+      environment?: NodeJS.ProcessEnv,
+    ) => pixiecore.PluginManager
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.PluginManager,
+    new(
+      pluginsDir?: string | string[],
+      environment?: NodeJS.ProcessEnv,
+      options?: PluginManagerOptions,
+    ) => pixiecore.PluginManager
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.PromptProcessor,
+    new(
+      provider: Provider,
+      maxRetry?: number,
+      maxToolRounds?: number,
+      defaultTemperature?: number,
+      defaultToolChoice?: ToolChoice,
+      defaultUsePseudoToolCalling?: boolean,
+      logger?: pixiecore.PixieCoreLogger,
+    ) => pixiecore.PromptProcessor
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.PromptRuntime,
+    new(options?: RuntimeOptions) => pixiecore.PromptRuntime
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.RolePermissionError,
+    new(message: string) => pixiecore.RolePermissionError
+  >>,
+  Assert<Compatible<typeof pixiecore.SchemaGuard, new() => pixiecore.SchemaGuard>>,
+  Assert<Compatible<
+    typeof pixiecore.SchemaValidationError,
+    new(message: string) => pixiecore.SchemaValidationError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.ScopePermissionError,
+    new(message: string) => pixiecore.ScopePermissionError
+  >>,
+  Assert<Compatible<typeof pixiecore.SelfEvalDecorator, new() => pixiecore.SelfEvalDecorator>>,
+  Assert<Compatible<
+    typeof pixiecore.SelfEvaluationError,
+    new(message: string) => pixiecore.SelfEvaluationError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.ToolExecutionError,
+    new(message: string, options?: ErrorOptions) => pixiecore.ToolExecutionError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.PixieCoreError,
+    new(
+      message: string,
+      code: string,
+      options?: ErrorOptions,
+    ) => pixiecore.PixieCoreError
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.PixieCoreLogger,
+    new(
+      config?: pixiecore.LoggingConfig,
+      name?: string,
+    ) => pixiecore.PixieCoreLogger
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.UserPermissionError,
+    new(message: string) => pixiecore.UserPermissionError
+  >>,
+];
+
+type RootStaticContracts = readonly [
+  Assert<Compatible<
+    typeof pixiecore.LoggingConfig.fromEnvironment,
+    (
+      environment?: NodeJS.ProcessEnv,
+      overrides?: LoggingOptions,
+    ) => pixiecore.LoggingConfig
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpManager.fromConfigPath,
+    (path: string, options?: McpManagerOptions) => Promise<pixiecore.McpManager>
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpManager.fromConfigPaths,
+    (paths: readonly string[], options?: McpManagerOptions) => Promise<pixiecore.McpManager>
+  >>,
+  Assert<Compatible<
+    typeof pixiecore.McpManager.fromAutoDiscovery,
+    (
+      explicitPath?: string | null,
+      options?: McpManagerOptions,
+    ) => Promise<pixiecore.McpManager>
+  >>,
+];
+
+type PromptRuntimeMemberContracts = readonly [
+  Assert<Equal<pixiecore.PromptRuntime['options'], RuntimeOptions>>,
+  Assert<Equal<pixiecore.PromptRuntime['pluginManager'], pixiecore.PluginManager>>,
+  Assert<Equal<pixiecore.PromptRuntime['mcpManager'], pixiecore.McpManager>>,
+  Assert<Equal<pixiecore.PromptRuntime['processor'], pixiecore.PromptProcessor>>,
+  Assert<Equal<pixiecore.PromptRuntime['config'], ExpectedRuntimeConfig>>,
+  Assert<Equal<pixiecore.PromptRuntime['environment'], NodeJS.ProcessEnv>>,
+  Assert<Equal<pixiecore.PromptRuntime['loggingConfig'], pixiecore.LoggingConfig>>,
+  Assert<Equal<pixiecore.PromptRuntime['logger'], pixiecore.PixieCoreLogger>>,
+  Assert<Equal<pixiecore.PromptRuntime['provider'], Provider>>,
+  Assert<Equal<pixiecore.PromptRuntime['providerName'], string>>,
+  Assert<Equal<pixiecore.PromptRuntime['model'], string>>,
+  Assert<Compatible<
+    pixiecore.PromptRuntime['registerTool'],
+    (tool: RegisteredTool) => pixiecore.PromptRuntime
+  >>,
+  Assert<Compatible<
+    pixiecore.PromptRuntime['execute'],
+    (
+      path: string,
+      inputs?: Record<string, unknown>,
+      options?: ExecuteOptions,
+    ) => Promise<Record<string, unknown>>
+  >>,
+  Assert<Compatible<
+    pixiecore.PromptRuntime['executeYaml'],
+    (
+      yaml: string,
+      inputs?: Record<string, unknown>,
+      options?: ExecuteOptions,
+    ) => Promise<Record<string, unknown>>
+  >>,
+  Assert<Compatible<pixiecore.PromptRuntime['close'], () => Promise<void>>>,
+  Assert<Compatible<pixiecore.PromptRuntime[typeof Symbol.asyncDispose], () => Promise<void>>>,
+];
+
+type PromptProcessorMemberContracts = readonly [
+  Assert<Equal<pixiecore.PromptProcessor['provider'], Provider>>,
+  Assert<Equal<pixiecore.PromptProcessor['tools'], Map<string, RegisteredTool>>>,
+  Assert<Equal<pixiecore.PromptProcessor['agentRoles'], Map<string, AgentRolePlugin>>>,
+  Assert<Compatible<pixiecore.PromptProcessor['registerTool'], (tool: RegisteredTool) => void>>,
+  Assert<Compatible<pixiecore.PromptProcessor['registerAgentRole'], (role: AgentRolePlugin) => void>>,
+  Assert<Compatible<
+    pixiecore.PromptProcessor['registerDecorator'],
+    (decorator: OutputDecorator, priority?: number) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PromptProcessor['execute'],
+    (
+      blueprint: Blueprint,
+      inputs: Record<string, unknown>,
+      options?: ExecuteOptions,
+    ) => Promise<Record<string, unknown>>
+  >>,
+  Assert<Compatible<
+    pixiecore.PromptProcessor['executeTool'],
+    (name: string, args?: Record<string, unknown>) => Promise<unknown>
+  >>,
+  Assert<Compatible<
+    pixiecore.PromptProcessor['executeToolCalls'],
+    (calls: readonly ToolCall[]) => Promise<ToolExecutionResult[]>
+  >>,
+];
+
+type PluginManagerMemberContracts = readonly [
+  Assert<Equal<pixiecore.PluginManager['agentRoles'], ReadonlyMap<string, AgentRolePlugin>>>,
+  Assert<Equal<pixiecore.PluginManager['tools'], ReadonlyMap<string, RegisteredTool>>>,
+  Assert<Equal<pixiecore.PluginManager['providers'], ReadonlyMap<string, ProviderFactory>>>,
+  Assert<Equal<pixiecore.PluginManager['pluginDirectories'], readonly string[]>>,
+  Assert<Equal<pixiecore.PluginManager['decorators'], readonly OutputDecorator[]>>,
+  Assert<Compatible<pixiecore.PluginManager['getPluginDirectories'], () => string[]>>,
+  Assert<Compatible<pixiecore.PluginManager['getPluginStatus'], () => PluginStatusSnapshot>>,
+  Assert<Compatible<
+    pixiecore.PluginManager['getAgentRole'],
+    (role: string) => AgentRolePlugin | undefined
+  >>,
+  Assert<Compatible<pixiecore.PluginManager['getTool'], (name: string) => RegisteredTool | undefined>>,
+  Assert<Compatible<
+    pixiecore.PluginManager['getProvider'],
+    (name: string) => ProviderFactory | undefined
+  >>,
+  Assert<Compatible<pixiecore.PluginManager['getDecorators'], () => OutputDecorator[]>>,
+  Assert<Compatible<pixiecore.PluginManager['registerAgentRole'], (plugin: AgentRolePlugin) => void>>,
+  Assert<Compatible<
+    pixiecore.PluginManager['registerDecorator'],
+    (decorator: OutputDecorator, priority?: number) => void
+  >>,
+  Assert<Compatible<pixiecore.PluginManager['registerTool'], (tool: RegisteredTool) => void>>,
+  Assert<Compatible<pixiecore.PluginManager['registerProvider'], (provider: ProviderPlugin) => void>>,
+  Assert<Compatible<
+    pixiecore.PluginManager['createProvider'],
+    (name: string, options?: RuntimeOptions) => Promise<Provider>
+  >>,
+  Assert<Compatible<pixiecore.PluginManager['isBuiltInProvider'], (name: string) => boolean>>,
+  Assert<Compatible<pixiecore.PluginManager['load'], () => Promise<void>>>,
+  Assert<Compatible<pixiecore.PluginManager['close'], () => Promise<void>>>,
+];
+
+type McpManagerMemberContracts = readonly [
+  Assert<Equal<pixiecore.McpManager['config'], McpConfig>>,
+  Assert<Equal<pixiecore.McpManager['configPaths'], readonly string[]>>,
+  Assert<Equal<pixiecore.McpManager['isLoaded'], boolean>>,
+  Assert<Equal<pixiecore.McpManager['connectionCount'], number>>,
+  Assert<Equal<pixiecore.McpManager['childProcessIds'], readonly number[]>>,
+  Assert<Compatible<
+    pixiecore.McpManager['load'],
+    (configPath?: string | 'disabled' | null) => Promise<RegisteredTool[]>
+  >>,
+  Assert<Compatible<pixiecore.McpManager['getTools'], () => Promise<RegisteredTool[]>>>,
+  Assert<Compatible<
+    pixiecore.McpManager['getTool'],
+    (name: string) => Promise<RegisteredTool | undefined>
+  >>,
+  Assert<Compatible<
+    pixiecore.McpManager['callTool'],
+    (name: string, args: Record<string, unknown>) => Promise<unknown>
+  >>,
+  Assert<Compatible<pixiecore.McpManager['close'], () => Promise<void>>>,
+  Assert<Compatible<pixiecore.McpManager[typeof Symbol.asyncDispose], () => Promise<void>>>,
+];
+
+type ValidationRoleDecoratorMemberContracts = readonly [
+  Assert<Compatible<pixiecore.BlueprintValidator['validateDict'], (input: unknown) => Blueprint>>,
+  Assert<Compatible<pixiecore.BlueprintValidator['validateYaml'], (source: string) => Blueprint>>,
+  Assert<Compatible<pixiecore.BlueprintValidator['validateFile'], (path: string) => Promise<Blueprint>>>,
+  Assert<Equal<pixiecore.InputValidator['placeholders'], InputPlaceholder[]>>,
+  Assert<Compatible<
+    pixiecore.InputValidator['validate'],
+    (input: Record<string, unknown>) => Record<string, unknown>
+  >>,
+  Assert<Compatible<
+    pixiecore.OutputValidator['validate'],
+    (value: unknown) => Record<string, unknown>
+  >>,
+  Assert<Equal<
+    pixiecore.DefaultAgentRole['supportedRoles'],
+    readonly ['assistant', 'default']
+  >>,
+  Assert<Compatible<
+    pixiecore.DefaultAgentRole['apply'],
+    (renderedPrompt: string, blueprint: Blueprint) => AgentRoleResult
+  >>,
+  Assert<Equal<pixiecore.PermissionGuard['priority'], 20>>,
+  Assert<Equal<pixiecore.PermissionGuard['stage'], 'before'>>,
+  Assert<Compatible<
+    pixiecore.PermissionGuard['validate'],
+    (context: DecoratorContext) => DecoratorContext
+  >>,
+  Assert<Equal<pixiecore.SchemaGuard['priority'], 10>>,
+  Assert<Equal<pixiecore.SchemaGuard['stage'], 'after'>>,
+  Assert<Compatible<
+    pixiecore.SchemaGuard['validate'],
+    (context: DecoratorContext) => DecoratorContext
+  >>,
+  Assert<Equal<pixiecore.SelfEvalDecorator['priority'], 30>>,
+  Assert<Equal<pixiecore.SelfEvalDecorator['stage'], 'after'>>,
+  Assert<Compatible<
+    pixiecore.SelfEvalDecorator['validate'],
+    (context: DecoratorContext) => DecoratorContext
+  >>,
+];
+
+type LoggingMemberContracts = readonly [
+  Assert<Equal<pixiecore.LoggingConfig['logLevel'], LogLevel>>,
+  Assert<Equal<pixiecore.LoggingConfig['logToFile'], boolean>>,
+  Assert<Equal<pixiecore.LoggingConfig['logDir'], string>>,
+  Assert<Equal<pixiecore.LoggingConfig['logFile'], string>>,
+  Assert<Equal<pixiecore.LoggingConfig['logMaxBytes'], number>>,
+  Assert<Equal<pixiecore.LoggingConfig['logBackupCount'], number>>,
+  Assert<Equal<pixiecore.LoggingConfig['auditFile'], string>>,
+  Assert<Equal<pixiecore.LoggingConfig['auditMaxBytes'], number>>,
+  Assert<Equal<pixiecore.LoggingConfig['auditBackupCount'], number>>,
+  Assert<Equal<pixiecore.LoggingConfig['sanitizeCredentials'], boolean>>,
+  Assert<Equal<pixiecore.LoggingConfig['sensitiveFields'], readonly string[]>>,
+  Assert<Equal<pixiecore.LoggingConfig['customValuePatterns'], readonly string[]>>,
+  Assert<Equal<pixiecore.LoggingConfig['logFullPayloads'], boolean>>,
+  Assert<Equal<pixiecore.LoggingConfig['maxPayloadSize'], number>>,
+  Assert<Equal<pixiecore.LoggingConfig['logToConsole'], boolean>>,
+  Assert<Equal<pixiecore.LoggingConfig['logPath'], string>>,
+  Assert<Equal<pixiecore.LoggingConfig['auditPath'], string>>,
+  Assert<Compatible<
+    pixiecore.LoggingConfig['validate'],
+    () => pixiecore.LoggingConfig
+  >>,
+  Assert<Equal<pixiecore.PixieCoreLogger['config'], pixiecore.LoggingConfig>>,
+  Assert<Equal<pixiecore.PixieCoreLogger['name'], string>>,
+  Assert<Compatible<pixiecore.PixieCoreLogger['child'], (name: string) => pixiecore.PixieCoreLogger>>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['debug'],
+    (message: string, fields?: Record<string, unknown>) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['info'],
+    (message: string, fields?: Record<string, unknown>) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['warning'],
+    (message: string, fields?: Record<string, unknown>) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['error'],
+    (message: string, fields?: Record<string, unknown>) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['critical'],
+    (message: string, fields?: Record<string, unknown>) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['audit'],
+    (message: string, fields: Record<string, unknown>, level?: LogLevel) => void
+  >>,
+  Assert<Compatible<
+    pixiecore.PixieCoreLogger['subscribe'],
+    (listener: (record: LogRecord) => void) => () => void
+  >>,
+  Assert<Compatible<pixiecore.PixieCoreLogger['close'], () => void>>,
+];
+
+type LoggerPortMemberContracts = readonly [
+  Assert<Equal<LoggerPort['config'], LoggingOptions>>,
+  Assert<Equal<LoggerPort['name'], string>>,
+  Assert<Equal<LoggerPort['config']['logFullPayloads'], boolean | undefined>>,
+  Assert<Equal<LoggerPort['config']['sanitizeCredentials'], boolean | undefined>>,
+  Assert<Equal<LoggerPort['config']['sensitiveFields'], readonly string[] | undefined>>,
+  Assert<Equal<LoggerPort['config']['customValuePatterns'], readonly string[] | undefined>>,
+  Assert<Equal<LoggerPort['config']['maxPayloadSize'], number | undefined>>,
+  Assert<Compatible<LoggerPort['child'], (name: string) => LoggerPort>>,
+  Assert<Compatible<
+    LoggerPort['audit'],
+    (message: string, fields: Record<string, unknown>, level?: LogLevel) => void
+  >>,
+  Assert<Compatible<
+    LoggerPort['subscribe'],
+    (listener: (record: LogRecord) => void) => () => void
+  >>,
+  Assert<Compatible<LoggerPort['close'], () => void | Promise<void>>>,
+  Assert<Equal<RuntimeOptions['logger'], LoggerPort | undefined>>,
+  Assert<Equal<RuntimeOptions['pluginConfigPath'], string | 'disabled' | null | undefined>>,
+];
+
+type PluginActivationTypeContracts = readonly [
+  Assert<Equal<PluginOrigin, 'core' | 'managed-custom' | 'legacy'>>,
+  Assert<Equal<PluginManifestSchema, 'legacy' | 'pixiecore.plugin/v1'>>,
+  Assert<Equal<
+    PluginStatusState,
+    | 'discovered'
+    | 'invalid-disabled'
+    | 'disabled'
+    | 'enabled'
+    | 'resolved'
+    | 'loaded'
+    | 'registered'
+    | 'activated'
+    | 'failed'
+    | 'deactivated'
+    | 'disposed'
+  >>,
+  Assert<Equal<PluginManagerOptions['pluginConfigPath'], string | 'disabled' | null | undefined>>,
+  Assert<Equal<PluginStatusDiagnostic['code'], string>>,
+  Assert<Equal<PluginStatusDiagnostic['message'], string>>,
+  Assert<Equal<PluginStatusDiagnostic['pluginId'], string | undefined>>,
+  Assert<Equal<PluginStatusDiagnostic['manifestPath'], string | undefined>>,
+  Assert<Equal<PluginStatus['id'], string | undefined>>,
+  Assert<Equal<PluginStatus['schema'], PluginManifestSchema | undefined>>,
+  Assert<Equal<PluginStatus['name'], string | undefined>>,
+  Assert<Equal<PluginStatus['version'], string | undefined>>,
+  Assert<Equal<PluginStatus['origin'], PluginOrigin>>,
+  Assert<Equal<PluginStatus['state'], PluginStatusState>>,
+  Assert<Equal<PluginStatus['enabled'], boolean>>,
+  Assert<Equal<PluginStatus['locked'], boolean>>,
+  Assert<Equal<PluginStatus['activated'], boolean>>,
+  Assert<Equal<PluginStatus['manifestPath'], string | undefined>>,
+  Assert<Equal<PluginStatus['rootPath'], string | undefined>>,
+  Assert<Equal<PluginStatus['ordinal'], number>>,
+  Assert<Equal<PluginStatus['requires'], Readonly<Record<string, string>>>>,
+  Assert<Equal<PluginStatus['optionalRequires'], Readonly<Record<string, string>>>>,
+  Assert<Equal<PluginStatus['conflicts'], Readonly<Record<string, string>>>>,
+  Assert<Equal<PluginStatus['diagnostics'], readonly PluginStatusDiagnostic[]>>,
+  Assert<Equal<PluginStatusSnapshot['configPath'], string | undefined>>,
+  Assert<Equal<PluginStatusSnapshot['roots'], readonly string[]>>,
+  Assert<Equal<PluginStatusSnapshot['plugins'], readonly PluginStatus[]>>,
+  Assert<Equal<PluginStatusSnapshot['diagnostics'], readonly PluginStatusDiagnostic[]>>,
+  Assert<Equal<ServiceCollisionPolicy, 'reject' | 'replace'>>,
+  Assert<Equal<ServiceTokenOptions['collisionPolicy'], ServiceCollisionPolicy | undefined>>,
+  Assert<Equal<ServiceToken<string>['id'], string>>,
+  Assert<Equal<ServiceToken<string>['collisionPolicy'], ServiceCollisionPolicy>>,
+  Assert<Compatible<ServiceRegistryPort['has'], <Value>(token: ServiceToken<Value>) => boolean>>,
+  Assert<Compatible<
+    ServiceRegistryPort['resolve'],
+    <Value>(token: ServiceToken<Value>) => Value
+  >>,
+  Assert<Compatible<
+    ServiceRegistryPort['resolveOptional'],
+    <Value>(token: ServiceToken<Value>) => Value | undefined
+  >>,
+  Assert<Compatible<
+    ServiceRegistryPort['register'],
+    <Value>(token: ServiceToken<Value>, value: Value) => void
+  >>,
+  Assert<Compatible<
+    PluginContributionRegistrar['registerAgentRole'],
+    (value: AgentRolePlugin) => void
+  >>,
+  Assert<Compatible<
+    PluginActivationContext['own'],
+    (value: unknown) => void
+  >>,
+  Assert<Compatible<
+    PluginActivator['activate'],
+    (context: PluginActivationContext) => void | Promise<void>
+  >>,
+  Assert<Compatible<
+    SynchronousPluginActivator['activate'],
+    (context: PluginActivationContext) => void
+  >>,
+  Assert<Compatible<PluginActivatorFactory, () => SynchronousPluginActivator>>,
+];
+
+type ErrorMemberContracts = readonly [
+  Assert<Equal<pixiecore.PixieCoreError['code'], string>>,
+  Assert<Equal<pixiecore.BlueprintValidationError['code'], string>>,
+  Assert<Equal<pixiecore.ConfigurationError['code'], string>>,
+  Assert<Equal<pixiecore.InputValidationError['code'], string>>,
+  Assert<Equal<pixiecore.InputTypeError['code'], string>>,
+  Assert<Equal<pixiecore.SchemaValidationError['code'], string>>,
+  Assert<Equal<pixiecore.LLMAPIError['code'], string>>,
+  Assert<Equal<pixiecore.MaxRetryExceededError['code'], string>>,
+  Assert<Equal<pixiecore.ToolExecutionError['code'], string>>,
+  Assert<Equal<pixiecore.PluginLoadError['code'], string>>,
+  Assert<Equal<pixiecore.McpConfigError['code'], string>>,
+  Assert<Equal<pixiecore.McpConnectionError['code'], string>>,
+  Assert<Equal<pixiecore.McpToolError['code'], string>>,
+  Assert<Equal<pixiecore.MultimodalNotSupportedError['code'], string>>,
+  Assert<Equal<pixiecore.AgentRoleNotFoundError['code'], string>>,
+  Assert<Equal<pixiecore.RolePermissionError['code'], string>>,
+  Assert<Equal<pixiecore.UserPermissionError['code'], string>>,
+  Assert<Equal<pixiecore.ScopePermissionError['code'], string>>,
+  Assert<Equal<pixiecore.SelfEvaluationError['code'], string>>,
+];
+
+interface ExpectedApiValueContracts {
+  ApiError: new(type: string, message: string, status: number) => api.ApiError;
+  createApp: (options?: ApiOptions) => PixieCoreApiServer;
+  EXECUTE_REQUEST_SCHEMA: {
+    readonly type: 'object';
+    readonly required: readonly ['blueprint'];
+    readonly properties: {
+      readonly blueprint: { readonly type: 'string' };
+      readonly inputs: { readonly type: 'object'; readonly additionalProperties: true };
+      readonly messages: { readonly type: 'array' };
+      readonly files: { readonly type: 'object'; readonly additionalProperties: false };
+    };
+    readonly additionalProperties: true;
+  };
+  mapApiError: (error: unknown) => api.ApiError;
+  OPENAPI_DOCUMENT: {
+    readonly openapi: '3.1.0';
+    readonly info: {
+      readonly title: 'PixieCore REST API';
+      readonly version: '0.1.0';
+      readonly description: 'Execute PixieCore Blueprints over HTTP.';
+    };
+    readonly paths: {
+      readonly '/health': unknown;
+      readonly '/execute': unknown;
+    };
+  };
+}
+
+const apiValueContracts: ExpectedApiValueContracts = api;
+type ApiExactContracts = readonly [
+  Assert<Compatible<
+    typeof api.ApiError,
+    new(type: string, message: string, status: number) => api.ApiError
+  >>,
+  Assert<Equal<api.ApiError['type'], string>>,
+  Assert<Equal<api.ApiError['status'], number>>,
+  Assert<Compatible<typeof api.createApp, ExpectedApiValueContracts['createApp']>>,
+  Assert<Compatible<typeof api.mapApiError, ExpectedApiValueContracts['mapApiError']>>,
+  Assert<Equal<typeof api.EXECUTE_REQUEST_SCHEMA.type, 'object'>>,
+  Assert<Equal<typeof api.EXECUTE_REQUEST_SCHEMA.required, readonly ['blueprint']>>,
+  Assert<Equal<typeof api.EXECUTE_REQUEST_SCHEMA.additionalProperties, true>>,
+  Assert<Equal<typeof api.OPENAPI_DOCUMENT.openapi, '3.1.0'>>,
+  Assert<Equal<typeof api.OPENAPI_DOCUMENT.info.title, 'PixieCore REST API'>>,
+  Assert<Equal<typeof api.OPENAPI_DOCUMENT.info.version, '0.1.0'>>,
+  Assert<Equal<ApiOptions['pluginConfigPath'], string | 'disabled' | null | undefined>>,
+];
+
+const jsonPrimitive: JsonPrimitive = 'value';
+const jsonValue: JsonValue = { nested: [jsonPrimitive, 1, true, null] };
+const jsonObject: JsonObject = { value: jsonValue };
+const inputType: InputType = 'file';
+const inputPlaceholder: InputPlaceholder = {
+  name: 'document',
+  type: inputType,
+  required: true,
+  default: 'document.txt',
+  description: 'Document to process',
+};
+const permissions: BlueprintPermissions = {
+  allow_roles: ['assistant'],
+  deny_roles: ['blocked'],
+  allow_users: ['user'],
+  deny_users: ['blocked-user'],
+  allow_scopes: ['read'],
+  deny_scopes: ['admin'],
+};
+const blueprint: Blueprint = {
+  name: 'consumer',
+  version: '1.0',
+  role: 'assistant',
+  prompt: 'Process {{ document }}',
+  input_schema: {
+    type: 'object',
+    properties: { document: { type: 'string' } },
+    required: ['document'],
+  },
+  output_schema: { type: 'object' },
+  input_placeholders: [inputPlaceholder],
+  localization: { en: 'Process {{ document }}' },
+  permissions,
+  examples: [{ input: { document: 'in' }, output: { result: 'out' } }],
+  model: 'consumer-model',
+  temperature: 0,
+  tools: ['consumer_tool'],
+};
+
+const textPart: TextContentPart = { type: 'text', text: 'hello' };
+const imagePart: ImageContentPart = {
+  type: 'image',
+  source: 'data:image/png;base64,AA==',
+  mediaType: 'image/png',
+  filename: 'image.png',
+  detail: 'high',
+};
+const filePart: FileContentPart = {
+  type: 'file',
+  source: 'data:text/plain;base64,QQ==',
+  mediaType: 'text/plain',
+  filename: 'file.txt',
+};
+const contentPart: MessageContentPart = textPart;
+const content: MessageContent = [contentPart, imagePart, filePart];
+const systemMessage: SystemMessage = { role: 'system', content: 'system' };
+const userMessage: UserMessage = { role: 'user', content };
+const toolCall: ToolCall = {
+  id: 'call-1',
+  name: 'consumer_tool',
+  arguments: { value: true },
+  providerMetadata: { source: 'consumer' },
+};
+const assistantMessage: AssistantMessage = {
+  role: 'assistant',
+  content: 'assistant',
+  toolCalls: [toolCall],
+};
+const toolMessage: ToolMessage = {
+  role: 'tool',
+  content: '{"ok":true}',
+  toolCallId: toolCall.id,
+  name: toolCall.name,
+  isError: false,
+};
+const messages: readonly Message[] = [systemMessage, userMessage, assistantMessage, toolMessage];
+
+const toolDefinition: ToolDefinition = {
+  name: 'consumer_tool',
+  description: 'A consumer tool',
+  parameters: { type: 'object' },
+};
+const toolHandler: ToolHandler = async arguments_ => ({ arguments_ });
+const registeredTool: RegisteredTool = { ...toolDefinition, execute: toolHandler };
+const toolChoice: ToolChoice = 'auto';
+const toolExecutionResult: ToolExecutionResult = {
+  id: toolCall.id,
+  name: toolCall.name,
+  content: '{}',
+  isError: false,
+};
+const generateRequest: GenerateRequest = {
+  messages,
+  schema: { type: 'object' },
+  tools: [toolDefinition],
+  toolChoice,
+  model: 'consumer-model',
+  temperature: 0,
+  maxTokens: 64,
+  signal: new AbortController().signal,
+};
+const generateResponse: GenerateResponse = {
+  content: '{}',
+  toolCalls: [toolCall],
+  raw: { ok: true },
+};
+const provider: Provider = {
+  name: 'consumer',
+  model: 'consumer-model',
+  supportsTools: true,
+  supportsMultimodal: true,
+  supportsVision: () => true,
+  supportsFileInput: () => true,
+  getModelList: async () => ['consumer-model'],
+  generate: async request => ({ ...generateResponse, raw: request }),
+  close: () => undefined,
+};
+
+const agentRoleResult: AgentRoleResult = { messages, model: 'consumer-model', temperature: 0 };
+const agentRole: AgentRolePlugin = {
+  supportedRoles: ['assistant'],
+  apply: async (_renderedPrompt, _blueprint, _inputs) => agentRoleResult,
+  close: () => undefined,
+};
+const decoratorStage: DecoratorStage = 'both';
+const decoratorContext: DecoratorContext = {
+  blueprint,
+  inputs: { document: 'file.txt' },
+  schema: { type: 'object' },
+  provider,
+  request: generateRequest,
+  attempt: 1,
+  output: jsonObject,
+};
+const outputDecorator: OutputDecorator = {
+  priority: 100,
+  stage: decoratorStage,
+  validate: async context_ => context_,
+  close: () => undefined,
+};
+const providerFactory: ProviderFactory = {
+  name: 'consumer-factory',
+  create: async () => provider,
+  close: () => undefined,
+};
+const providerPlugin: ProviderPlugin = providerFactory;
+const plugin: PixieCorePlugin = {
+  agentRoles: [agentRole],
+  decorators: [outputDecorator],
+  tools: [registeredTool],
+  providers: [providerPlugin],
+  close: () => undefined,
+};
+
+const logLevel: LogLevel = 'INFO';
+const loggingOptions: LoggingOptions = {
+  logLevel,
+  logToFile: false,
+  logDir: 'logs',
+  logFile: 'pixiecore.log',
+  logMaxBytes: 1_024,
+  logBackupCount: 1,
+  auditFile: 'audit.log',
+  auditMaxBytes: 1_024,
+  auditBackupCount: 1,
+  sanitizeCredentials: true,
+  sensitiveFields: ['token'],
+  customValuePatterns: ['secret'],
+  logFullPayloads: false,
+  maxPayloadSize: 1_024,
+  logToConsole: false,
+};
+const sanitizationOptions: SanitizationOptions = {
+  sensitiveFields: ['token'],
+  customValuePatterns: ['secret', /password/i],
+};
+const truncatedPayload: TruncatedPayload = {
+  _truncated: true,
+  _original_size: 2_048,
+  _content: 'truncated',
+};
+const logRecord: LogRecord = {
+  timestamp: new Date(0).toISOString(),
+  level: logLevel,
+  name: 'consumer',
+  message: 'message',
+  trace_id: 'trace',
+  kind: 'log',
+  extra: true,
+};
+const reviewDecision: ReviewDecision = 'approved';
+const reviewHandoffInput: CreateReviewHandoffInput = {
+  reviewId: 'review-consumer',
+  traceId: 'trace-consumer',
+  createdAt: new Date(0).toISOString(),
+  blueprint: { name: 'consumer', version: '1.0', role: 'validator' },
+  output: { valid: true },
+};
+const reviewHandoff: HumanReviewHandoff = review.createReviewHandoff(reviewHandoffInput);
+const reviewReceiptInput: CreateReviewReceiptInput = {
+  decision: reviewDecision,
+  reviewerId: 'reviewer-consumer',
+  decidedAt: new Date(1).toISOString(),
+};
+const reviewReceipt: HumanReviewReceipt = review.createReviewReceipt(
+  reviewHandoff,
+  reviewReceiptInput,
+);
+const reviewReceiptIsLinked: boolean = review.verifyReviewReceipt(reviewHandoff, reviewReceipt);
+const ragMetadataInput: CreateRagChunkMetadataInput = {
+  namespace: 'consumer.knowledge',
+  chunkType: 'paragraph',
+  field: 'body',
+  version: '1',
+  accessLevel: 'authenticated',
+  sensitivity: 'internal',
+  updatedAt: new Date(0).toISOString(),
+  author: 'consumer',
+};
+const ragMetadata: RagChunkMetadata = rag.createRagChunkMetadata(ragMetadataInput);
+const logger = new pixiecore.PixieCoreLogger(new pixiecore.LoggingConfig(loggingOptions), 'consumer');
+const structuralLogger: LoggerPort = {
+  config: loggingOptions,
+  name: 'structural-consumer',
+  debug: (_message, _fields) => undefined,
+  info: (_message, _fields) => undefined,
+  warning: (_message, _fields) => undefined,
+  error: (_message, _fields) => undefined,
+  critical: (_message, _fields) => undefined,
+  audit: (_message, _fields, _level) => undefined,
+  subscribe: _listener => () => undefined,
+  child: _name => structuralLogger,
+  close: async () => undefined,
+};
+const { audit: omittedAudit, ...loggerWithoutAudit } = structuralLogger;
+// @ts-expect-error LoggerPort requires the audit capability used by runtime events.
+const invalidLoggerPort: LoggerPort = loggerWithoutAudit;
+
+const azureTokenProvider: AzureTokenProvider = async () => 'token';
+const builtInProviderName: BuiltInProviderName = 'openai';
+const providerName: ProviderName = 'consumer';
+const executeOptions: ExecuteOptions = {
+  messages: [...messages],
+  toolChoice,
+  maxToolRounds: 2,
+  usePseudoToolCalling: false,
+  maxTokens: 64,
+  signal: new AbortController().signal,
+};
+const runtimeOptions: RuntimeOptions = {
+  ...loggingOptions,
+  environment: {},
+  provider,
+  model: 'consumer-model',
+  temperature: 0,
+  maxRetry: 1,
+  maxToolRounds: 2,
+  toolChoice,
+  usePseudoToolCalling: false,
+  requestTimeout: 1_000,
+  strictValidation: true,
+  pluginsDir: ['plugins'],
+  pluginConfigPath: 'disabled',
+  mcpConfigPath: 'disabled',
+  fetch: globalThis.fetch,
+  logger: structuralLogger,
+  azureTokenProvider,
+};
+
+const mcpServer: McpServerConfig = {
+  command: 'node',
+  args: ['server.mjs'],
+  env: { TOKEN: 'token' },
+  cwd: '.',
+  timeout_seconds: 5,
+};
+const mcpConfig: McpConfig = { mcpServers: { consumer: mcpServer } };
+const mcpOptions: McpManagerOptions = {
+  cwd: '.',
+  packageRoot: '.',
+  environment: {},
+  onWarning: _message => undefined,
+};
+const resolvedAttachment: ResolvedAttachment = {
+  kind: 'file',
+  source: 'file.txt',
+  mediaType: 'text/plain',
+  filename: 'file.txt',
+  data: new Uint8Array([65]),
+  dataUrl: 'data:text/plain;base64,QQ==',
+  url: 'https://example.test/file.txt',
+  fileId: 'file-1',
+  detail: 'auto',
+};
+
+const apiMessage: ApiMessage = { role: 'user', content: 'hello' };
+const uploadedFile: ApiUploadedFile = { filename: 'file.txt', content: 'QQ==' };
+const executeRequest: ExecuteRequest = {
+  blueprint: 'name: consumer',
+  inputs: { value: true },
+  messages: [apiMessage],
+  files: { file_path: [uploadedFile], image_path: [uploadedFile] },
+};
+const apiRuntime: ApiRuntime = {
+  providerName,
+  model: provider.model,
+  executeYaml: async (_yaml, _inputs, _options) => ({ ok: true }),
+  close: async () => undefined,
+};
+const apiOptions: ApiOptions = {
+  ...runtimeOptions,
+  runtime: apiRuntime,
+  apiLogger: logger,
+  maxFileSize: 1_024,
+  maxRequestSize: 8_192,
+  corsOrigins: ['https://example.test'],
+  tempRoot: '/tmp/pixiecore-consumer',
+};
+const apiServer: PixieCoreApiServer = api.createApp(apiOptions);
+const apiError: api.ApiError = new api.ApiError('consumer', 'consumer error', 400);
+const packageError: pixiecore.PixieCoreError = new pixiecore.PixieCoreError(
+  'typed consumer',
+  'typed_consumer_error',
+);
+const evaluationRunner: typeof evaluation.runBlueprintEvaluation =
+  evaluation.runBlueprintEvaluation;
+const benchmarkRunner: typeof evaluation.runBlueprintBenchmark =
+  evaluation.runBlueprintBenchmark;
+const benchmarkScorecardRenderer: typeof evaluation.renderBlueprintBenchmarkScorecard =
+  evaluation.renderBlueprintBenchmarkScorecard;
+const evaluationComparator: typeof evaluation.compareEvaluationOutput =
+  evaluation.compareEvaluationOutput;
+const evaluationPropertyCorpus: typeof evaluation.createEvaluationPropertyCorpus =
+  evaluation.createEvaluationPropertyCorpus;
+const jitProgram: JitProgram = {
+  outputs: { value: { kind: 'input', name: 'value' } },
+};
+const jitPromotionFile: JitPromotionFile = {
+  schema: 'pixiecore.jit-promotions/v1',
+  note: 'consumer fixture',
+  promotions: [],
+};
+const jitAdmissionRunner: (
+  options: PublicJitAdmissionOptions,
+) => Promise<JitAdmissionReport> = jit.runJitAdmission;
+
+void ([
+  jsonObject,
+  toolExecutionResult,
+  generateRequest,
+  generateResponse,
+  plugin,
+  sanitizationOptions,
+  truncatedPayload,
+  logRecord,
+  structuralLogger,
+  omittedAudit,
+  invalidLoggerPort,
+  builtInProviderName,
+  providerName,
+  executeOptions,
+  runtimeOptions,
+  mcpConfig,
+  mcpOptions,
+  resolvedAttachment,
+  executeRequest,
+  apiServer,
+  apiError,
+  apiValueContracts,
+  packageError,
+  evaluationRunner,
+  benchmarkRunner,
+  benchmarkScorecardRenderer,
+  evaluationComparator,
+  evaluationPropertyCorpus,
+  jitProgram,
+  jitPromotionFile,
+  jitAdmissionRunner,
+] satisfies readonly unknown[]);
+
+type CompletePublicTypeSurface = readonly [
+  RootValueSurface,
+  RootClassSurface,
+  RootTypeOnlySurface,
+  ApiValueSurface,
+  ApiTypeSurface,
+  EvaluationValueSurface,
+  EvaluationTypeSurface,
+  RootFunctionSignatureContracts,
+  RootConstantContracts,
+  RootConstructorContracts,
+  RootStaticContracts,
+  PromptRuntimeMemberContracts,
+  PromptProcessorMemberContracts,
+  PluginManagerMemberContracts,
+  McpManagerMemberContracts,
+  ValidationRoleDecoratorMemberContracts,
+  LoggingMemberContracts,
+  LoggerPortMemberContracts,
+  PluginActivationTypeContracts,
+  ErrorMemberContracts,
+  ApiExactContracts,
+];
+declare const completePublicTypeSurface: CompletePublicTypeSurface;
+void completePublicTypeSurface;

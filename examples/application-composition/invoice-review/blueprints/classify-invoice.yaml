@@ -1,0 +1,41 @@
+name: Classify invoice document
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: fields
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [fields]
+  properties:
+    fields:
+      type: object
+      additionalProperties: false
+      required: [invoice_number, supplier, purchase_order, currency, subtotal, tax, total]
+      properties:
+        invoice_number: { type: [string, 'null'] }
+        supplier: { type: [string, 'null'] }
+        purchase_order: { type: [string, 'null'] }
+        currency: { type: [string, 'null'] }
+        subtotal: { type: [number, 'null'] }
+        tax: { type: [number, 'null'] }
+        total: { type: [number, 'null'] }
+prompt: |
+  Classify the extracted business document as invoice, credit_note, or other.
+  Use only the supplied fields. A positive total with an invoice number is an
+  invoice. Do not infer a document type when those indicators are absent.
+
+  Fields: {{ fields }}
+
+  Return a short rationale. Do not validate or approve the document. Return
+  only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [document_type, rationale]
+  properties:
+    document_type: { type: string, enum: [invoice, credit_note, other] }
+    rationale: { type: string, minLength: 1, pattern: '\S' }

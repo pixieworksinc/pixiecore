@@ -1,0 +1,205 @@
+name: Route travel approval from a CSV table
+version: 1.0.2
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: request
+    type: object
+    required: true
+    description: Normalized routing facts for one travel request.
+  - name: routing_table_version
+    type: string
+    required: true
+    description: Semantic version of the caller-supplied routing table.
+  - name: routing_csv
+    type: string
+    required: true
+    description: CSV routing rows with explicit priority, conditions, and user state.
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [request, routing_table_version, routing_csv]
+  properties:
+    request:
+      type: object
+      additionalProperties: false
+      required: [country_code, destination_level, estimated_cost, currency]
+      properties:
+        country_code: { type: string, pattern: '^[A-Z]{2}$' }
+        destination_level: { type: string, enum: [A, B, C] }
+        estimated_cost: { type: number, minimum: 0 }
+        currency: { type: string, pattern: '^[A-Z]{3}$' }
+    routing_table_version:
+      type: string
+      pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$'
+    routing_csv:
+      type: string
+      minLength: 1
+      pattern: '\S'
+prompt: |
+  Select the next approval user using only the supplied CSV routing table.
+
+  Request: {{ request }}
+  Routing table version: {{ routing_table_version }}
+  Routing CSV:
+  {{ routing_csv }}
+
+  The header must be interpreted as:
+  rule_id,priority,rule_enabled,user_enabled,country_code,destination_level,
+  amount_min,amount_max,currency,next_user
+
+  Apply these rules exactly:
+  1. Treat `*` in a condition column as a wildcard. Do not infer or normalize
+     other values.
+  2. A row matches only when rule_enabled is true, every non-wildcard string
+     condition equals the request value exactly, and estimated_cost is within
+     both inclusive numeric bounds. `*` means no bound. Evaluate user_enabled
+     only after selecting the best-priority matching row: user_enabled=false is
+     not a match exclusion and must not cause fallback to another row.
+  3. Among matching rows, find the lowest numeric priority. Never use CSV row
+     order as a tie breaker.
+  4. If no row matches, return status=no_match.
+  5. If two or more rows share the best priority, return status=ambiguous and
+     every best-priority candidate in CSV order. Do not select a user.
+  6. If exactly one best row targets user_enabled=false, return
+     status=unavailable and retain its rule, priority, and next_user. Do not
+     fall back to a lower-priority row.
+  7. Otherwise return status=routed with the selected rule, priority, and user.
+
+  Return the exact routing table version. Do not notify users, approve or reject
+  the request, update an external system, change the CSV, or execute another
+  Blueprint. Return only JSON matching the output schema.
+output_schema:
+  oneOf:
+    - $ref: '#/$defs/routedResult'
+    - $ref: '#/$defs/noMatchResult'
+    - $ref: '#/$defs/ambiguousResult'
+    - $ref: '#/$defs/unavailableResult'
+  $defs:
+    candidate:
+      type: object
+      additionalProperties: false
+      required: [rule_id, priority, next_user]
+      properties:
+        rule_id:
+          type: string
+          pattern: '^[a-z0-9][a-z0-9:.-]*$'
+        priority: { type: integer, minimum: 0 }
+        next_user:
+          type: string
+          pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+    routedResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - next_user
+        - matched_rule
+        - matched_priority
+        - reason_code
+        - routing_table_version
+        - candidates
+      properties:
+        status: { const: routed }
+        next_user:
+          type: string
+          pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        matched_rule:
+          type: string
+          pattern: '^[a-z0-9][a-z0-9:.-]*$'
+        matched_priority: { type: integer, minimum: 0 }
+        reason_code: { const: best_priority_match }
+        routing_table_version:
+          type: string
+          minLength: 1
+        candidates: { type: array, maxItems: 0 }
+    noMatchResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - next_user
+        - matched_rule
+        - matched_priority
+        - reason_code
+        - routing_table_version
+        - candidates
+      properties:
+        status: { const: no_match }
+        next_user: { type: 'null' }
+        matched_rule: { type: 'null' }
+        matched_priority: { type: 'null' }
+        reason_code: { const: no_matching_rule }
+        routing_table_version:
+          type: string
+          minLength: 1
+        candidates: { type: array, maxItems: 0 }
+    ambiguousResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - next_user
+        - matched_rule
+        - matched_priority
+        - reason_code
+        - routing_table_version
+        - candidates
+      properties:
+        status: { const: ambiguous }
+        next_user: { type: 'null' }
+        matched_rule: { type: 'null' }
+        matched_priority: { type: integer, minimum: 0 }
+        reason_code: { const: same_priority_matches }
+        routing_table_version:
+          type: string
+          minLength: 1
+        candidates:
+          type: array
+          minItems: 2
+          uniqueItems: true
+          items: { $ref: '#/$defs/candidate' }
+    unavailableResult:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - next_user
+        - matched_rule
+        - matched_priority
+        - reason_code
+        - routing_table_version
+        - candidates
+      properties:
+        status: { const: unavailable }
+        next_user:
+          type: string
+          pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
+        matched_rule:
+          type: string
+          pattern: '^[a-z0-9][a-z0-9:.-]*$'
+        matched_priority: { type: integer, minimum: 0 }
+        reason_code: { const: disabled_user }
+        routing_table_version:
+          type: string
+          minLength: 1
+        candidates: { type: array, maxItems: 0 }
+examples:
+  - input:
+      request:
+        country_code: US
+        destination_level: A
+        estimated_cost: 3000
+        currency: USD
+      routing_table_version: 2026.1.0
+      routing_csv: |
+        rule_id,priority,rule_enabled,user_enabled,country_code,destination_level,amount_min,amount_max,currency,next_user
+        route:level-a-standard,20,true,true,*,A,0,5000,USD,supervisor-a@example.test
+    output:
+      status: routed
+      next_user: supervisor-a@example.test
+      matched_rule: route:level-a-standard
+      matched_priority: 20
+      reason_code: best_priority_match
+      routing_table_version: 2026.1.0
+      candidates: []

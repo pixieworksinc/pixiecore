@@ -1,0 +1,19 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Validate publication brief summary
+version: 1.0.0
+blueprint:
+  path: ../blueprints/validate-brief.yaml
+  version: '1.0.1'
+tags: [application-composition, validator]
+cases:
+  - id: supported-summary
+    tags: [canonical]
+    inputs:
+      facts:
+        - Release Orion adds a typed publication export.
+      summary: Release Orion adds a typed publication export.
+    expected_output:
+      valid: true
+      issues: []
+    comparison:
+      mode: exact

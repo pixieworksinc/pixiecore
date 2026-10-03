@@ -1,0 +1,19 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Summarize publication brief
+version: 1.0.0
+blueprint:
+  path: ../blueprints/summarize-brief.yaml
+  version: '1.0.1'
+tags: [application-composition, summarizer]
+cases:
+  - id: one-fact-summary
+    tags: [canonical]
+    inputs:
+      title: Orion export
+      category: product
+      facts:
+        - Release Orion adds a typed publication export.
+    expected_output:
+      summary: Release Orion adds a typed publication export.
+    comparison:
+      mode: schema

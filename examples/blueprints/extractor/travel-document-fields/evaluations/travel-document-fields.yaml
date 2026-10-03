@@ -1,0 +1,152 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Travel document field extraction with source evidence
+version: 1.0.1
+description: Canonical PDF, OCR, page-layout, and non-inference boundaries.
+blueprint:
+  path: ../travel-document-fields.yaml
+  version: 1.1.1
+tags: [standard-library, extractor, travel-document, multimodal]
+cases:
+  - id: native-text-pdf
+    description: Extract all requested fields from one native-text PDF page.
+    tags: [supported, pdf, native-text]
+    inputs:
+      file_path: examples/blueprints/extractor/travel-document-fields/fixtures/native-text.pdf
+      requested_fields:
+        - traveler_name
+        - trip_start_date
+        - trip_end_date
+        - destination
+        - business_purpose
+        - estimated_amount
+        - currency
+    expected_output:
+      status: complete
+      document_type: travel_request
+      fields:
+        - { name: traveler_name, status: extracted, value: Morgan Ellis, source: { page: 1, evidence_text: Morgan Ellis } }
+        - { name: trip_start_date, status: extracted, value: '2026-09-14', source: { page: 1, evidence_text: '2026-09-14 to 2026-09-18' } }
+        - { name: trip_end_date, status: extracted, value: '2026-09-18', source: { page: 1, evidence_text: '2026-09-14 to 2026-09-18' } }
+        - { name: destination, status: extracted, value: 'Paris, France', source: { page: 1, evidence_text: 'Paris, France' } }
+        - { name: business_purpose, status: extracted, value: Customer architecture workshop, source: { page: 1, evidence_text: Customer architecture workshop } }
+        - { name: estimated_amount, status: extracted, value: '2,480.50', source: { page: 1, evidence_text: 'USD 2,480.50' } }
+        - { name: currency, status: extracted, value: USD, source: { page: 1, evidence_text: 'USD 2,480.50' } }
+      warnings: []
+    comparison: { mode: exact }
+
+  - id: scanned-pdf-partial
+    description: OCR extracts visible values but does not invent an absent amount.
+    tags: [supported, pdf, scanned, ocr, non-inference]
+    inputs:
+      file_path: examples/blueprints/extractor/travel-document-fields/fixtures/scanned.pdf
+      requested_fields: [traveler_name, destination, estimated_amount]
+    expected_output:
+      status: partial
+      document_type: travel_request
+      fields:
+        - { name: traveler_name, status: extracted, value: Riley Chen, source: { page: 1, evidence_text: Riley Chen } }
+        - { name: destination, status: extracted, value: 'Chicago, USA', source: { page: 1, evidence_text: 'Chicago, USA' } }
+        - { name: estimated_amount, status: not_found, value: null, source: null }
+      warnings:
+        - { code: ocr_required, page: 1, message: The PDF page contains an image without a text layer. }
+    comparison:
+      mode: fields
+      pointers:
+        - /status
+        - /document_type
+        - /fields
+        - /warnings/0/code
+        - /warnings/0/page
+
+  - id: multi-page-evidence
+    description: Every extracted value points to the page where it appears.
+    tags: [supported, pdf, multi-page, evidence]
+    inputs:
+      file_path: examples/blueprints/extractor/travel-document-fields/fixtures/multi-page.pdf
+      requested_fields: [traveler_name, destination, business_purpose]
+    expected_output:
+      status: complete
+      document_type: travel_request
+      fields:
+        - { name: traveler_name, status: extracted, value: Avery Patel, source: { page: 2, evidence_text: 'Traveler: Avery Patel' } }
+        - { name: destination, status: extracted, value: 'London, United Kingdom', source: { page: 2, evidence_text: 'Destination: London, United Kingdom' } }
+        - { name: business_purpose, status: extracted, value: Security design review, source: { page: 2, evidence_text: 'Purpose: Security design review' } }
+      warnings: []
+    comparison: { mode: exact }
+
+  - id: rotated-page
+    description: A rotated page is read without changing extracted values.
+    tags: [supported, pdf, rotated]
+    inputs:
+      file_path: examples/blueprints/extractor/travel-document-fields/fixtures/rotated.pdf
+      requested_fields: [traveler_name, destination]
+    expected_output:
+      status: complete
+      document_type: travel_request
+      fields:
+        - { name: traveler_name, status: extracted, value: Jordan Kim, source: { page: 1, evidence_text: 'Traveler: Jordan Kim' } }
+        - { name: destination, status: extracted, value: 'San Francisco, USA', source: { page: 1, evidence_text: 'Destination: San Francisco, USA' } }
+      warnings:
+        - { code: rotated_page, page: 1, message: The page is rotated 90 degrees. }
+    comparison: { mode: exact }
+
+  - id: blank-page-unreadable
+    description: A blank page produces no guessed values or evidence.
+    tags: [rejected, pdf, blank, non-inference]
+    inputs:
+      file_path: examples/blueprints/extractor/travel-document-fields/fixtures/blank-page.pdf
+      requested_fields: [traveler_name, destination]
+    expected_output:
+      status: unreadable
+      document_type: unknown
+      fields:
+        - { name: traveler_name, status: unreadable, value: null, source: null }
+        - { name: destination, status: unreadable, value: null, source: null }
+      warnings:
+        - { code: blank_page, page: 1, message: The page contains no readable content. }
+    comparison: { mode: exact }
+
+  - id: table-layout
+    description: Values in a table retain the visible row as evidence.
+    tags: [supported, pdf, table]
+    inputs:
+      file_path: examples/blueprints/extractor/travel-document-fields/fixtures/table.pdf
+      requested_fields:
+        - traveler_name
+        - destination
+        - trip_start_date
+        - trip_end_date
+        - estimated_amount
+        - currency
+    expected_output:
+      status: complete
+      document_type: travel_request
+      fields:
+        - { name: traveler_name, status: extracted, value: Taylor Brooks, source: { page: 1, evidence_text: Taylor Brooks } }
+        - { name: destination, status: extracted, value: 'New York, USA', source: { page: 1, evidence_text: 'New York, USA' } }
+        - { name: trip_start_date, status: extracted, value: '2026-11-02', source: { page: 1, evidence_text: '2026-11-02' } }
+        - { name: trip_end_date, status: extracted, value: '2026-11-05', source: { page: 1, evidence_text: '2026-11-05' } }
+        - { name: estimated_amount, status: extracted, value: '3,120.00', source: { page: 1, evidence_text: 'USD 3,120.00' } }
+        - { name: currency, status: extracted, value: USD, source: { page: 1, evidence_text: 'USD 3,120.00' } }
+      warnings:
+        - { code: table_layout, page: 1, message: Requested values are arranged in a two-column table. }
+    comparison: { mode: exact }
+
+  - id: screenshot-image
+    description: A screenshot is treated as a one-page visual document.
+    tags: [supported, image, screenshot, ocr]
+    inputs:
+      image_path: examples/blueprints/extractor/travel-document-fields/fixtures/travel-request-screenshot.png
+      requested_fields: [traveler_name, destination, trip_start_date, trip_end_date, business_purpose]
+    expected_output:
+      status: complete
+      document_type: travel_request
+      fields:
+        - { name: traveler_name, status: extracted, value: Casey Rivera, source: { page: 1, evidence_text: Casey Rivera } }
+        - { name: destination, status: extracted, value: 'Los Angeles, USA', source: { page: 1, evidence_text: 'Los Angeles, USA' } }
+        - { name: trip_start_date, status: extracted, value: '2026-12-01', source: { page: 1, evidence_text: '2026-12-01' } }
+        - { name: trip_end_date, status: extracted, value: '2026-12-03', source: { page: 1, evidence_text: '2026-12-03' } }
+        - { name: business_purpose, status: extracted, value: Annual account review, source: { page: 1, evidence_text: Annual account review } }
+      warnings:
+        - { code: ocr_required, page: 1, message: The screenshot requires visual text recognition. }
+    comparison: { mode: exact }

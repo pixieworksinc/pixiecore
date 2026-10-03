@@ -1,0 +1,30 @@
+name: Multimodal analysis
+version: '1.0.1'
+role: assistant
+input_placeholders:
+  - name: question
+    type: string
+    required: true
+    description: Question to answer from the supplied attachments.
+  - name: image_path
+    type: image
+    required: false
+    description: One image path, HTTPS URL, or image data URL, or an array of them.
+  - name: file_path
+    type: file
+    required: false
+    description: One file path, HTTPS URL, provider file ID, or file data URL, or an array of them.
+prompt: |
+  Analyze the supplied attachments and answer this question: {{ question }}
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  properties:
+    summary:
+      type: string
+    observations:
+      type: array
+      items:
+        type: string
+  required: [summary, observations]
+  additionalProperties: false

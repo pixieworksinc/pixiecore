@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/examples/publication-brief-adjacent-pattern-benchmark-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "status", "plan", "started_at", "updated_at", "completed_at", "methodology", "pricing", "ledger", "approaches", "halt_reason", "limitations"],
+  "properties": {
+    "$schema": { "const": "./benchmark-report-v1.schema.json" },
+    "schema": { "const": "pixiecore.publication-brief-adjacent-pattern-benchmark/v1" },
+    "status": { "enum": ["running", "completed", "halted"] },
+    "plan": { "$ref": "#/$defs/plan" },
+    "started_at": { "$ref": "#/$defs/timestamp" },
+    "updated_at": { "$ref": "#/$defs/timestamp" },
+    "completed_at": { "oneOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }] },
+    "methodology": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_contract", "output_contract", "comparison", "retry_policy", "execution_order", "seed_scope"],
+      "properties": {
+        "input_contract": { "const": "identical-synthetic-cases" },
+        "output_contract": { "const": "publication-brief-typed-result" },
+        "comparison": { "const": "deterministic-term-and-field-assertions" },
+        "retry_policy": { "const": "none" },
+        "execution_order": { "const": "run-case-approach" },
+        "seed_scope": { "const": "runner-order-only" }
+      }
+    },
+    "pricing": { "$ref": "#/$defs/pricing" },
+    "ledger": { "$ref": "#/$defs/ledger" },
+    "approaches": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "$ref": "#/$defs/approach" }
+    },
+    "halt_reason": { "type": ["string", "null"] },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/text" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "timestamp": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$" },
+    "metric": { "type": "number", "minimum": 0 },
+    "count": { "type": "integer", "minimum": 0 },
+    "nullableCount": { "type": ["integer", "null"], "minimum": 0 },
+    "nullableMetric": { "type": ["number", "null"], "minimum": 0 },
+    "approachId": { "enum": ["pixiecore-composed", "monolithic-prompt", "agent-graph", "code-only"] },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "provider", "endpoint", "model", "dataset_path", "dataset_sha256", "dataset_version", "cases", "approaches", "runs", "seed", "expected_provider_calls", "max_calls", "max_budget_usd", "output_directory"],
+      "properties": {
+        "schema": { "const": "pixiecore.publication-brief-adjacent-pattern-plan/v1" },
+        "provider": { "const": "openai" },
+        "endpoint": { "const": "https://api.openai.com/v1" },
+        "model": { "const": "gpt-4.1-mini-2025-04-14" },
+        "dataset_path": { "$ref": "#/$defs/text" },
+        "dataset_sha256": { "$ref": "#/$defs/sha256" },
+        "dataset_version": { "$ref": "#/$defs/text" },
+        "cases": { "type": "integer", "minimum": 1 },
+        "approaches": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/approachId" }
+        },
+        "runs": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "seed": { "$ref": "#/$defs/text" },
+        "expected_provider_calls": { "$ref": "#/$defs/count" },
+        "max_calls": { "$ref": "#/$defs/count" },
+        "max_budget_usd": { "$ref": "#/$defs/metric" },
+        "output_directory": { "$ref": "#/$defs/text" }
+      }
+    },
+    "pricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_per_million_tokens", "output_per_million_tokens", "source", "verified_at"],
+      "properties": {
+        "input_per_million_tokens": { "$ref": "#/$defs/metric" },
+        "output_per_million_tokens": { "$ref": "#/$defs/metric" },
+        "source": { "const": "https://developers.openai.com/api/docs/pricing" },
+        "verified_at": { "$ref": "#/$defs/timestamp" }
+      }
+    },
+    "ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["calls", "input_tokens", "output_tokens", "total_tokens", "estimated_cost_usd", "complete"],
+      "properties": {
+        "calls": { "$ref": "#/$defs/count" },
+        "input_tokens": { "$ref": "#/$defs/count" },
+        "output_tokens": { "$ref": "#/$defs/count" },
+        "total_tokens": { "$ref": "#/$defs/count" },
+        "estimated_cost_usd": { "$ref": "#/$defs/metric" },
+        "complete": { "type": "boolean" }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_calls", "input_tokens", "output_tokens", "total_tokens", "estimated_cost_usd"],
+      "properties": {
+        "provider_calls": { "$ref": "#/$defs/count" },
+        "input_tokens": { "$ref": "#/$defs/nullableCount" },
+        "output_tokens": { "$ref": "#/$defs/nullableCount" },
+        "total_tokens": { "$ref": "#/$defs/nullableCount" },
+        "estimated_cost_usd": { "$ref": "#/$defs/nullableMetric" }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_calls_per_case", "independently_testable_units", "cognitive_operations", "orchestration_owner"],
+      "properties": {
+        "provider_calls_per_case": { "$ref": "#/$defs/count" },
+        "independently_testable_units": { "type": "integer", "minimum": 1 },
+        "cognitive_operations": { "const": 5 },
+        "orchestration_owner": { "enum": ["pixiecore-application", "single-prompt", "model-planner", "host-code"] }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "passed", "failed", "errors"],
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "passed": { "$ref": "#/$defs/count" },
+        "failed": { "$ref": "#/$defs/count" },
+        "errors": { "$ref": "#/$defs/count" }
+      }
+    },
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mean", "p50", "p95"],
+      "properties": {
+        "mean": { "$ref": "#/$defs/metric" },
+        "p50": { "$ref": "#/$defs/metric" },
+        "p95": { "$ref": "#/$defs/metric" }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run", "approach", "case_id", "status", "duration_ms", "failure_codes", "error_name", "usage"],
+      "properties": {
+        "run": { "type": "integer", "minimum": 1 },
+        "approach": { "$ref": "#/$defs/approachId" },
+        "case_id": { "$ref": "#/$defs/text" },
+        "status": { "enum": ["passed", "failed", "error"] },
+        "duration_ms": { "$ref": "#/$defs/metric" },
+        "failure_codes": { "type": "array", "items": { "$ref": "#/$defs/text" } },
+        "error_name": { "type": ["string", "null"] },
+        "assertions": { "$ref": "#/$defs/assertionSummary" },
+        "usage": { "$ref": "#/$defs/usage" }
+      }
+    },
+    "approach": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "architecture", "summary", "accuracy", "latency_ms", "usage", "observations"],
+      "properties": {
+        "id": { "$ref": "#/$defs/approachId" },
+        "architecture": { "$ref": "#/$defs/architecture" },
+        "summary": { "$ref": "#/$defs/summary" },
+        "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "assertion_summary": { "$ref": "#/$defs/assertionSummary" },
+        "assertion_accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "latency_ms": { "$ref": "#/$defs/latency" },
+        "usage": { "$ref": "#/$defs/usage" },
+        "observations": { "type": "array", "items": { "$ref": "#/$defs/observation" } }
+      }
+    },
+    "assertionSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "passed", "failed"],
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "passed": { "$ref": "#/$defs/count" },
+        "failed": { "$ref": "#/$defs/count" }
+      }
+    }
+  }
+}

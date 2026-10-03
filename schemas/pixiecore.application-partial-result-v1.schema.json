@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.application-partial-result-v1.schema.json",
+  "title": "PixieCore application partial result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "result", "outputs", "failures"],
+  "properties": {
+    "schema": {
+      "const": "pixiecore.application-partial-result/v1"
+    },
+    "result": {
+      "enum": ["succeeded", "partial"]
+    },
+    "outputs": {
+      "type": "object"
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/failure"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": { "const": "succeeded" }
+        },
+        "required": ["result"]
+      },
+      "then": {
+        "properties": {
+          "failures": { "type": "array", "maxItems": 0 }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": { "const": "partial" }
+        },
+        "required": ["result"]
+      },
+      "then": {
+        "properties": {
+          "failures": { "type": "array", "minItems": 1 }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_id",
+        "blueprint_version",
+        "error_code",
+        "attempts",
+        "retry_owner"
+      ],
+      "properties": {
+        "node_id": { "type": "string", "minLength": 1 },
+        "blueprint_version": { "type": "string", "minLength": 1 },
+        "error_code": { "type": "string", "minLength": 1 },
+        "attempts": { "type": "integer", "minimum": 1 },
+        "retry_owner": {
+          "enum": ["runtime", "application", "host"]
+        }
+      }
+    }
+  }
+}

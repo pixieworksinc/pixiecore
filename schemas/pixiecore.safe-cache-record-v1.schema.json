@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.safe-cache-record-v1.schema.json",
+  "title": "PixieCore safe cache record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "cache_key",
+    "tenant_fingerprint",
+    "namespace",
+    "resource_id",
+    "resource_version",
+    "invalidation_version",
+    "content_sha256",
+    "created_at",
+    "expires_at",
+    "value"
+  ],
+  "properties": {
+    "schema": { "const": "pixiecore.safe-cache-record/v1" },
+    "cache_key": {
+      "type": "string",
+      "pattern": "^pixiecore:v1:[0-9a-f]{64}$"
+    },
+    "tenant_fingerprint": { "$ref": "#/$defs/sha256" },
+    "namespace": { "$ref": "#/$defs/nonBlankString" },
+    "resource_id": { "$ref": "#/$defs/nonBlankString" },
+    "resource_version": { "$ref": "#/$defs/nonBlankString" },
+    "invalidation_version": { "$ref": "#/$defs/nonBlankString" },
+    "content_sha256": { "$ref": "#/$defs/sha256" },
+    "created_at": { "$ref": "#/$defs/timestamp" },
+    "expires_at": { "$ref": "#/$defs/timestamp" },
+    "value": {
+      "oneOf": [
+        { "type": "object" },
+        { "type": "array" },
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "$defs": {
+    "nonBlankString": { "type": "string", "pattern": ".*\\S.*" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}Z$"
+    }
+  }
+}

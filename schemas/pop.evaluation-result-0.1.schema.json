@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pop:schema:evaluation-result:0.1",
+  "title": "POP Evaluation Result 0.1",
+  "description": "Portable, value-free evaluation summary for one versioned Blueprint and dataset.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "dataset", "blueprint", "run", "summary", "cases"],
+  "properties": {
+    "schema": { "const": "pop.evaluation-result/0.1" },
+    "dataset": { "$ref": "#/$defs/datasetReference" },
+    "blueprint": { "$ref": "#/$defs/blueprintReference" },
+    "run": { "$ref": "#/$defs/run" },
+    "summary": { "$ref": "#/$defs/summary" },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/caseResult" }
+    },
+    "reproduction": { "$ref": "#/$defs/reproduction" },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/namespacedId" }
+    }
+  },
+  "$defs": {
+    "nonBlankString": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "namespacedId": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^(?!pop\\.)(?:[a-z0-9]+(?:[._-][a-z0-9]+)+)$"
+    },
+    "semanticVersion": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "datasetReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "sha256"],
+      "properties": {
+        "name": { "$ref": "#/$defs/namespacedId" },
+        "version": { "$ref": "#/$defs/semanticVersion" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "blueprintReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "sha256"],
+      "properties": {
+        "id": { "$ref": "#/$defs/namespacedId" },
+        "version": { "$ref": "#/$defs/semanticVersion" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "started_at", "completed_at", "executor"],
+      "properties": {
+        "id": { "$ref": "#/$defs/nonBlankString" },
+        "seed": { "$ref": "#/$defs/nonBlankString" },
+        "started_at": { "$ref": "#/$defs/timestamp" },
+        "completed_at": { "$ref": "#/$defs/timestamp" },
+        "executor": { "$ref": "#/$defs/nonBlankString" },
+        "provider": { "$ref": "#/$defs/nonBlankString" },
+        "model": { "$ref": "#/$defs/nonBlankString" },
+        "sampling": { "type": "object" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "schema_passed", "semantic_passed", "failed", "errors"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 1 },
+        "schema_passed": { "type": "integer", "minimum": 0 },
+        "semantic_passed": { "type": "integer", "minimum": 0 },
+        "failed": { "type": "integer", "minimum": 0 },
+        "errors": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "caseResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status", "schema_valid", "semantic_valid", "duration_ms"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 120, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "status": { "enum": ["passed", "failed", "error"] },
+        "schema_valid": { "type": ["boolean", "null"] },
+        "semantic_valid": { "type": ["boolean", "null"] },
+        "duration_ms": { "type": "number", "minimum": 0 },
+        "diagnostics": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/diagnostic" }
+        }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "stage"],
+      "properties": {
+        "code": { "$ref": "#/$defs/nonBlankString" },
+        "stage": { "enum": ["validation", "execution", "schema", "semantic"] },
+        "pointer": { "type": "string", "pattern": "^(?:/(?:[^~/]|~[01])*)*$" }
+      }
+    },
+    "reproduction": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "seed": { "$ref": "#/$defs/nonBlankString" },
+        "parameters": { "type": "object" },
+        "token": { "$ref": "#/$defs/nonBlankString" }
+      }
+    }
+  }
+}

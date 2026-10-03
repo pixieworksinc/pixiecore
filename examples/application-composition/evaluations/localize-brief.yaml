@@ -1,0 +1,18 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Localize publication brief summary
+version: 1.0.0
+blueprint:
+  path: ../blueprints/localize-brief.yaml
+  version: '1.0.1'
+tags: [application-composition, localizer]
+cases:
+  - id: preserve-english-facts
+    tags: [canonical]
+    inputs:
+      summary: Release Orion adds a typed publication export.
+      locale: en-US
+    expected_output:
+      locale: en-US
+      localized_summary: Release Orion adds a typed publication export.
+    comparison:
+      mode: exact

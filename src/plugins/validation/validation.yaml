@@ -1,0 +1,19 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.validation
+name: PixieCore Validation
+version: '0.1.0'
+description: Provides PixieCore's validation service and constructor-visible schema output guard.
+entry: ./validation.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createValidationService
+    service_id: pixiecore.service.validation
+  - type: decorator
+    export: SchemaGuard
+    priority: 10
+    stage: after

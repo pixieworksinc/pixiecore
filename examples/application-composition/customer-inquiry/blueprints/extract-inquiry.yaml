@@ -1,0 +1,32 @@
+name: Extract customer inquiry fields
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: source_text
+    type: string
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [source_text]
+  properties:
+    source_text: { type: string, minLength: 1, pattern: '\S' }
+prompt: |
+  Extract only the explicitly stated customer inquiry fields from this text:
+
+  {{ source_text }}
+
+  Return customer_id, channel, locale, subject, and message. Use null for a
+  missing field. Do not classify, summarize, translate, or route the inquiry.
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [customer_id, channel, locale, subject, message]
+  properties:
+    customer_id: { type: [string, 'null'] }
+    channel: { type: [string, 'null'], enum: [email, chat, web, phone, null] }
+    locale: { type: [string, 'null'] }
+    subject: { type: [string, 'null'] }
+    message: { type: [string, 'null'] }

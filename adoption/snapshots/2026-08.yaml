@@ -1,0 +1,30 @@
+schema: pixiecore.adoption-snapshot/v1
+period: 2026-08
+published_at: 2026-08-25T20:00:00.000Z
+scope: PixieCore repository and explicitly published project evidence
+metrics:
+  installs:
+    status: not_collected
+    value: null
+    source: null
+    note: The package has not been published to a registry with an authorized download report.
+  active_projects:
+    status: not_collected
+    value: null
+    source: null
+    note: PixieCore does not add usage telemetry, and no opt-in project registry exists.
+  external_contributors:
+    status: not_collected
+    value: null
+    source: null
+    note: No reviewed public contributor roster or contribution report is available.
+  published_blueprints:
+    status: verified
+    value: 8
+    source: examples/blueprints/catalog.yaml
+    note: Active first-party reference Blueprints in the packaged library catalog.
+  case_studies:
+    status: not_collected
+    value: null
+    source: null
+    note: No reviewed public case-study evidence is available.

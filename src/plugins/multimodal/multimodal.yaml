@@ -1,0 +1,15 @@
+schema: pixiecore.plugin/v1
+id: pixiecore.multimodal
+name: PixieCore Multimodal
+version: '0.1.0'
+description: Provides PixieCore's scope-local multimodal service.
+entry: ./multimodal.js
+
+requires: {}
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: service
+    export: createMultimodalService
+    service_id: pixiecore.service.multimodal

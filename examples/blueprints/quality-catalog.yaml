@@ -1,0 +1,123 @@
+schema: pixiecore.blueprint-quality-catalog/v1
+version: 1.1.0
+units:
+  - id: extractor/travel-document-fields
+    blueprint_version: 1.1.1
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: extractor/travel-document-fields/evaluations/travel-document-fields.yaml
+          version: 1.0.1
+        score: 1
+        passed_cases: 7
+        total_cases: 7
+        runs: 1
+        evidence: extractor/travel-document-fields/tests/travel-document-fields.contract.test.ts
+  - id: classifier/travel-destination-level
+    blueprint_version: 1.0.2
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: classifier/travel-destination-level/evaluations/travel-destination-level.yaml
+          version: 1.0.0
+        score: 1
+        passed_cases: 13
+        total_cases: 13
+        runs: 1
+        evidence: classifier/travel-destination-level/tests/travel-destination-level.contract.test.ts
+  - id: summarizer/travel-request-summary
+    blueprint_version: 1.0.2
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: summarizer/travel-request-summary/evaluations/travel-request-summary.yaml
+          version: 2.0.0
+        score: 1
+        passed_cases: 8
+        total_cases: 8
+        runs: 1
+        evidence: summarizer/travel-request-summary/tests/travel-request-summary.contract.test.ts
+  - id: validator/travel-request-form
+    blueprint_version: 1.0.1
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: validator/travel-request-form/evaluations/travel-request-form.yaml
+          version: 1.0.0
+        score: 1
+        passed_cases: 9
+        total_cases: 9
+        runs: 1
+        evidence: validator/travel-request-form/tests/travel-request-form.contract.test.ts
+  - id: verifier/travel-document-evidence
+    blueprint_version: 1.0.1
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: verifier/travel-document-evidence/evaluations/travel-document-evidence.yaml
+          version: 1.0.0
+        score: 1
+        passed_cases: 8
+        total_cases: 8
+        runs: 1
+        evidence: verifier/travel-document-evidence/tests/travel-document-evidence.contract.test.ts
+  - id: converter/date-normalizer
+    blueprint_version: 1.0.2
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: converter/date-normalizer/evaluations/date-normalizer.yaml
+          version: 1.0.0
+        score: 1
+        passed_cases: 10
+        total_cases: 10
+        runs: 1
+        evidence: converter/date-normalizer/tests/date-normalizer.contract.test.ts
+  - id: translator/travel-purpose-localizer
+    blueprint_version: 1.0.1
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: translator/travel-purpose-localizer/evaluations/travel-purpose-localizer.yaml
+          version: 1.0.0
+        score: 1
+        passed_cases: 8
+        total_cases: 8
+        runs: 1
+        evidence: translator/travel-purpose-localizer/tests/travel-purpose-localizer.contract.test.ts
+  - id: router/travel-approval-routing
+    blueprint_version: 1.0.2
+    license: Apache-2.0
+    measurements:
+      - kind: offline_contract
+        provider: pixiecore-fixture
+        model: declared-expected-output
+        dataset:
+          path: router/travel-approval-routing/evaluations/travel-approval-routing.yaml
+          version: 1.0.0
+        score: 1
+        passed_cases: 8
+        total_cases: 8
+        runs: 1
+        evidence: router/travel-approval-routing/tests/travel-approval-routing.contract.test.ts

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/schemas/pixiecore.blueprint-benchmark-v1.schema.json",
+  "title": "PixieCore Blueprint benchmark v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "dataset", "blueprint", "benchmark", "targets"],
+  "properties": {
+    "schema": { "const": "pixiecore.blueprint-benchmark/v1" },
+    "dataset": { "$ref": "#/$defs/dataset" },
+    "blueprint": { "$ref": "#/$defs/blueprint" },
+    "benchmark": { "$ref": "#/$defs/benchmark" },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/target" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$"
+    },
+    "count": { "type": "integer", "minimum": 0 },
+    "metric": { "type": "number", "minimum": 0 },
+    "nullableMetric": { "type": ["number", "null"], "minimum": 0 },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "path", "sha256"],
+      "properties": {
+        "name": { "$ref": "#/$defs/text" },
+        "version": { "$ref": "#/$defs/text" },
+        "path": { "$ref": "#/$defs/text" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "blueprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version", "sha256"],
+      "properties": {
+        "path": { "$ref": "#/$defs/text" },
+        "version": { "$ref": "#/$defs/text" },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "benchmark": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "seed", "seed_scope", "started_at", "completed_at", "runs_per_target"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "seed": { "$ref": "#/$defs/text" },
+        "seed_scope": { "const": "runner" },
+        "started_at": { "$ref": "#/$defs/timestamp" },
+        "completed_at": { "$ref": "#/$defs/timestamp" },
+        "runs_per_target": { "type": "integer", "minimum": 1, "maximum": 100 }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "passed", "failed", "errors"],
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "passed": { "$ref": "#/$defs/count" },
+        "failed": { "$ref": "#/$defs/count" },
+        "errors": { "$ref": "#/$defs/count" }
+      }
+    },
+    "pricing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "inputPerMillionTokens", "outputPerMillionTokens"],
+      "properties": {
+        "currency": { "$ref": "#/$defs/text" },
+        "inputPerMillionTokens": { "$ref": "#/$defs/metric" },
+        "outputPerMillionTokens": { "$ref": "#/$defs/metric" }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_tokens", "output_tokens", "total_tokens"],
+      "properties": {
+        "input_tokens": { "$ref": "#/$defs/count" },
+        "output_tokens": { "$ref": "#/$defs/count" },
+        "total_tokens": { "$ref": "#/$defs/count" }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "total", "mean_per_case"],
+      "properties": {
+        "currency": { "$ref": "#/$defs/text" },
+        "total": { "$ref": "#/$defs/metric" },
+        "mean_per_case": { "$ref": "#/$defs/metric" }
+      }
+    },
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mean", "p50", "p95", "standard_deviation"],
+      "properties": {
+        "mean": { "$ref": "#/$defs/metric" },
+        "p50": { "$ref": "#/$defs/metric" },
+        "p95": { "$ref": "#/$defs/metric" },
+        "standard_deviation": { "$ref": "#/$defs/metric" }
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run", "seed", "summary", "accuracy", "latency_ms", "input_tokens", "output_tokens", "total_tokens", "cost"],
+      "properties": {
+        "run": { "type": "integer", "minimum": 1 },
+        "seed": { "$ref": "#/$defs/text" },
+        "summary": { "$ref": "#/$defs/summary" },
+        "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "latency_ms": { "$ref": "#/$defs/metric" },
+        "input_tokens": { "$ref": "#/$defs/nullableMetric" },
+        "output_tokens": { "$ref": "#/$defs/nullableMetric" },
+        "total_tokens": { "$ref": "#/$defs/nullableMetric" },
+        "cost": { "$ref": "#/$defs/nullableMetric" }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider", "model", "pricing", "totals", "accuracy", "accuracy_standard_deviation", "latency_ms", "usage", "cost", "runs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/text" },
+        "provider": { "$ref": "#/$defs/text" },
+        "model": { "$ref": "#/$defs/text" },
+        "pricing": { "oneOf": [{ "$ref": "#/$defs/pricing" }, { "type": "null" }] },
+        "totals": { "$ref": "#/$defs/summary" },
+        "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "accuracy_standard_deviation": { "$ref": "#/$defs/metric" },
+        "latency_ms": { "$ref": "#/$defs/latency" },
+        "usage": { "oneOf": [{ "$ref": "#/$defs/usage" }, { "type": "null" }] },
+        "cost": { "oneOf": [{ "$ref": "#/$defs/cost" }, { "type": "null" }] },
+        "runs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/run" }
+        }
+      }
+    }
+  }
+}

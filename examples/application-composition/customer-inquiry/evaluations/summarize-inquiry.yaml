@@ -1,0 +1,17 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Summarize customer inquiry
+version: 1.0.0
+blueprint:
+  path: ../blueprints/summarize-inquiry.yaml
+  version: 1.0.1
+tags: [application-composition, customer-inquiry, summarizer]
+cases:
+  - id: preserve-invoice-identifier
+    tags: [canonical]
+    inputs:
+      subject: Duplicate invoice
+      message: Invoice INV-77 was charged twice.
+      category: billing
+    expected_output:
+      summary: The customer reports that invoice INV-77 was charged twice.
+    comparison: { mode: exact }

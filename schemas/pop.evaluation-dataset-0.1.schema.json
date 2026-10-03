@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pop:schema:evaluation-dataset:0.1",
+  "title": "POP Evaluation Dataset 0.1",
+  "description": "Portable semantic evaluation cases for one versioned Blueprint.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "name", "version", "blueprint", "cases"],
+  "properties": {
+    "schema": { "const": "pop.evaluation-dataset/0.1" },
+    "name": { "$ref": "#/$defs/namespacedId" },
+    "version": { "$ref": "#/$defs/semanticVersion" },
+    "description": { "$ref": "#/$defs/nonBlankString" },
+    "blueprint": { "$ref": "#/$defs/blueprintReference" },
+    "tags": { "$ref": "#/$defs/tags" },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/case" }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/namespacedId" }
+    }
+  },
+  "$defs": {
+    "nonBlankString": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "namespacedId": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^(?!pop\\.)(?:[a-z0-9]+(?:[._-][a-z0-9]+)+)$"
+    },
+    "semanticVersion": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "blueprintReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/namespacedId" },
+        "version": { "$ref": "#/$defs/semanticVersion" }
+      }
+    },
+    "tag": {
+      "type": "string",
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "tags": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/tag" }
+    },
+    "jsonPointer": {
+      "type": "string",
+      "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "inputs", "expected_output", "comparison"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 120, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$" },
+        "description": { "$ref": "#/$defs/nonBlankString" },
+        "tags": { "$ref": "#/$defs/tags" },
+        "inputs": { "type": "object" },
+        "expected_output": { "type": "object" },
+        "comparison": { "$ref": "#/$defs/comparison" }
+      }
+    },
+    "comparison": {
+      "oneOf": [
+        { "$ref": "#/$defs/exactComparison" },
+        { "$ref": "#/$defs/schemaComparison" },
+        { "$ref": "#/$defs/fieldsComparison" },
+        { "$ref": "#/$defs/setComparison" },
+        { "$ref": "#/$defs/numericToleranceComparison" },
+        { "$ref": "#/$defs/customComparison" }
+      ]
+    },
+    "exactComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": { "mode": { "const": "exact" } }
+    },
+    "schemaComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": { "mode": { "const": "schema" } }
+    },
+    "fieldsComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pointers"],
+      "properties": {
+        "mode": { "const": "fields" },
+        "pointers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/jsonPointer" }
+        }
+      }
+    },
+    "setComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pointer"],
+      "properties": {
+        "mode": { "const": "set" },
+        "pointer": { "$ref": "#/$defs/jsonPointer" }
+      }
+    },
+    "numericToleranceComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "pointers"],
+      "anyOf": [
+        {
+          "required": ["absolute_tolerance"],
+          "properties": { "absolute_tolerance": { "type": "number", "minimum": 0 } }
+        },
+        {
+          "required": ["relative_tolerance"],
+          "properties": { "relative_tolerance": { "type": "number", "minimum": 0 } }
+        }
+      ],
+      "properties": {
+        "mode": { "const": "numeric_tolerance" },
+        "pointers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/jsonPointer" }
+        },
+        "absolute_tolerance": { "type": "number", "minimum": 0 },
+        "relative_tolerance": { "type": "number", "minimum": 0 }
+      }
+    },
+    "customComparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "comparator"],
+      "properties": {
+        "mode": { "const": "custom" },
+        "comparator": { "$ref": "#/$defs/namespacedId" },
+        "config": { "type": "object" }
+      }
+    }
+  }
+}

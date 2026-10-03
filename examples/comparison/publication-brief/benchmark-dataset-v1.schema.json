@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/pixieworksinc/pixiecore/0.1.x/examples/publication-brief-comparison-dataset-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "name", "version", "sensitivity", "cases"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema": { "const": "pixiecore.publication-brief-comparison-dataset/v1" },
+    "name": { "$ref": "#/$defs/text" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "sensitivity": { "const": "synthetic" },
+    "cases": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/case" }
+    }
+  },
+  "$defs": {
+    "text": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/text" }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "input", "assertions"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_text", "locale"],
+          "properties": {
+            "source_text": { "$ref": "#/$defs/text" },
+            "locale": { "$ref": "#/$defs/text" }
+          }
+        },
+        "assertions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["title_terms", "audience_terms", "fact_terms", "category", "summary_terms", "valid", "locale", "localized_summary_terms"],
+          "properties": {
+            "title_terms": { "$ref": "#/$defs/terms" },
+            "audience_terms": { "$ref": "#/$defs/terms" },
+            "fact_terms": { "$ref": "#/$defs/terms" },
+            "category": { "enum": ["operations", "policy", "product", "other"] },
+            "summary_terms": { "$ref": "#/$defs/terms" },
+            "valid": { "type": "boolean" },
+            "locale": { "$ref": "#/$defs/text" },
+            "localized_summary_terms": { "$ref": "#/$defs/terms" }
+          }
+        }
+      }
+    }
+  }
+}

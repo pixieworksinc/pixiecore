@@ -1,0 +1,53 @@
+name: Classify customer inquiry
+version: 1.0.1
+role: assistant
+temperature: 0
+input_placeholders:
+  - name: subject
+    type: string
+    required: true
+  - name: message
+    type: string
+    required: true
+  - name: policy
+    type: object
+    required: true
+input_schema:
+  type: object
+  additionalProperties: false
+  required: [subject, message, policy]
+  properties:
+    subject: { type: string, minLength: 1, pattern: '\S' }
+    message: { type: string, minLength: 1, pattern: '\S' }
+    policy:
+      type: object
+      additionalProperties: false
+      required: [version, urgent_terms]
+      properties:
+        version: { type: string, pattern: '^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$' }
+        urgent_terms:
+          type: array
+          uniqueItems: true
+          items: { type: string, minLength: 1, pattern: '\S' }
+prompt: |
+  Classify one customer inquiry using only the supplied subject, message, and
+  policy. Category must be billing, technical, account, or other. Priority is
+  urgent only when an urgent_terms value occurs in the subject or message;
+  otherwise it is normal. Match urgent terms case-insensitively and do not use
+  outside facts.
+
+  Subject: {{ subject }}
+  Message: {{ message }}
+  Policy: {{ policy }}
+
+  Return the policy version and a short rationale. Do not route the inquiry.
+  Return only JSON matching the output schema.
+output_schema:
+  type: object
+  additionalProperties: false
+  required: [category, priority, rationale, policy_version]
+  properties:
+    category: { type: string, enum: [billing, technical, account, other] }
+    priority: { type: string, enum: [urgent, normal] }
+    rationale: { type: string, minLength: 1, pattern: '\S' }
+    policy_version: { type: string, minLength: 1, pattern: '\S' }

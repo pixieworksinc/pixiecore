@@ -1,0 +1,280 @@
+schema: pixiecore.blueprint-eval-dataset/v1
+name: Travel form and document evidence verification
+version: 1.0.0
+description: Exact, tolerant numeric, mismatch, missing, and unreadable source boundaries.
+blueprint:
+  path: ../travel-document-evidence.yaml
+  version: 1.0.1
+tags: [standard-library, verifier, travel-request, evidence]
+cases:
+  - id: all-fields-match
+    description: Every submitted value exactly matches typed document evidence.
+    tags: [verified, exact]
+    inputs:
+      submitted_fields:
+        traveler_name: &submitted_name Alex Morgan
+        document_number: &submitted_document TR-2026-0042
+        start_date: &submitted_start '2026-09-14'
+        end_date: &submitted_end '2026-09-18'
+        total_amount: &submitted_amount 2840.5
+        currency: &submitted_currency USD
+      extracted_fields:
+        traveler_name: &extracted_name
+          status: found
+          value: Alex Morgan
+          evidence: &name_evidence { page: 1, text: 'Traveler: Alex Morgan' }
+        document_number: &extracted_document
+          status: found
+          value: TR-2026-0042
+          evidence: &document_evidence { page: 1, text: 'Request: TR-2026-0042' }
+        start_date: &extracted_start
+          status: found
+          value: '2026-09-14'
+          evidence: &start_evidence { page: 1, text: 'Start: 2026-09-14' }
+        end_date: &extracted_end
+          status: found
+          value: '2026-09-18'
+          evidence: &end_evidence { page: 1, text: 'End: 2026-09-18' }
+        total_amount: &extracted_amount
+          status: found
+          value: 2840.5
+          evidence: &amount_evidence { page: 2, text: 'Total: USD 2,840.50' }
+        currency: &extracted_currency
+          status: found
+          value: USD
+          evidence: &currency_evidence { page: 2, text: 'Total: USD 2,840.50' }
+      comparison_policy: &policy
+        version: 2026.1.0
+        string_mode: exact
+        numeric_tolerance: 0.01
+    expected_output:
+      overall_status: verified
+      policy_version: 2026.1.0
+      field_results:
+        - &matched_name { field: traveler_name, status: matched, submitted_value: Alex Morgan, extracted_value: Alex Morgan, evidence: *name_evidence, reason_code: exact_match }
+        - &matched_document { field: document_number, status: matched, submitted_value: TR-2026-0042, extracted_value: TR-2026-0042, evidence: *document_evidence, reason_code: exact_match }
+        - &matched_start { field: start_date, status: matched, submitted_value: '2026-09-14', extracted_value: '2026-09-14', evidence: *start_evidence, reason_code: exact_match }
+        - &matched_end { field: end_date, status: matched, submitted_value: '2026-09-18', extracted_value: '2026-09-18', evidence: *end_evidence, reason_code: exact_match }
+        - &matched_amount { field: total_amount, status: matched, submitted_value: 2840.5, extracted_value: 2840.5, evidence: *amount_evidence, reason_code: exact_match }
+        - &matched_currency { field: currency, status: matched, submitted_value: USD, extracted_value: USD, evidence: *currency_evidence, reason_code: exact_match }
+    comparison: { mode: exact }
+
+  - id: amount-mismatch
+    description: A mismatch preserves both numeric values and the source evidence.
+    tags: [mismatch, numeric]
+    inputs:
+      submitted_fields:
+        traveler_name: *submitted_name
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: *submitted_end
+        total_amount: 3000
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: *extracted_name
+        document_number: *extracted_document
+        start_date: *extracted_start
+        end_date: *extracted_end
+        total_amount: *extracted_amount
+        currency: *extracted_currency
+      comparison_policy: *policy
+    expected_output:
+      overall_status: mismatch
+      policy_version: 2026.1.0
+      field_results:
+        - *matched_name
+        - *matched_document
+        - *matched_start
+        - *matched_end
+        - { field: total_amount, status: mismatched, submitted_value: 3000, extracted_value: 2840.5, evidence: *amount_evidence, reason_code: value_mismatch }
+        - *matched_currency
+    comparison: { mode: exact }
+
+  - id: amount-within-tolerance
+    description: A non-equal numeric value within tolerance remains matched explicitly.
+    tags: [verified, numeric-tolerance]
+    inputs:
+      submitted_fields:
+        traveler_name: *submitted_name
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: *submitted_end
+        total_amount: 2840.505
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: *extracted_name
+        document_number: *extracted_document
+        start_date: *extracted_start
+        end_date: *extracted_end
+        total_amount: *extracted_amount
+        currency: *extracted_currency
+      comparison_policy: *policy
+    expected_output:
+      overall_status: verified
+      policy_version: 2026.1.0
+      field_results:
+        - *matched_name
+        - *matched_document
+        - *matched_start
+        - *matched_end
+        - { field: total_amount, status: matched, submitted_value: 2840.505, extracted_value: 2840.5, evidence: *amount_evidence, reason_code: numeric_match_within_tolerance }
+        - *matched_currency
+    comparison: { mode: exact }
+
+  - id: document-number-not-found
+    description: Missing source data is unverified rather than mismatched.
+    tags: [incomplete, source-not-found]
+    inputs:
+      submitted_fields:
+        traveler_name: *submitted_name
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: *submitted_end
+        total_amount: *submitted_amount
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: *extracted_name
+        document_number: { status: not_found, value: null, evidence: null }
+        start_date: *extracted_start
+        end_date: *extracted_end
+        total_amount: *extracted_amount
+        currency: *extracted_currency
+      comparison_policy: *policy
+    expected_output:
+      overall_status: incomplete
+      policy_version: 2026.1.0
+      field_results:
+        - *matched_name
+        - { field: document_number, status: unverified, submitted_value: TR-2026-0042, extracted_value: null, evidence: null, reason_code: source_not_found }
+        - *matched_start
+        - *matched_end
+        - *matched_amount
+        - *matched_currency
+    comparison: { mode: exact }
+
+  - id: currency-unreadable
+    description: Unreadable evidence retains its page context without inventing a value.
+    tags: [incomplete, source-unreadable]
+    inputs:
+      submitted_fields:
+        traveler_name: *submitted_name
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: *submitted_end
+        total_amount: *submitted_amount
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: *extracted_name
+        document_number: *extracted_document
+        start_date: *extracted_start
+        end_date: *extracted_end
+        total_amount: *extracted_amount
+        currency:
+          status: unreadable
+          value: null
+          evidence: &unreadable_currency { page: 2, text: 'Currency cell is blurred' }
+      comparison_policy: *policy
+    expected_output:
+      overall_status: incomplete
+      policy_version: 2026.1.0
+      field_results:
+        - *matched_name
+        - *matched_document
+        - *matched_start
+        - *matched_end
+        - *matched_amount
+        - { field: currency, status: unverified, submitted_value: USD, extracted_value: null, evidence: *unreadable_currency, reason_code: source_unreadable }
+    comparison: { mode: exact }
+
+  - id: end-date-not-submitted
+    description: A missing submitted value remains unverified even when evidence exists.
+    tags: [incomplete, missing-submission]
+    inputs:
+      submitted_fields:
+        traveler_name: *submitted_name
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: null
+        total_amount: *submitted_amount
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: *extracted_name
+        document_number: *extracted_document
+        start_date: *extracted_start
+        end_date: *extracted_end
+        total_amount: *extracted_amount
+        currency: *extracted_currency
+      comparison_policy: *policy
+    expected_output:
+      overall_status: incomplete
+      policy_version: 2026.1.0
+      field_results:
+        - *matched_name
+        - *matched_document
+        - *matched_start
+        - { field: end_date, status: unverified, submitted_value: null, extracted_value: '2026-09-18', evidence: *end_evidence, reason_code: missing_submission }
+        - *matched_amount
+        - *matched_currency
+    comparison: { mode: exact }
+
+  - id: mismatch-precedes-incomplete
+    description: Any mismatch determines overall status even when another source is absent.
+    tags: [mismatch, incomplete, precedence]
+    inputs:
+      submitted_fields:
+        traveler_name: Taylor Reed
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: *submitted_end
+        total_amount: *submitted_amount
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: *extracted_name
+        document_number: *extracted_document
+        start_date: *extracted_start
+        end_date: *extracted_end
+        total_amount: { status: not_found, value: null, evidence: null }
+        currency: *extracted_currency
+      comparison_policy: *policy
+    expected_output:
+      overall_status: mismatch
+      policy_version: 2026.1.0
+      field_results:
+        - { field: traveler_name, status: mismatched, submitted_value: Taylor Reed, extracted_value: Alex Morgan, evidence: *name_evidence, reason_code: value_mismatch }
+        - *matched_document
+        - *matched_start
+        - *matched_end
+        - { field: total_amount, status: unverified, submitted_value: 2840.5, extracted_value: null, evidence: null, reason_code: source_not_found }
+        - *matched_currency
+    comparison: { mode: exact }
+
+  - id: no-source-fields-found
+    description: Complete source absence produces only unverified field results.
+    tags: [incomplete, all-source-not-found]
+    inputs:
+      submitted_fields:
+        traveler_name: *submitted_name
+        document_number: *submitted_document
+        start_date: *submitted_start
+        end_date: *submitted_end
+        total_amount: *submitted_amount
+        currency: *submitted_currency
+      extracted_fields:
+        traveler_name: { status: not_found, value: null, evidence: null }
+        document_number: { status: not_found, value: null, evidence: null }
+        start_date: { status: not_found, value: null, evidence: null }
+        end_date: { status: not_found, value: null, evidence: null }
+        total_amount: { status: not_found, value: null, evidence: null }
+        currency: { status: not_found, value: null, evidence: null }
+      comparison_policy: *policy
+    expected_output:
+      overall_status: incomplete
+      policy_version: 2026.1.0
+      field_results:
+        - { field: traveler_name, status: unverified, submitted_value: Alex Morgan, extracted_value: null, evidence: null, reason_code: source_not_found }
+        - { field: document_number, status: unverified, submitted_value: TR-2026-0042, extracted_value: null, evidence: null, reason_code: source_not_found }
+        - { field: start_date, status: unverified, submitted_value: '2026-09-14', extracted_value: null, evidence: null, reason_code: source_not_found }
+        - { field: end_date, status: unverified, submitted_value: '2026-09-18', extracted_value: null, evidence: null, reason_code: source_not_found }
+        - { field: total_amount, status: unverified, submitted_value: 2840.5, extracted_value: null, evidence: null, reason_code: source_not_found }
+        - { field: currency, status: unverified, submitted_value: USD, extracted_value: null, evidence: null, reason_code: source_not_found }
+    comparison: { mode: exact }
