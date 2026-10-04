@@ -6,6 +6,9 @@ directory.
 
 ## Start here
 
+- [POP principles for 0.2 development](specification/pop-principles.md)
+- [0.2 development and migration](project/0.2-development.md)
+- [LLM Customer discount example](../examples/customer-discount/README.md)
 - [Five-minute quickstart](guides/getting-started.md)
 - [Blueprint tutorial](guides/tutorial.md)
 - [Architecture guide](architecture/architecture.md)

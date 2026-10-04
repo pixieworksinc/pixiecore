@@ -18,13 +18,13 @@ path, not whether an external user relies on it.
 | Surface | Count | Repository-owned evidence | Retention decision |
 |---|---:|---|---|
 | Executable entry points | 17 | Root and every listed subpath are fixed by `tests/contract/public-exports.contract.test.ts`; examples additionally import the root, `application`, `eval`, `plugin`, and `telemetry` paths. | Retain. Each is a declared runtime contract. |
-| JSON Schema assets | 33 | Contract tests compile or validate the corresponding artifacts, and package verification confirms they ship in the tarball. | Retain. A schema is a machine-readable external contract, not an internal module dependency. |
+| JSON Schema assets | 34 | Contract tests compile or validate the corresponding artifacts, and package verification confirms they ship in the tarball. | Retain. A schema is a machine-readable external contract, not an internal module dependency. |
 | Conformance suite assets | 2 | Portable-conformance tests read and validate the suites, and independent adapters consume them. | Retain. They are language-neutral interoperability fixtures. |
 | Standard Recipe YAML | 1 | Core Recipe generator, Recipe schema tests, and package verification validate it. | Retain. It fixes the mandatory core composition. |
 | Package metadata | 1 | Node package resolution and package verification consume it. | Retain. It is the package boundary itself. |
 
-The inventory is 54 declared export paths: 17 executable entries and 37 data
-assets. The data-asset count is 33 schemas, two conformance suites, one Recipe,
+The inventory is 55 declared export paths: 17 executable entries and 38 data
+assets. The data-asset count is 34 schemas, two conformance suites, one Recipe,
 and `package.json`.
 
 ## Executable entry points

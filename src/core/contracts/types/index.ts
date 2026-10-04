@@ -64,7 +64,29 @@ export interface InputPlaceholder {
 }
 
 /**
- * Describes the blueprint contract.
+ * Describes one Role's instructions inside a structured prompt.
+ */
+export interface ScenarioPromptStep {
+  Role: string;
+  Instruction: {
+    Given: string;
+    When: string;
+    Then: string;
+    And?: string | string[];
+  };
+}
+
+/**
+ * Describes prompt-first business logic with ordered, LLM-executed Roles.
+ */
+export interface ScenarioPrompt {
+  agent_role?: string;
+  Scenario: ScenarioPromptStep[];
+}
+
+/**
+ * Describes the validated runtime blueprint contract. Structured source prompts
+ * are normalized to YAML text before input binding and Role plugin execution.
  */
 export interface Blueprint {
   name: string;

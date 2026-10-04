@@ -32,6 +32,7 @@ const EXPECTED_PACKAGE_EXPORTS = [
   './blueprint/package-schema.json',
   './blueprint/quality-catalog-schema.json',
   './blueprint/schema.json',
+  './blueprint/v1-schema.json',
   './cache',
   './cache/record-schema.json',
   './conformance',
@@ -76,10 +77,10 @@ const EXPECTED_PACKAGE_EXPORTS = [
 ];
 const EXPECTED_BIN_NAMES = ['pixiecore'];
 const PACKAGE_FOOTPRINT_BUDGET = Object.freeze({
-  maxFileCount: 525,
-  // Includes the deterministic built-in evaluation comparators shipped with
-  // the public evaluation runner. Keep this a ratchet, not a growth target.
-  maxUnpackedBytes: 1_215_000,
+  maxFileCount: 527,
+  // Includes the v2 Scenario schema, its serializer, and public authoring types
+  // while retaining the legacy v1 schema. Measured 0.2 footprint: 1,224,931 bytes.
+  maxUnpackedBytes: 1_226_000,
 });
 const EXPECTED_API_EXPORT = Object.freeze({
   types: './dist/core/kernel/api/index.d.ts',
@@ -144,7 +145,7 @@ const EXPECTED_MCP_SERVER_EXPORT = Object.freeze({
 });
 const EXPECTED_PLUGIN_SCHEMA_TARGET = './schemas/pixiecore.plugin-v1.schema.json';
 const EXPECTED_ADOPTION_SNAPSHOT_SCHEMA_TARGET = './schemas/pixiecore.adoption-snapshot-v1.schema.json';
-const EXPECTED_BLUEPRINT_SCHEMA_TARGET = './schemas/pixiecore.blueprint-v1.schema.json';
+const EXPECTED_BLUEPRINT_SCHEMA_TARGET = './schemas/pixiecore.blueprint-v2.schema.json';
 const EXPECTED_BLUEPRINT_PACKAGE_SCHEMA_TARGET = './schemas/pixiecore.blueprint-package-v1.schema.json';
 const EXPECTED_BLUEPRINT_QUALITY_CATALOG_SCHEMA_TARGET = './schemas/pixiecore.blueprint-quality-catalog-v1.schema.json';
 const EXPECTED_PLUGIN_PACKAGE_SCHEMA_TARGET = './schemas/pixiecore.plugin-package-v1.schema.json';
@@ -296,6 +297,10 @@ try {
   assert.equal(
     installedManifest.exports?.['./blueprint/schema.json'],
     EXPECTED_BLUEPRINT_SCHEMA_TARGET,
+  );
+  assert.equal(
+    installedManifest.exports?.['./blueprint/v1-schema.json'],
+    './schemas/pixiecore.blueprint-v1.schema.json',
   );
   assert.equal(
     installedManifest.exports?.['./blueprint/package-schema.json'],
@@ -1435,6 +1440,7 @@ function consumerSmokeSource(snapshot, manifest, installedMcpPath, packageDirect
     import { fileURLToPath } from 'node:url';
     import packageJson from '@pixieworks/pixiecore/package.json' with { type: 'json' };
     import blueprintSchema from '@pixieworks/pixiecore/blueprint/schema.json' with { type: 'json' };
+    import legacyBlueprintSchema from '@pixieworks/pixiecore/blueprint/v1-schema.json' with { type: 'json' };
     import blueprintPackageSchema from '@pixieworks/pixiecore/blueprint/package-schema.json' with { type: 'json' };
     import blueprintQualityCatalogSchema from '@pixieworks/pixiecore/blueprint/quality-catalog-schema.json' with { type: 'json' };
     import pluginSchema from '@pixieworks/pixiecore/plugin/schema.json' with { type: 'json' };
@@ -1513,7 +1519,8 @@ function consumerSmokeSource(snapshot, manifest, installedMcpPath, packageDirect
     assert.deepEqual(Object.keys(telemetry).sort(), [...snapshot['@pixieworks/pixiecore/telemetry']].sort());
     assert.equal(packageJson.name, expectedPackage.name);
     assert.equal(packageJson.version, expectedPackage.version);
-    assert.equal(blueprintSchema.title, 'PixieCore Blueprint v1');
+    assert.equal(blueprintSchema.title, 'PixieCore Blueprint v2');
+    assert.equal(legacyBlueprintSchema.title, 'PixieCore Blueprint v1');
     assert.equal(blueprintPackageSchema.properties.schema.const, 'pixiecore.blueprint-package/v1');
     assert.equal(blueprintQualityCatalogSchema.properties.schema.const, 'pixiecore.blueprint-quality-catalog/v1');
     assert.deepEqual(
@@ -1776,6 +1783,27 @@ function consumerSmokeSource(snapshot, manifest, installedMcpPath, packageDirect
     try {
       const result = await runtime.executeYaml(blueprint);
       assert.deepEqual(result, { message: 'installed' });
+      const scenarioSource = JSON.stringify({
+        name: 'Installed Scenario prompt',
+        version: '1.0.0',
+        role: 'assistant',
+        input_placeholders: [{ name: 'value', type: 'number', required: true }],
+        prompt: { Scenario: [{
+          Role: 'reasoning-hint-without-plugin',
+          Instruction: {
+            Given: 'Input {{ value }}',
+            When: 'Review the input',
+            Then: 'Return the installed smoke result',
+          },
+        }] },
+        output_schema: {
+          type: 'object',
+          required: ['message'],
+          properties: { message: { type: 'string' } },
+        },
+      });
+      assert.deepEqual(await runtime.executeYaml(scenarioSource, { value: 42 }),
+        { message: 'installed' });
     } finally {
       await runtime.close();
     }

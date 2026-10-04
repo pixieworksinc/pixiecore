@@ -7,11 +7,11 @@ import { Ajv2020 } from 'ajv/dist/2020.js';
 import YAML from 'yaml';
 
 const projectRoot = fileURLToPath(new URL('../../', import.meta.url));
-const schemaPath = join(projectRoot, 'schemas', 'pixiecore.blueprint-v1.schema.json');
+const schemaPath = join(projectRoot, 'schemas', 'pixiecore.blueprint-v2.schema.json');
 const schema = JSON.parse(await readFile(schemaPath, 'utf8')) as object;
 const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
 
-test('published Blueprint schema accepts every packaged Blueprint example', async () => {
+test('current Blueprint schema accepts every repository Blueprint example', async () => {
   const yamlPaths = await collectYamlFiles(join(projectRoot, 'examples'));
   let blueprintCount = 0;
 
@@ -23,6 +23,30 @@ test('published Blueprint schema accepts every packaged Blueprint example', asyn
   }
 
   assert.ok(blueprintCount > 0, 'Expected at least one packaged Blueprint example');
+});
+
+test('v2 Scenario schema agrees with runtime validation while v1 remains text-only', async () => {
+  const candidate = YAML.parse(await readFile(
+    join(projectRoot, 'examples/customer-discount/customer-discount.yaml'), 'utf8',
+  )) as Record<string, unknown>;
+  assert.equal(validate(candidate), true, JSON.stringify(validate.errors));
+  const legacy = JSON.parse(await readFile(
+    join(projectRoot, 'schemas/pixiecore.blueprint-v1.schema.json'), 'utf8',
+  )) as object;
+  const validateLegacy = new Ajv2020({ strict: true }).compile(legacy);
+  assert.equal(validateLegacy(candidate), false);
+  assert.equal(validateLegacy({ ...candidate, prompt: 'Return JSON.' }), true);
+  const instruction = { Given: 'Input', When: 'Check', Then: 'Return' };
+  const invalid = [
+    { Scenario: [] },
+    { Scenario: [{ Role: '', Instruction: instruction }] },
+    { Scenario: [{ Role: 'classifier', Instruction: { ...instruction, Given: 1 } }] },
+    { Scenario: [{ Role: 'classifier', Instruction: { ...instruction, And: [] } }] },
+    { Scenario: [{ Role: 'classifier', Instruction: { ...instruction, extra: 'typo' } }] },
+    { agent_role: '', Scenario: [{ Role: 'classifier', Instruction: instruction }] },
+    { extra: 'typo', Scenario: [{ Role: 'classifier', Instruction: instruction }] },
+  ];
+  for (const prompt of invalid) assert.equal(validate({ ...candidate, prompt }), false);
 });
 
 test('published Blueprint schema describes supported fields and extension points', () => {
