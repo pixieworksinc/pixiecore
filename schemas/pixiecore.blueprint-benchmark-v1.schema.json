@@ -125,6 +125,11 @@
         "seed": { "$ref": "#/$defs/text" },
         "summary": { "$ref": "#/$defs/summary" },
         "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "const": "factuality_not_evaluated" }
+        },
         "latency_ms": { "$ref": "#/$defs/metric" },
         "input_tokens": { "$ref": "#/$defs/nullableMetric" },
         "output_tokens": { "$ref": "#/$defs/nullableMetric" },
@@ -143,6 +148,11 @@
         "pricing": { "oneOf": [{ "$ref": "#/$defs/pricing" }, { "type": "null" }] },
         "totals": { "$ref": "#/$defs/summary" },
         "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "const": "factuality_not_evaluated" }
+        },
         "accuracy_standard_deviation": { "$ref": "#/$defs/metric" },
         "latency_ms": { "$ref": "#/$defs/latency" },
         "usage": { "oneOf": [{ "$ref": "#/$defs/usage" }, { "type": "null" }] },

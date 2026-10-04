@@ -107,12 +107,17 @@ export interface EvaluationDifference {
   readonly detail?: string;
 }
 
+/** Identifies a known limit of a comparison, not a failed assertion. */
+export type EvaluationLimitation = 'factuality_not_evaluated';
+
 /**
  * Describes the result of evaluation comparison.
  */
 export interface EvaluationComparisonResult {
   readonly passed: boolean;
   readonly differences: readonly EvaluationDifference[];
+  /** Absence does not establish factuality; consult the comparison policy. */
+  readonly limitations?: readonly EvaluationLimitation[];
 }
 
 /**
@@ -164,6 +169,7 @@ export interface BlueprintEvaluationCaseResult {
   readonly provider_usage?: readonly BlueprintProviderUsage[];
   readonly actual_output?: JsonObject;
   readonly differences?: readonly EvaluationDifference[];
+  readonly limitations?: readonly EvaluationLimitation[];
   readonly error?: {
     readonly name: string;
     readonly message: string;
@@ -355,6 +361,7 @@ export interface BlueprintBenchmarkRunResult {
   readonly seed: string;
   readonly summary: BlueprintEvaluationResultArtifact['summary'];
   readonly accuracy: number;
+  readonly limitations?: readonly EvaluationLimitation[];
   readonly latency_ms: number;
   readonly input_tokens: number | null;
   readonly output_tokens: number | null;
@@ -372,6 +379,7 @@ export interface BlueprintBenchmarkTargetResult {
   readonly pricing: BlueprintBenchmarkPricing | null;
   readonly totals: BlueprintEvaluationResultArtifact['summary'];
   readonly accuracy: number;
+  readonly limitations?: readonly EvaluationLimitation[];
   readonly accuracy_standard_deviation: number;
   readonly latency_ms: {
     readonly mean: number;

@@ -180,6 +180,15 @@ test('evaluation runner supplies inputs to the built-in traceable-summary compar
     },
   });
   assert.deepEqual(artifact.summary, { total: 8, passed: 8, failed: 0, errors: 0 });
+  for (const result of artifact.cases) {
+    assert.deepEqual(result.limitations, ['factuality_not_evaluated']);
+  }
+  const schema = JSON.parse(await readFile('schemas/pixiecore.blueprint-eval-result-v1.schema.json', 'utf8'));
+  const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
+  assert.equal(validate(artifact), true, JSON.stringify(validate.errors));
+  const legacy = structuredClone(artifact);
+  for (const result of legacy.cases) Reflect.deleteProperty(result, 'limitations');
+  assert.equal(validate(legacy), true, JSON.stringify(validate.errors));
 });
 
 test('evaluation runner rejects invalid datasets, duplicate IDs, version mismatch, and Blueprint path escape', async () => {

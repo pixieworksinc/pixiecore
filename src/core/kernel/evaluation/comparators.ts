@@ -73,7 +73,10 @@ function schemaResult(
   const differences: EvaluationDifference[] = [];
   if (!validate(expected)) differences.push(...schemaDifferences('expected', validate.errors));
   if (!validate(actual)) differences.push(...schemaDifferences('actual', validate.errors));
-  return result(differences);
+  return Object.freeze({
+    ...result(differences),
+    limitations: Object.freeze(['factuality_not_evaluated'] as const),
+  });
 }
 
 function schemaDifferences(
@@ -172,6 +175,9 @@ async function customResult(
   return Object.freeze({
     passed: comparison.passed,
     differences: Object.freeze([...comparison.differences]),
+    ...(comparison.limitations === undefined
+      ? {}
+      : { limitations: Object.freeze([...comparison.limitations]) }),
   });
 }
 
@@ -181,6 +187,13 @@ function assertComparisonResult(value: EvaluationComparisonResult, comparatorId:
   }
   if (value.passed !== (value.differences.length === 0)) {
     throw new TypeError(`Evaluation comparator returned an inconsistent result: ${comparatorId}`);
+  }
+  if (value.limitations !== undefined && (
+    !Array.isArray(value.limitations)
+    || [...value.limitations].some(item => item !== 'factuality_not_evaluated')
+    || new Set(value.limitations).size !== value.limitations.length
+  )) {
+    throw new TypeError(`Evaluation comparator returned invalid limitations: ${comparatorId}`);
   }
 }
 

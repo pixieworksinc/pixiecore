@@ -2,8 +2,8 @@
  * Provides deterministic provenance checks for natural-language summaries.
  *
  * This comparator deliberately does not attempt to judge prose similarity.
- * It checks the typed facts and traceability invariants a summarizer can prove
- * without an additional model call.
+ * It checks source-field availability and declared traceability invariants,
+ * not whether a claim is supported by the meaning of its cited input.
  */
 
 import type {
@@ -39,7 +39,7 @@ export function getBuiltInEvaluationComparator(
 }
 
 /**
- * Validates a summary by using its claim provenance and source-field partition.
+ * Validates a summary by using declared claim provenance and source-field partition.
  *
  * The result is deterministic: it does not call a provider, embed an evaluator
  * model, or accept a sentence merely because it resembles the expected prose.
@@ -339,5 +339,6 @@ function comparison(differences: readonly EvaluationDifference[]): EvaluationCom
   return Object.freeze({
     passed: differences.length === 0,
     differences: Object.freeze([...differences]),
+    limitations: Object.freeze(['factuality_not_evaluated'] as const),
   });
 }

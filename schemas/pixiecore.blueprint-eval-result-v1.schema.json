@@ -90,6 +90,11 @@
           "items": { "$ref": "#/$defs/nonBlankString" }
         },
         "status": { "enum": ["passed", "failed", "error"] },
+        "limitations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "const": "factuality_not_evaluated" }
+        },
         "duration_ms": { "type": "number", "minimum": 0 },
         "provider_usage": {
           "type": "array",

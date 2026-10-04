@@ -15,6 +15,15 @@ Changes below are not part of the published `0.1.0` artifact.
   verification gates for the next release. Trusted publisher registration is
   not yet evidence of an OIDC-authenticated publication.
 
+### Fixed
+
+- Detect fine-grained GitHub tokens and reject environment-file variants in
+  public source snapshots without exposing matched credential values.
+- Recheck the approved tag object around GitHub Release writes and final
+  verification; fail closed on changed tags without deleting remote state.
+- Preserve explicit factuality limitations in structural-summary evaluation
+  results and reports. Comparator pass rates are not factual-accuracy claims.
+
 ## 0.1.0 - 2026-10-03
 
 ### Added

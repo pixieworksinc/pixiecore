@@ -15,10 +15,12 @@ import {
   runOpenAIBlueprintMatrix,
 } from '../../examples/benchmarks/openai-blueprint-matrix.js';
 import { withTempDirectory } from '../helpers/temp.js';
+import { testData } from '../helpers/test-data.js';
 
 const sourceManifestPath = resolve('examples/benchmarks/openai-blueprint-run-manifest.json');
 const fakeKey = 'offline-secret-value-that-must-not-be-persisted';
 const sourceRevision = '0123456789abcdef0123456789abcdef01234567';
+const data = testData('OpenAI matrix limitations');
 
 test('OpenAI matrix CLI requires live confirmations but dry-run reads no credential', async () => {
   assert.throws(
@@ -160,6 +162,60 @@ test('fake OpenAI canary checkpoints tokens and cost without persisting secret v
       runOpenAIBlueprintMatrix(command, dependencies(directory, usageResponse(1, 1))),
       /EEXIST/u,
     );
+  });
+});
+
+test('value-free canary checkpoints retain structural comparison limitations', async () => {
+  await withTempDirectory(async directory => {
+    const manifestPath = await writeManifest(directory);
+    const command = liveCommand(manifestPath, data.text('limited canary', 'run'), data.text('limited seed', 'seed'));
+    const result = await runOpenAIBlueprintMatrix(command, {
+      ...dependencies(directory, usageResponse(1, 1)),
+      runPlayground: async options => {
+        const artifact = await fakePlayground(options);
+        return {
+          ...artifact,
+          real: {
+            ...artifact.real!,
+            comparison: {
+              ...artifact.real!.comparison,
+              limitations: ['factuality_not_evaluated'] as const,
+            },
+          },
+        };
+      },
+    });
+    const checkpoint = JSON.parse(await readFile(result.checkpointPath!, 'utf8'));
+    assert.deepEqual(checkpoint.results[0].cases[0].limitations, ['factuality_not_evaluated']);
+    assert.equal(checkpoint.results[0].summary.passed, 1);
+    assert.doesNotMatch(JSON.stringify(checkpoint), /actual_output|expected_output|offline-secret/u);
+  });
+});
+
+test('value-free full-dataset checkpoints retain comparison limitations from the runner', async () => {
+  await withTempDirectory(async directory => {
+    const manifestPath = await writeManifest(directory, manifest => ({
+      ...manifest,
+      phases: manifest.phases.map(phase => {
+        if (phase.id !== 'canary') return phase;
+        const { case_ids: _selected, ...fullDataset } = phase;
+        return fullDataset;
+      }),
+    }));
+    const datasetPath = resolve(directory, 'fixture', 'dataset.yaml');
+    const dataset = await readFile(datasetPath, 'utf8');
+    await writeFile(datasetPath, dataset
+      .replace('mode: exact', 'mode: schema')
+      .replace('\ncases:', '\ntags: [contract]\ncases:')
+      .replace('\n    inputs:', '\n    tags: [contract]\n    inputs:'), 'utf8');
+    const result = await runOpenAIBlueprintMatrix(
+      liveCommand(manifestPath, data.text('limited full run', 'run'), data.text('limited full seed', 'seed')),
+      dependencies(directory, usageResponse(1, 1)),
+    );
+    const checkpoint = JSON.parse(await readFile(result.checkpointPath!, 'utf8'));
+    assert.equal(checkpoint.status, 'completed');
+    assert.equal(checkpoint.results[0].summary.passed, 1);
+    assert.deepEqual(checkpoint.results[0].cases[0].limitations, ['factuality_not_evaluated']);
   });
 });
 
