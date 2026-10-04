@@ -246,6 +246,7 @@ jobs:
           PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
         run: |
           node scripts/release/github-release.mjs \
+            --tag-object="${{ needs.build.outputs.tag_object }}" \
             --version="$PIXIECORE_RELEASE_VERSION" \
             --source-revision="${{ needs.build.outputs.revision }}" \
             --output=release

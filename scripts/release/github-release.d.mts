@@ -5,6 +5,8 @@ export function completeGitHubRelease(
   manifest: Readonly<ReleaseArtifactManifest>,
   options: {
     outputDirectory: string;
+    /** Immutable annotated tag object admitted by candidate verification. */
+    tagObjectId: string;
     repository?: string;
     fetchImpl?: typeof fetch;
     run?: (command: string, args: string[]) => Promise<unknown>;

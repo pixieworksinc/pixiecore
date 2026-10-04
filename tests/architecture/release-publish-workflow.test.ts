@@ -186,6 +186,8 @@ test('privileged jobs check out only the immutable tag object admitted by the bu
   for (const name of ['Verify candidate source and signed tag', 'Verify signed candidate bytes']) {
     assert.match(namedStep('build', name).run ?? '', /--tag-object="\$\{\{ steps\.release_source\.outputs\.tag_object \}\}"/u);
   }
+  assert.match(namedStep('github_release', 'Create GitHub release with verified artifacts').run ?? '',
+    /--tag-object="\$\{\{ needs\.build\.outputs\.tag_object \}\}"/u);
 });
 
 function namedStep(jobName: keyof Workflow['jobs'], name: string): Step {

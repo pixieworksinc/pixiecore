@@ -176,6 +176,18 @@ complete fields. An existing release with a different digest, source revision,
 tag, or assets fails closed. A failed-job retry resumes an approved draft; it
 does not create a second release or replace its files.
 
+The release command receives the exact annotated tag object admitted by the
+build job. It checks the live remote tag before and after draft creation, before
+resuming assets or adding missing assets, immediately before publication, and
+after the final release readback, including already published releases. A moved,
+deleted or lightweight replacement tag, or a failed tag lookup, stops the job.
+Detection does not roll back or delete a draft, asset or published release; a
+failure after publication requires a maintainer to inspect the remote state.
+These checks narrow and detect race windows but cannot eliminate them: GitHub
+does not atomically lock the tag reference with release writes, and a tag can
+change between checks or after the final read. Protected, immutable release tags
+and coordinated maintainer access remain required.
+
 The candidate transfer uses the pinned action's
 [cross-run artifact inputs](https://github.com/actions/download-artifact/blob/v4.3.0/action.yml)
 and checks the [artifact provenance returned by GitHub](https://docs.github.com/en/rest/actions/artifacts?apiVersion=2022-11-28).
