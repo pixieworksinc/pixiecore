@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
 import { assertStableReleaseVersion, verifyReleaseArtifactIdentity } from './verify-artifact.mjs';
+import { assertCurrentTagReference } from './verify-promotion.mjs';
 
 const execFileAsync = promisify(execFile);
 const REPOSITORY = 'pixieworksinc/pixiecore';
@@ -18,24 +19,30 @@ const CREATED_RELEASE_DELAY_MS = 1_000;
 
 /** Resumes only a release with the approved identity, digest and already uploaded bytes. */
 export async function completeGitHubRelease(manifest, {
-  outputDirectory, repository = REPOSITORY, fetchImpl = fetch, run = execFileAsync,
+  outputDirectory, tagObjectId, repository = REPOSITORY, fetchImpl = fetch, run = execFileAsync,
   wait = delay => new Promise(resolveDelay => setTimeout(resolveDelay, delay)),
 }) {
   assertStableReleaseVersion(manifest.version);
   if (repository !== REPOSITORY) throw new Error('Unexpected release repository');
   const files = [manifest.tarball, 'release-manifest.json'];
-  const endpoint = `https://api.github.com/repos/${repository}/releases`;
+  const endpoint = `https://api.github.com/repos/${repository}`;
   const request = async path => fetchImpl(`${endpoint}${path}`, {
     headers: { authorization: `Bearer ${process.env.GH_TOKEN ?? ''}`, accept: 'application/vnd.github+json' },
     redirect: 'error', signal: AbortSignal.timeout(30_000),
   });
+  /** Rechecks the approved annotation; release metadata and --verify-tag prove no such binding. */
+  const verifyCurrentTag = async () => {
+    const response = await request(`/git/ref/tags/${manifest.version}`);
+    if (!response.ok) throw new Error(`GitHub release tag lookup failed: HTTP ${response.status}`);
+    assertCurrentTagReference(await response.json(), { tagId: tagObjectId, version: manifest.version });
+  };
   /** Includes authenticated drafts, which the published-by-tag endpoint may omit. */
   const lookup = async () => {
-    const response = await request(`/tags/${manifest.version}`);
+    const response = await request(`/releases/tags/${manifest.version}`);
     if (response.ok) return response.json();
     if (response.status !== 404) throw new Error(`GitHub release lookup failed: HTTP ${response.status}`);
     for (let page = 1; page <= 20; page++) {
-      const listed = await request(`?per_page=100&page=${page}`);
+      const listed = await request(`/releases?per_page=100&page=${page}`);
       if (!listed.ok) throw new Error(`GitHub release lookup failed: HTTP ${listed.status}`);
       const releases = await listed.json();
       if (!Array.isArray(releases)) throw new Error('Malformed GitHub release list');
@@ -45,16 +52,20 @@ export async function completeGitHubRelease(manifest, {
     }
     throw new Error('Release lookup exceeded its safe pagination limit');
   };
+  await verifyCurrentTag();
   let release = await lookup();
   if (!release) {
+    await verifyCurrentTag();
     await run('gh', [
       'release', 'create', manifest.version, ...files.map(file => join(outputDirectory, file)),
       '--repo', repository, '--title', `PixieCore ${manifest.version}`,
       '--notes', releaseDigestNotes(manifest), '--generate-notes', '--verify-tag', '--draft',
     ]);
+    await verifyCurrentTag();
     release = await waitForCreatedRelease(lookup, manifest, wait);
   }
   assertGitHubReleaseIdentity(release, manifest);
+  await verifyCurrentTag();
 
   // Verify all existing assets before uploading any missing one. Never use --clobber.
   const temporary = await mkdtemp(join(tmpdir(), 'pixiecore-release-resume-'));
@@ -72,6 +83,7 @@ export async function completeGitHubRelease(manifest, {
       await verifyAsset(file);
     }
     for (const file of files.filter(name => !release.assets.some(asset => asset.name === name))) {
+      await verifyCurrentTag();
       await run('gh', ['release', 'upload', manifest.version, join(outputDirectory, file), '--repo', repository]);
       await verifyAsset(file);
     }
@@ -80,11 +92,14 @@ export async function completeGitHubRelease(manifest, {
     if (complete.assets.length !== files.length) throw new Error('Release assets are incomplete');
     if (complete.draft) {
       // Publish only after verifying every asset; never edit mismatched notes or clobber files.
+      await verifyCurrentTag();
       await run('gh', ['release', 'edit', manifest.version, '--repo', repository, '--draft=false']);
       const published = await lookup();
       assertGitHubReleaseIdentity(published, manifest);
       if (published.draft || published.assets.length !== files.length) throw new Error('Release publication not confirmed');
     }
+    // Also cover existing published releases. GitHub cannot atomically lock this ref with a release write.
+    await verifyCurrentTag();
   } finally {
     await rm(temporary, { recursive: true, force: true });
   }
@@ -155,7 +170,9 @@ async function main() {
   const manifest = await verifyReleaseArtifactIdentity({
     outputDirectory: option('output'), sourceRevision: option('source-revision'), version: option('version'),
   });
-  await completeGitHubRelease(manifest, { outputDirectory: option('output'), repository: process.env.GH_REPO });
+  await completeGitHubRelease(manifest, {
+    outputDirectory: option('output'), tagObjectId: option('tag-object'), repository: process.env.GH_REPO,
+  });
   console.log(`Verified GitHub release ${manifest.version} (${manifest.sha256}).`);
 }
 

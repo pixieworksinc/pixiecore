@@ -241,6 +241,29 @@ test('blueprint eval emits artifacts, writes only explicitly requested files, an
   assert.equal(stdoutHost.exitCode, undefined);
 });
 
+test('blueprint eval warns about structural scope without changing a successful exit', async () => {
+  const base = evaluationArtifact(data.text('limited evaluation seed', 'seed'));
+  const artifact = {
+    ...base,
+    cases: base.cases.map(item => ({
+      ...item,
+      limitations: ['factuality_not_evaluated'] as const,
+    })),
+  };
+  const host = new RecordingHost();
+  await createCliCommandService().run({
+    kind: 'blueprint-eval',
+    args: [data.text('limited dataset path', 'dataset.yaml')],
+    factories: {
+      runEvaluation: async () => artifact,
+      writeTextFile: async () => { throw new Error('must not persist implicitly'); },
+    },
+  }, host);
+  assert.deepEqual(JSON.parse(host.stdout[0] ?? ''), artifact);
+  assert.match(host.stderr.join('\n'), /factuality was not evaluated/u);
+  assert.equal(host.exitCode, undefined);
+});
+
 test('blueprint eval rejects malformed arguments before running or writing', async () => {
   for (const args of [
     [],
@@ -321,6 +344,22 @@ test('blueprint play selects one dataset case and defaults to offline mock mode'
   assert.match(mismatchHost.stderr[0] ?? '', /Fields: \/value/u);
   assert.match(mismatchHost.stderr[0] ?? '', /Reproduce: pixiecore blueprint play/u);
   assert.match(mismatchHost.stderr[0] ?? '', /Suggestion:/u);
+
+  const limitedHost = new RecordingHost();
+  const limited: BlueprintPlaygroundArtifact = {
+    ...mismatch,
+    real: {
+      ...mismatch.real!,
+      comparison: { passed: true, differences: [], limitations: ['factuality_not_evaluated'] },
+    },
+  };
+  await createCliCommandService().run({
+    kind: 'blueprint-play',
+    args: ['dataset.yaml', '--case=case-one', '--mode=real'],
+    factories: { runPlayground: async () => limited },
+  }, limitedHost);
+  assert.match(limitedHost.stderr.join('\n'), /factuality was not evaluated/u);
+  assert.equal(limitedHost.exitCode, undefined);
 
   for (const args of [
     [],

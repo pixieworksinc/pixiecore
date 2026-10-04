@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 import { parse } from 'yaml';
@@ -71,7 +71,7 @@ test('only the publish job receives OIDC authority and it publishes the verified
   assert.match(namedStep('publish', 'Check existing registry version').run ?? '', /verify-registry\.mjs --check-existing/u);
   assert.equal(namedStep('publish', 'Check existing registry version').env?.GH_TOKEN, '${{ github.token }}');
   assert.equal(namedStep('publish', 'Publish immutable package through OIDC').if,
-    "steps.registry_version.outputs.publish_required == 'true' && inputs.authentication == 'oidc'");
+    "steps.registry_version.outputs.publish_required == 'true'");
   assert.equal(namedStep('publish', 'Publish immutable package through OIDC').env, undefined);
   const names = workflow.jobs.publish.steps.map(step => step.name);
   assert.ok(names.indexOf('Check existing registry version') < names.indexOf('Publish immutable package through OIDC'));
@@ -90,74 +90,54 @@ test('only the publish job receives OIDC authority and it publishes the verified
   assert.equal(namedStep('github_release', 'Create GitHub release with verified artifacts').env?.GH_REPO, '${{ github.repository }}');
 });
 
-test('bootstrap is explicit, version-bound, and the only step with a package credential', () => {
-  const inputs = workflow.on.workflow_dispatch.inputs;
-  assert.equal(inputs.authentication.required, true);
-  assert.equal(inputs.authentication.type, 'choice');
-  assert.equal(inputs.authentication.default, 'oidc');
-  assert.deepEqual(inputs.authentication.options, ['oidc', 'bootstrap']);
-  assert.equal(inputs.bootstrap_confirmation.required, false);
-  for (const [job, name] of [['build', 'Assert approved release context'],
-    ['publish', 'Check existing registry version']] as const) {
-    const step = namedStep(job, name);
-    assert.equal(step.env?.PIXIECORE_PUBLICATION_MODE, '${{ inputs.authentication }}');
-    assert.equal(step.env?.PIXIECORE_BOOTSTRAP_CONFIRMATION, '${{ inputs.bootstrap_confirmation }}');
+test('publication has one OIDC-only path without credential inputs or failure fallback', async () => {
+  assert.deepEqual(Object.keys(workflow.on.workflow_dispatch.inputs).sort(),
+    ['candidate_artifact_id', 'candidate_run_id', 'confirmation', 'version']);
+  assert.doesNotMatch(source,
+    /bootstrap|authentication|PUBLICATION_MODE|NODE_AUTH_TOKEN|NPM_TOKEN|secrets[.\[]|_authToken|npm_config_userconfig/iu);
+  assert.doesNotMatch(source, /continue-on-error|failure\(\)|always\(\)/u);
+  const publish = namedStep('publish', 'Publish immutable package through OIDC');
+  const publicationSteps = Object.values(workflow.jobs).flatMap(job => job.steps)
+    .filter(step => /npm publish/u.test(step.run ?? ''));
+  assert.deepEqual(publicationSteps, [publish]);
+  assert.match(publish.run ?? '', /--ignore-scripts/u);
+  for (const path of ['scripts/release/verify-registry.mjs', 'scripts/release/verify-registry.d.mts']) {
+    assert.doesNotMatch(await readFile(resolve(path), 'utf8'),
+      /bootstrap|assertPublicationMode|PUBLICATION_MODE|NODE_AUTH_TOKEN|NPM_TOKEN/iu);
   }
-  assert.match(namedStep('build', 'Assert approved release context').run ?? '', /assertPublicationMode/u);
-  const bootstrap = namedStep('publish', 'Bootstrap first package with provenance');
-  assert.equal(bootstrap.if,
-    "steps.registry_version.outputs.publish_required == 'true' && inputs.authentication == 'bootstrap'");
-  assert.deepEqual(bootstrap.env, { NODE_AUTH_TOKEN: '${{ secrets.NPM_BOOTSTRAP_TOKEN }}' });
-  const privilegedSteps = Object.values(workflow.jobs).flatMap(job => job.steps)
-    .filter(step => /secrets\./u.test(JSON.stringify(step)));
-  assert.deepEqual(privilegedSteps, [bootstrap]);
-  assert.match(bootstrap.run ?? '', /test -n "\$NODE_AUTH_TOKEN"/u);
-  assert.match(bootstrap.run ?? '', /npm publish "\.\/release\/\$tarball" --ignore-scripts --provenance --access public/u);
-  assert.match(bootstrap.run ?? '', /umask 077/u);
-  assert.match(bootstrap.run ?? '', /trap 'rm -f "\$npm_config_userconfig"' EXIT/u);
-  assert.match(bootstrap.run ?? '', /'\/\/registry\.npmjs\.org\/:_authToken=\$\{NODE_AUTH_TOKEN\}'/u);
-  assert.doesNotMatch(bootstrap.run ?? '', /set -x|echo.*\$NODE_AUTH_TOKEN/u);
   const names = workflow.jobs.publish.steps.map(step => step.name);
-  assert.ok(names.indexOf('Check existing registry version') < names.indexOf(bootstrap.name));
-  assert.ok(names.indexOf(bootstrap.name) < names.indexOf('Verify anonymously published package bytes'));
+  assert.ok(names.indexOf('Check existing registry version') < names.indexOf(publish.name));
+  assert.ok(names.indexOf(publish.name) < names.indexOf('Verify anonymously published package bytes'));
 });
 
-test('bootstrap shell fails without a credential and cleans configuration on success and failure', async () => {
-  const fakeToken = testData('bootstrap shell').text('synthetic credential');
-  for (const [token, exitCode] of [['', 0], [fakeToken, 0], [fakeToken, 1]] as const) {
+test('OIDC shell publishes local approved bytes once and propagates authorization failures', async () => {
+  const data = testData('OIDC publication shell');
+  const tarball = `${data.text('approved tarball')}.tgz`;
+  for (const exitCode of [0, data.integer('authorization failure status', 1, 125)]) {
     await withTempDirectory(async directory => {
       const bin = join(directory, 'bin');
-      const runner = join(directory, 'runner');
       await mkdir(bin);
-      await mkdir(runner);
       await mkdir(join(directory, 'release'));
-      await writeFile(join(directory, 'release/release-manifest.json'), JSON.stringify({ tarball: 'approved.tgz' }));
+      await writeFile(join(directory, 'release/release-manifest.json'), JSON.stringify({ tarball }));
       // Replace npm entirely: this test cannot contact a registry or publish a package.
       await writeFile(join(bin, 'npm'), `#!${process.execPath}
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const path = process.env.npm_config_userconfig;
-assert.equal(fs.readFileSync(path, 'utf8'), '//registry.npmjs.org/:_authToken=$' + '{NODE_AUTH_TOKEN}\\n');
-assert.equal(fs.statSync(path).mode & 0o777, 0o600);
-assert.ok(process.env.NODE_AUTH_TOKEN);
-fs.writeFileSync('invocation.json', JSON.stringify(process.argv.slice(2)));
+assert.equal(process.env.NODE_AUTH_TOKEN, undefined);
+assert.equal(process.env.npm_config_userconfig, undefined);
+fs.appendFileSync('invocations.jsonl', JSON.stringify(process.argv.slice(2)) + '\\n');
 process.exit(Number(process.env.MOCK_EXIT));
 `, { mode: 0o700 });
       const result = spawnSync('/bin/bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c',
-        namedStep('publish', 'Bootstrap first package with provenance').run ?? ''], {
+        namedStep('publish', 'Publish immutable package through OIDC').run ?? ''], {
         cwd: directory, encoding: 'utf8',
-        env: { PATH: `${bin}:${dirname(process.execPath)}:/usr/bin:/bin`, RUNNER_TEMP: runner,
-          NODE_AUTH_TOKEN: token, MOCK_EXIT: String(exitCode) },
+        env: { PATH: `${bin}:${dirname(process.execPath)}:/usr/bin:/bin`, MOCK_EXIT: String(exitCode) },
       });
-      assert.equal(result.status, token ? exitCode : 1, result.stderr);
-      assert.deepEqual(await readdir(runner), [], 'Temporary npm configuration must be removed');
-      assert.ok(!(result.stdout + result.stderr).includes(fakeToken), 'Never log the credential');
-      if (!token) {
-        await assert.rejects(readFile(join(directory, 'invocation.json')), { code: 'ENOENT' });
-        return;
-      }
-      assert.deepEqual(JSON.parse(await readFile(join(directory, 'invocation.json'), 'utf8')),
-        ['publish', './release/approved.tgz', '--ignore-scripts', '--provenance', '--access', 'public',
+      assert.equal(result.status, exitCode, result.stderr);
+      const invocations = (await readFile(join(directory, 'invocations.jsonl'), 'utf8')).trim().split('\n');
+      assert.equal(invocations.length, 1, 'Authorization failure must not retry through a second authentication path');
+      assert.deepEqual(JSON.parse(invocations[0] ?? ''),
+        ['publish', `./release/${tarball}`, '--ignore-scripts', '--access', 'public',
           '--tag', 'latest', '--registry=https://registry.npmjs.org']);
     });
   }
@@ -206,6 +186,8 @@ test('privileged jobs check out only the immutable tag object admitted by the bu
   for (const name of ['Verify candidate source and signed tag', 'Verify signed candidate bytes']) {
     assert.match(namedStep('build', name).run ?? '', /--tag-object="\$\{\{ steps\.release_source\.outputs\.tag_object \}\}"/u);
   }
+  assert.match(namedStep('github_release', 'Create GitHub release with verified artifacts').run ?? '',
+    /--tag-object="\$\{\{ needs\.build\.outputs\.tag_object \}\}"/u);
 });
 
 function namedStep(jobName: keyof Workflow['jobs'], name: string): Step {
@@ -217,7 +199,7 @@ function namedStep(jobName: keyof Workflow['jobs'], name: string): Step {
 interface Workflow {
   readonly on: Readonly<{
     workflow_dispatch: Readonly<{
-      inputs: Readonly<Record<'version' | 'confirmation' | 'candidate_run_id' | 'candidate_artifact_id' | 'authentication' | 'bootstrap_confirmation', Readonly<{ required: boolean; type: string; default?: string; options?: readonly string[] }>>>;
+      inputs: Readonly<Record<'version' | 'confirmation' | 'candidate_run_id' | 'candidate_artifact_id', Readonly<{ required: boolean; type: string }>>>;
     }>;
   }>;
   readonly permissions: Readonly<Record<string, string>>;

@@ -1,8 +1,5 @@
 import type { ReleaseArtifactManifest } from './prepare-artifact.mjs';
 
-/** Checks the explicit one-time bootstrap opt-in independently of registry state. */
-export function assertPublicationMode(mode: string, version: string, confirmation?: string): void;
-
 export interface RegistryDist {
   readonly tarball: string;
   readonly integrity: string;
@@ -15,12 +12,11 @@ export function assertRegistryArtifact(
   bytes: Uint8Array,
 ): void;
 
-/** Admits an absent version only above registry latest; existing versions require exact verification. */
+/** Requires an existing package; absent versions must advance latest and existing versions need exact verification. */
 export function registryPublicationRequired(
   manifest: Readonly<ReleaseArtifactManifest>,
   fetchImpl?: typeof fetch,
   provenanceOptions?: Parameters<typeof import('./verify-provenance.mjs').verifyRegistryProvenance>[3],
-  mode?: 'oidc' | 'bootstrap',
 ): Promise<boolean>;
 
 export function verifyRegistryArtifact(options: {

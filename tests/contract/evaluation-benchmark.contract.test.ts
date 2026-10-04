@@ -111,6 +111,46 @@ test('benchmark compares explicit targets across repeated accuracy, cost, latenc
   });
 });
 
+test('benchmark preserves structural limits across repeated runs and scorecards', async () => {
+  const datasetPath = 'examples/blueprints/summarizer/travel-request-summary/evaluations/travel-request-summary.yaml';
+  const dataset = YAML.parse(await readFile(datasetPath, 'utf8')) as {
+    readonly cases: readonly { readonly expected_output: Record<string, unknown> }[];
+  };
+  const artifact = await runBlueprintBenchmark({
+    datasetPath,
+    seed: data.text('limited benchmark seed', 'seed'),
+    runsPerTarget: 2,
+    targets: [{
+      id: data.text('limited benchmark target', 'target'),
+      createRuntimeOptions: () => runtimeOptions(new ScriptedProvider(dataset.cases.map(item => ({
+        content: JSON.stringify(item.expected_output),
+      })))),
+    }],
+  });
+  const target = artifact.targets[0]!;
+  assert.equal(target.accuracy, 1);
+  assert.deepEqual(target.limitations, ['factuality_not_evaluated']);
+  for (const run of target.runs) assert.deepEqual(run.limitations, target.limitations);
+  const schema = JSON.parse(await readFile('schemas/pixiecore.blueprint-benchmark-v1.schema.json', 'utf8'));
+  const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
+  assert.equal(validate(artifact), true, JSON.stringify(validate.errors));
+  const legacy = structuredClone(artifact);
+  for (const item of legacy.targets) {
+    Reflect.deleteProperty(item, 'limitations');
+    for (const run of item.runs) Reflect.deleteProperty(run, 'limitations');
+  }
+  assert.equal(validate(legacy), true, JSON.stringify(validate.errors));
+  const scorecard = renderBlueprintBenchmarkScorecard(artifact, {
+    release: '0.1.0',
+    generatedAt: data.date('limited scorecard generation').toISOString(),
+    reproductionCommand: 'node benchmark.mjs',
+    methodology: 'Structural provenance checks.',
+  });
+  assert.match(scorecard, /Comparator pass rate/u);
+  assert.match(scorecard, /factuality was not evaluated/u);
+  assert.match(scorecard, /16\/16 \(100%\)/u);
+});
+
 test('scorecard rejects incomplete publication metadata', () => {
   const artifact = {
     schema: BLUEPRINT_BENCHMARK_SCHEMA,

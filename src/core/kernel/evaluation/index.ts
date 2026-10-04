@@ -43,6 +43,7 @@ export type {
   EvaluationCustomComparatorContext,
   EvaluationDifference,
   EvaluationDifferenceReason,
+  EvaluationLimitation,
   EvaluationPropertyCase,
   EvaluationPropertyCorpus,
   EvaluationPropertyKind,

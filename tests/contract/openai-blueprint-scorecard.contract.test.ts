@@ -12,9 +12,11 @@ import {
   parseOpenAIBlueprintMatrixArgs,
 } from '../../examples/benchmarks/openai-blueprint-matrix.js';
 import { withTempDirectory } from '../helpers/temp.js';
+import { testData } from '../helpers/test-data.js';
 
 const manifest = 'examples/benchmarks/openai-blueprint-run-manifest.json';
 const sourceRevision = '0123456789abcdef0123456789abcdef01234567';
+const data = testData('OpenAI scorecard limitations');
 
 test('synthetic OpenAI scorecard preserves immutable identity and value-free output', async () => {
   await withTempDirectory(async directory => {
@@ -27,6 +29,7 @@ test('synthetic OpenAI scorecard preserves immutable identity and value-free out
 
     assert.equal(report.schema, 'pixiecore.openai-blueprint-scorecard/v2');
     assert.equal(report.roles.length, 1);
+    assert.equal(report.roles[0]?.limitations, undefined);
     assert.equal(report.execution.runs, 1);
   assert.deepEqual(report.totals.usage, {
     calls: 1,
@@ -47,6 +50,29 @@ test('synthetic OpenAI scorecard preserves immutable identity and value-free out
   assert.doesNotMatch(markdown,
     /actual_output|expected_output|OPENAI_API_KEY|sk-proj-|\/Users\//u);
   }, 'pixiecore-openai-scorecard-');
+});
+
+test('OpenAI scorecard preserves limited comparison scope without changing pass counts', async () => {
+  await withTempDirectory(async directory => {
+    const fixture = await writeIdentityFixture(directory);
+    const checkpoint = completedCheckpoint(await createSyntheticPlan(fixture.manifestPath, directory));
+    const limited = {
+      ...checkpoint,
+      results: checkpoint.results.map(result => ({
+        ...result,
+        cases: result.cases.map(item => ({ ...item, limitations: ['factuality_not_evaluated'] })),
+      })),
+    };
+    const path = join(directory, `${data.text('limited checkpoint')}.json`);
+    await writeFile(path, JSON.stringify(limited), 'utf8');
+    const report = await createOpenAIBlueprintScorecard(path, fixture.manifestPath, directory);
+    assert.deepEqual(report.roles[0]?.limitations, ['factuality_not_evaluated']);
+    assert.equal(report.totals.passed, 1);
+    assert.equal(report.totals.accuracy, 1);
+    const rendered = renderOpenAIBlueprintScorecard(report);
+    assert.match(rendered, /Configured comparator pass rate/u);
+    assert.match(rendered, /factuality was not evaluated/u);
+  });
 });
 
 test('legacy checkpoint formats cannot be regenerated with current dataset identities', async () => {

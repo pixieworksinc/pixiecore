@@ -47,6 +47,9 @@ export async function runBlueprintPlay(
   }
   const artifact = await invocation.factories.runPlayground({ datasetPath: path, caseId, mode });
   host.writeStdout(JSON.stringify(artifact, null, 2));
+  if (artifact.real?.comparison.limitations?.includes('factuality_not_evaluated')) {
+    host.writeStderr('Comparison scope: structural checks only; factuality was not evaluated.');
+  }
   if (artifact.real?.comparison.passed !== false) return;
   host.writeStderr(playgroundFailureMessage(artifact));
   host.setExitCode(1);
@@ -130,6 +133,9 @@ export async function runBlueprintEvaluation(
     ...(seed === undefined ? {} : { seed }),
   });
   await writeEvaluationArtifact(invocation, host, artifact, output);
+  if (artifact.cases.some(item => item.limitations?.includes('factuality_not_evaluated'))) {
+    host.writeStderr('Comparison scope: includes structural checks only; factuality was not evaluated for those cases.');
+  }
   if (artifact.summary.failed === 0 && artifact.summary.errors === 0) return;
   host.writeStderr(evaluationFailureMessage(artifact));
   host.setExitCode(1);

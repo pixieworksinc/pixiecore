@@ -148,6 +148,7 @@ function completeRun(
   pricing: BlueprintBenchmarkPricing | undefined,
 ): CompletedRun {
   const latencies = artifact.cases.map(item => item.duration_ms);
+  const limitations = [...new Set(artifact.cases.flatMap(item => item.limitations ?? []))];
   return {
     artifact,
     latencies,
@@ -156,6 +157,7 @@ function completeRun(
       seed: artifact.run.seed,
       summary: Object.freeze({ ...artifact.summary }),
       accuracy: ratio(artifact.summary.passed, artifact.summary.total),
+      ...(limitations.length === 0 ? {} : { limitations: Object.freeze(limitations) }),
       latency_ms: mean(latencies),
       input_tokens: usage.inputTokens,
       output_tokens: usage.outputTokens,
@@ -179,6 +181,7 @@ function aggregateTarget(
     }
   }
   const totals = sumSummaries(runs.map(item => item.artifact.summary));
+  const limitations = [...new Set(runs.flatMap(item => item.result.limitations ?? []))];
   const accuracies = runs.map(item => item.result.accuracy);
   const latencies = runs.flatMap(item => item.latencies);
   const usage = aggregateUsage(runs.map(item => item.result));
@@ -192,6 +195,7 @@ function aggregateTarget(
     pricing: target.pricing === undefined ? null : Object.freeze({ ...target.pricing }),
     totals: Object.freeze(totals),
     accuracy: ratio(totals.passed, totals.total),
+    ...(limitations.length === 0 ? {} : { limitations: Object.freeze(limitations) }),
     accuracy_standard_deviation: standardDeviation(accuracies),
     latency_ms: Object.freeze({
       mean: mean(latencies),

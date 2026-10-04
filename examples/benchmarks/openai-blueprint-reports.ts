@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { readFile } from 'node:fs/promises';
+import type { EvaluationLimitation } from '@pixieworks/pixiecore/eval';
 
 interface ReportCommand {
   readonly checkpointPath: string;
@@ -25,6 +26,7 @@ interface CaseResult {
   readonly duration_ms: number | null;
   readonly provider_usage: readonly ProviderUsage[];
   readonly error_name: string | null;
+  readonly limitations?: readonly EvaluationLimitation[];
 }
 
 interface DatasetResult {
@@ -120,6 +122,7 @@ export interface OpenAIExtractorAttachmentResult {
   readonly failed: number;
   readonly errors: number;
   readonly accuracy: number;
+  readonly limitations?: readonly EvaluationLimitation[];
   readonly latency_ms: Readonly<{ mean: number; p50: number; p95: number }>;
   readonly usage: Readonly<{
     calls: number;
@@ -161,6 +164,7 @@ export interface OpenAIExtractorAttachmentReport {
 }
 
 export interface OpenAIBlueprintRoleScore {
+  readonly limitations?: readonly EvaluationLimitation[];
   readonly dataset_id: string;
   readonly role: string;
   readonly dataset_version: string;
@@ -329,11 +333,13 @@ export function renderOpenAIExtractorAttachmentReport(
     '',
     '## Results by attachment kind',
     '',
-    '| Kind | Case | Pass / observations | Accuracy | Latency mean / p50 / p95 | Tokens | Estimated cost |',
+    '| Kind | Case | Pass / observations | Comparator pass rate | Latency mean / p50 / p95 | Tokens | Estimated cost |',
     '|---|---|---:|---:|---:|---:|---:|',
     ...report.attachments.map(item => `| ${markdown(item.attachment_kind)} | ${markdown(item.case_id)} | ${item.passed}/${item.runs} | ${percent(item.accuracy)} | ${milliseconds(item.latency_ms.mean)} / ${milliseconds(item.latency_ms.p50)} / ${milliseconds(item.latency_ms.p95)} | ${item.usage.input_tokens} in + ${item.usage.output_tokens} out = ${item.usage.total_tokens} | USD ${decimal(item.usage.estimated_cost_usd)} |`),
     '',
     `> ${report.comparison_note}`,
+    ...report.attachments.filter(item => item.limitations?.includes('factuality_not_evaluated'))
+      .map(item => `> ${markdown(item.case_id)}: includes structural comparisons; factuality was not evaluated for those observations.`),
     '',
   ].join('\n');
 }
@@ -388,7 +394,7 @@ export async function createOpenAIBlueprintScorecard(
       runs: checkpoint.plan.runs,
       expected_calls: checkpoint.plan.expected_calls,
     }),
-    methodology: 'Versioned dataset comparison policies executed serially with retry disabled; accuracy counts only passed observations.',
+    methodology: 'Versioned dataset comparison policies executed serially with retry disabled; accuracy is the configured comparator pass rate, not a general factuality guarantee.',
     reproduction_command: reproductionCommand(checkpoint, manifest),
     totals: Object.freeze({
       observations,
@@ -405,6 +411,8 @@ export async function createOpenAIBlueprintScorecard(
     pricing: Object.freeze({ ...checkpoint.plan.pricing }),
     known_limitations: Object.freeze([
       'Results apply only to the pinned provider model and versioned synthetic corpus.',
+      ...roleScores.filter(role => role.limitations?.includes('factuality_not_evaluated'))
+        .map(role => `${role.dataset_id}: includes structural comparisons; factuality was not evaluated for those observations.`),
       'Exact natural-language comparisons may reject other contract-valid summaries or translations.',
       'The recorded seed identifies the run but does not prove control over remote model sampling.',
       'Extractor attachment quality is reported separately by media kind.',
@@ -452,9 +460,9 @@ export function renderOpenAIBlueprintScorecard(report: OpenAIBlueprintScorecard)
     '',
     '## Overall',
     '',
-    `- Accuracy: ${report.totals.passed}/${report.totals.observations} (${percent(report.totals.accuracy)})`,
-    `- Run accuracy: ${report.totals.accuracy_by_run.map(percent).join(', ')}`,
-    `- Accuracy standard deviation: ${decimal(report.totals.accuracy_standard_deviation)}`,
+    `- Configured comparator pass rate: ${report.totals.passed}/${report.totals.observations} (${percent(report.totals.accuracy)})`,
+    `- Run pass rate: ${report.totals.accuracy_by_run.map(percent).join(', ')}`,
+    `- Pass rate standard deviation: ${decimal(report.totals.accuracy_standard_deviation)}`,
     `- Failures / errors: ${report.totals.failed} / ${report.totals.errors}`,
     `- Latency mean / p50 / p95: ${milliseconds(report.totals.latency_ms.mean)} / ${milliseconds(report.totals.latency_ms.p50)} / ${milliseconds(report.totals.latency_ms.p95)}`,
     `- Tokens: ${report.totals.usage.input_tokens} input + ${report.totals.usage.output_tokens} output = ${report.totals.usage.total_tokens}`,
@@ -462,7 +470,7 @@ export function renderOpenAIBlueprintScorecard(report: OpenAIBlueprintScorecard)
     '',
     '## Results by Role',
     '',
-    '| Role | Dataset / Blueprint version | Pass / observations | Accuracy | Accuracy SD | Latency mean / p50 / p95 | Tokens | Cost |',
+    '| Role | Dataset / Blueprint version | Pass / observations | Comparator pass rate | Pass rate SD | Latency mean / p50 / p95 | Tokens | Cost |',
     '|---|---|---:|---:|---:|---:|---:|---:|',
     ...report.roles.map(role => `| ${markdown(role.role)} | ${markdown(`${role.dataset_id} ${role.dataset_version} / ${role.blueprint_version}`)} | ${role.passed}/${role.observations} | ${percent(role.accuracy)} | ${decimal(role.accuracy_standard_deviation)} | ${milliseconds(role.latency_ms.mean)} / ${milliseconds(role.latency_ms.p50)} / ${milliseconds(role.latency_ms.p95)} | ${role.usage.input_tokens} in + ${role.usage.output_tokens} out | USD ${decimal(role.usage.estimated_cost_usd)} |`),
     '',
@@ -551,6 +559,7 @@ function aggregateRole(
 ): OpenAIBlueprintRoleScore {
   if (results.length !== runs) throw new TypeError(`Run count mismatch: ${dataset.id}`);
   const cases = results.flatMap(result => result.cases);
+  const limitations = [...new Set(cases.flatMap(item => item.limitations ?? []))];
   const observations = cases.length;
   const passed = cases.filter(item => item.status === 'passed').length;
   const durations = cases.map(item => item.duration_ms)
@@ -585,6 +594,7 @@ function aggregateRole(
   });
   return Object.freeze({
     dataset_id: dataset.id,
+    ...(limitations.length === 0 ? {} : { limitations: Object.freeze(limitations) }),
     role: dataset.role,
     dataset_version: identity.dataset_version,
     dataset_digest: identity.dataset_digest,
@@ -708,6 +718,7 @@ function aggregateAttachment(
     if (!item) throw new TypeError(`Missing extractor case: ${attachment.case_id}`);
     return item;
   });
+  const limitations = [...new Set(cases.flatMap(item => item.limitations ?? []))];
   const durations = cases.map(item => item.duration_ms).filter((value): value is number => value !== null);
   if (durations.length !== runs) throw new TypeError(`Missing latency: ${attachment.case_id}`);
   const usage = cases.flatMap(item => item.provider_usage).reduce<
@@ -729,6 +740,7 @@ function aggregateAttachment(
     failed: cases.filter(item => item.status === 'failed').length,
     errors: cases.filter(item => item.status === 'error').length,
     accuracy: ratio(passed, runs),
+    ...(limitations.length === 0 ? {} : { limitations: Object.freeze(limitations) }),
     latency_ms: distribution(durations),
     usage: Object.freeze(usage),
   });

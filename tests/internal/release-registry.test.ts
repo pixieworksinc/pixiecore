@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
 
-import { assertPublicationMode, assertRegistryArtifact, readPublishedDist, registryPublicationRequired } from '../../scripts/release/verify-registry.mjs';
+import { assertRegistryArtifact, readPublishedDist, registryPublicationRequired } from '../../scripts/release/verify-registry.mjs';
 import { fixtureStatement, provenanceDocument } from '../helpers/release/provenance.js';
 import { testData } from '../helpers/test-data.js';
 
@@ -26,30 +26,6 @@ const dist = {
   attestations: { url: 'https://registry.npmjs.org/-/npm/v1/attestations/%40pixieworks%2Fpixiecore@0.1.0',
     provenance: { predicateType: 'https://slsa.dev/provenance/v1' } },
 };
-
-test('bootstrap requires an exact opt-in and cannot become an OIDC failure fallback', () => {
-  assert.doesNotThrow(() => assertPublicationMode('oidc', '0.2.0'));
-  assert.doesNotThrow(() => assertPublicationMode('bootstrap', '0.1.0', 'bootstrap:0.1.0'));
-  for (const [mode, version, confirmation] of [
-    ['bootstrap', '0.1.0', ''], ['bootstrap', '0.1.0', 'publish:0.1.0'],
-    ['bootstrap', '0.1.1', 'bootstrap:0.1.1'], ['bootstrap', '0.1.0-rc.1', 'bootstrap:0.1.0'],
-    ['oidc', '0.1.0', 'bootstrap:0.1.0'], ['unknown', '0.1.0', ''], ['', '0.1.0', ''],
-  ] as const) assert.throws(() => assertPublicationMode(mode, version, confirmation), /Invalid publication/u);
-});
-
-test('bootstrap rejects existing packages, outages and later versions before allowing a new publication', async () => {
-  assert.equal(await registryPublicationRequired(manifest,
-    async () => new Response(null, { status: 404 }), {}, 'bootstrap'), true);
-  for (const response of [Response.json({ name: manifest.package, 'dist-tags': { latest: '0.0.1' } }),
-    Response.json({ name: manifest.package }), ...[401, 403, 429, 503].map(status => new Response(null, { status }))]) {
-    await assert.rejects(registryPublicationRequired(manifest, async input =>
-      String(input).endsWith('/0.1.0') ? new Response(null, { status: 404 }) : response,
-    {}, 'bootstrap'), /absent package|lookup failed/u);
-  }
-  await assert.rejects(registryPublicationRequired({ ...manifest, version: '0.1.1' }, async () => {
-    assert.fail('A later bootstrap version must not reach the registry');
-  }, {}, 'bootstrap'), /bootstrap version/u);
-});
 
 test('registry verification accepts the exact published tarball', () => {
   assert.doesNotThrow(() => assertRegistryArtifact(manifest, dist, bytes));
@@ -129,7 +105,6 @@ test('publication is skipped only for an existing version with the exact approve
   assert.equal(calls.length, 4);
   assert.match(calls[3] ?? '', /\/latest$/u);
   assert.match(calls[0] ?? '', /registry\.npmjs\.org/u);
-  assert.equal(await registryPublicationRequired(manifest, fetchImpl, { run: mockCryptoVerifier }, 'bootstrap'), false);
 });
 
 test('byte-identical but unattested versions and mismatched latest tags cannot be accepted on retry', async () => {
@@ -148,12 +123,12 @@ test('byte-identical but unattested versions and mismatched latest tags cannot b
   }
 });
 
-test('first publication requires both the candidate and package to be explicitly absent', async () => {
+test('a missing package cannot restart first-package publication', async () => {
   const calls: string[] = [];
-  assert.equal(await registryPublicationRequired(manifest, async input => {
+  await assert.rejects(registryPublicationRequired(manifest, async input => {
     calls.push(String(input));
     return new Response(null, { status: 404 });
-  }), true);
+  }), /requires an existing registry package/u);
   assert.deepEqual(calls, [
     `https://registry.npmjs.org/${encodeURIComponent(manifest.package)}/${manifest.version}`,
     `https://registry.npmjs.org/${encodeURIComponent(manifest.package)}`,

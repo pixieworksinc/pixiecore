@@ -62,14 +62,17 @@ test('numeric tolerance uses the larger absolute or relative permitted differenc
 
 test('schema comparison validates actual and expected independently', async () => {
   const schema = { type: 'object', properties: { value: { type: 'integer' } }, required: ['value'], additionalProperties: false };
-  assert.equal((await compareEvaluationOutput(
+  const valid = await compareEvaluationOutput(
     { value: 17 }, { value: 83 }, { mode: 'schema' }, { outputSchema: schema },
-  )).passed, true);
+  );
+  assert.equal(valid.passed, true);
+  assert.deepEqual(valid.limitations, ['factuality_not_evaluated']);
   const invalid = await compareEvaluationOutput(
     { value: '17' }, { missing: true }, { mode: 'schema' }, { outputSchema: schema },
   );
   assert.ok(invalid.differences.some(item => item.detail?.startsWith('actual:')));
   assert.ok(invalid.differences.some(item => item.detail?.startsWith('expected:')));
+  assert.deepEqual(invalid.limitations, ['factuality_not_evaluated']);
 });
 
 test('custom comparison is explicit, asynchronous, isolated, and consistent', async () => {
@@ -141,7 +144,60 @@ test('built-in traceable-summary comparison accepts alternative prose with the s
     },
     { inputs },
   );
-  assert.deepEqual(comparison, { passed: true, differences: [] });
+  assert.deepEqual(comparison, {
+    passed: true,
+    differences: [],
+    limitations: ['factuality_not_evaluated'],
+  });
+});
+
+test('traceable-summary reports its limited scope even when a Tokyo input is claimed as Mars', async () => {
+  const traveler = data.person('limited scope traveler');
+  const summary = `${traveler} is flying to Mars.`;
+  const comparison = await compareEvaluationOutput({
+    status: 'summarized',
+    summary,
+    character_count: [...summary].length,
+    claims: [{ text: summary, source_fields: ['request.purpose'] }],
+    omitted_source_fields: [],
+    missing_source_fields: [],
+  }, {}, {
+    mode: 'custom',
+    comparator: TRACEABLE_SUMMARY_COMPARATOR_ID,
+    config: { source_fields: ['request.purpose'] },
+  }, {
+    inputs: {
+      request: { purpose: `${traveler} is attending a planning workshop in Tokyo.` },
+      max_characters: 120,
+    },
+  });
+  assert.deepEqual(comparison, {
+    passed: true,
+    differences: [],
+    limitations: ['factuality_not_evaluated'],
+  });
+  assert.equal(Object.isFrozen(comparison.limitations), true);
+});
+
+test('custom comparison validates and isolates optional limitation metadata', async () => {
+  const limitations: 'factuality_not_evaluated'[] = ['factuality_not_evaluated'];
+  const policy = { mode: 'custom', comparator: 'example.limited-v1' } as const;
+  const customComparators = new Map<string, EvaluationCustomComparator>([
+    [policy.comparator, () => ({ passed: true, differences: [], limitations })],
+  ]);
+  const comparison = await compareEvaluationOutput({}, {}, policy, { customComparators });
+  limitations.length = 0;
+  assert.deepEqual(comparison.limitations, ['factuality_not_evaluated']);
+  for (const invalid of ['factuality_not_evaluated', null, ['unknown'], [null], [undefined],
+    ['factuality_not_evaluated', 'factuality_not_evaluated']]) {
+    customComparators.set(policy.comparator, () => ({
+      passed: true,
+      differences: [],
+      limitations: invalid as unknown as typeof limitations,
+    }));
+    await assert.rejects(compareEvaluationOutput({}, {}, policy, { customComparators }),
+      /invalid limitations/u);
+  }
 });
 
 test('built-in traceable-summary comparison rejects incorrect counts, partitions, and priority', async () => {
@@ -183,6 +239,7 @@ test('built-in traceable-summary comparison rejects incorrect counts, partitions
     { inputs },
   );
   assert.equal(result.passed, false);
+  assert.deepEqual(result.limitations, ['factuality_not_evaluated']);
   assert.ok(result.differences.some(item => item.pointer === '/character_count'));
   assert.ok(result.differences.some(item => item.pointer === '/missing_source_fields'));
   assert.ok(result.differences.some(item => item.pointer === '/omitted_source_fields'));

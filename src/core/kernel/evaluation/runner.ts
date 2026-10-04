@@ -313,6 +313,7 @@ async function runCase(
       provider_usage: evaluationProviderUsage(recorder.finish(), pricing),
       actual_output: structuredClone(actual),
       differences: comparison.differences,
+      ...(comparison.limitations === undefined ? {} : { limitations: comparison.limitations }),
     });
   } catch (error) {
     return Object.freeze({

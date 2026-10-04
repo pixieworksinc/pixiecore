@@ -5,10 +5,26 @@ semantic versioning.
 
 ## Unreleased
 
-The public source repository and npm package have not been published. Changes
-after the first `0.1.0` source tag will be recorded here.
+Changes below are not part of the published `0.1.0` artifact.
 
-## 0.1.0 - planned
+### Changed
+
+- Removed first-publication token authentication from the release workflow;
+  subsequent releases use OIDC only, without a token fallback.
+- Recorded the completed `0.1.0` publication and documented approval and
+  verification gates for the next release. Trusted publisher registration is
+  not yet evidence of an OIDC-authenticated publication.
+
+### Fixed
+
+- Detect fine-grained GitHub tokens and reject environment-file variants in
+  public source snapshots without exposing matched credential values.
+- Recheck the approved tag object around GitHub Release writes and final
+  verification; fail closed on changed tags without deleting remote state.
+- Preserve explicit factuality limitations in structural-summary evaluation
+  results and reports. Comparator pass rates are not factual-accuracy claims.
+
+## 0.1.0 - 2026-10-03
 
 ### Added
 
@@ -35,9 +51,10 @@ after the first `0.1.0` source tag will be recorded here.
 
 ### Publication boundary
 
-- `0.1.0` remains a release candidate until the approved commit is tagged and
-  the separate release workflow succeeds.
-- The initial source publication does not publish an npm package.
+- [0.1.0](https://github.com/pixieworksinc/pixiecore/releases/tag/0.1.0)
+  is published as source, a verified signed tag, GitHub Release assets, and
+  npm `@pixieworks/pixiecore@0.1.0`. The exact commit and artifact digest are in
+  the [release notes](docs/project/release-notes-0.1.0.md).
 - Offline contract evidence does not claim real-provider semantic accuracy.
 - Private planning documents, archived provider measurements, and historical
   conformance evidence are not part of the fresh public source snapshot.

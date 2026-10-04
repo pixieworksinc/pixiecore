@@ -18,6 +18,7 @@ import {
   type BlueprintEvaluationResultArtifact,
   type BlueprintPlaygroundArtifact,
   type BlueprintProviderUsage,
+  type EvaluationLimitation,
 } from '@pixieworks/pixiecore/eval';
 import type { TelemetryPricingRule } from '@pixieworks/pixiecore/telemetry';
 
@@ -148,6 +149,7 @@ interface CaseResult {
   readonly status: string;
   readonly duration_ms: number | null;
   readonly provider_usage: readonly BlueprintProviderUsage[];
+  readonly limitations?: readonly EvaluationLimitation[];
   readonly error_name: string | null;
 }
 
@@ -560,6 +562,7 @@ function sanitizeEvaluation(
       duration_ms: item.duration_ms,
       provider_usage: item.provider_usage ?? Object.freeze([]),
       error_name: item.error?.name ?? null,
+      ...(item.limitations === undefined ? {} : { limitations: item.limitations }),
     }))),
   });
 }
@@ -573,6 +576,7 @@ function sanitizePlayground(caseId: string, artifact: BlueprintPlaygroundArtifac
     duration_ms: null,
     provider_usage: real.provider_usage ?? Object.freeze([]),
     error_name: null,
+    ...(real.comparison.limitations === undefined ? {} : { limitations: real.comparison.limitations }),
   });
 }
 

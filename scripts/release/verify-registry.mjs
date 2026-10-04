@@ -10,15 +10,6 @@ import { verifyRegistryProvenance } from './verify-provenance.mjs';
 const REGISTRY = 'https://registry.npmjs.org';
 const MAX_ATTEMPTS = 121;
 const RETRY_DELAY_MS = 5_000;
-const BOOTSTRAP_VERSION = '0.1.0';
-
-/** Requires an explicit, version-limited opt-in; never falls back from OIDC to a token. */
-export function assertPublicationMode(mode, version, confirmation = '') {
-  if (mode === 'oidc' && confirmation === '') return;
-  if (mode === 'bootstrap' && version === BOOTSTRAP_VERSION
-    && confirmation === `bootstrap:${BOOTSTRAP_VERSION}`) return;
-  throw new Error('Invalid publication mode or bootstrap confirmation; bootstrap is limited to 0.1.0');
-}
 
 /** Compares the anonymously downloaded npm tarball with the approved local bytes. */
 export async function verifyRegistryArtifact({ outputDirectory, sourceRevision, version }) {
@@ -31,16 +22,13 @@ export async function verifyRegistryArtifact({ outputDirectory, sourceRevision, 
 }
 
 /** Admits only new increasing stable versions or an already verified exact publication. */
-export async function registryPublicationRequired(manifest, fetchImpl = fetch, provenanceOptions = {}, mode = 'oidc') {
+export async function registryPublicationRequired(manifest, fetchImpl = fetch, provenanceOptions = {}) {
   assertStableReleaseVersion(manifest.version);
-  if (mode !== 'oidc' && (mode !== 'bootstrap' || manifest.version !== BOOTSTRAP_VERSION)) {
-    throw new Error('Invalid publication mode or bootstrap version');
-  }
   const response = await fetchImpl(metadataUrl(manifest), {
     redirect: 'error', signal: AbortSignal.timeout(30_000),
   });
   if (response.status === 404) {
-    await assertIncreasingLatestVersion(manifest, fetchImpl, mode);
+    await assertIncreasingLatestVersion(manifest, fetchImpl);
     return true;
   }
   if (!response.ok) throw new Error(`Registry lookup failed: HTTP ${response.status}`);
@@ -51,14 +39,13 @@ export async function registryPublicationRequired(manifest, fetchImpl = fetch, p
   return false;
 }
 
-/** Rejects backfills that would replace latest with an older version; package absence permits bootstrap. */
-async function assertIncreasingLatestVersion(manifest, fetchImpl, mode) {
+/** Requires an existing package and rejects backfills that would replace latest with an older version. */
+async function assertIncreasingLatestVersion(manifest, fetchImpl) {
   const response = await fetchImpl(`${REGISTRY}/${encodeURIComponent(manifest.package)}`, {
     redirect: 'error', signal: AbortSignal.timeout(30_000),
   });
-  if (response.status === 404) return;
+  if (response.status === 404) throw new Error('Trusted publication requires an existing registry package');
   if (!response.ok) throw new Error(`Registry package lookup failed: HTTP ${response.status}`);
-  if (mode === 'bootstrap') throw new Error('Bootstrap requires an absent package, not just an absent version');
   const metadata = await response.json();
   if (metadata?.name !== manifest.package) throw new Error('Registry package identity mismatch');
   const latest = metadata['dist-tags']?.latest;
@@ -141,7 +128,7 @@ function registryTarballUrl(value) {
   return url;
 }
 
-/** Waits for npm's asynchronous first-publication processing, retrying only absence. */
+/** Waits for npm's asynchronous publication processing, retrying only absence. */
 export async function readPublishedDist(manifest, fetchImpl = fetch,
   wait = delay => new Promise(resolveDelay => setTimeout(resolveDelay, delay)), attempts = MAX_ATTEMPTS) {
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -190,12 +177,10 @@ function option(name) {
 /** Runs anonymous registry verification when invoked directly. */
 async function main() {
   if (process.argv.includes('--check-existing')) {
-    const mode = process.env.PIXIECORE_PUBLICATION_MODE ?? 'oidc';
-    assertPublicationMode(mode, option('version'), process.env.PIXIECORE_BOOTSTRAP_CONFIRMATION ?? '');
     const manifest = await verifyReleaseArtifactIdentity({
       outputDirectory: option('output'), sourceRevision: option('source-revision'), version: option('version'),
     });
-    const required = await registryPublicationRequired(manifest, fetch, {}, mode);
+    const required = await registryPublicationRequired(manifest);
     console.log(`publish_required=${required}`);
     return;
   }

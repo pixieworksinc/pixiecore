@@ -28,27 +28,14 @@ changes require a Blueprint major bump. Blueprint removal additionally requires
 a PixieCore package major bump. A standalone Blueprint with valid version syntax
 does not by itself satisfy this repository transition policy.
 
-Release work is tracked in repository Issues after source publication. A closed
-Issue does not replace the gates in this policy or the security policy.
+Release work is tracked in repository Issues. The post-publication cleanup and
+next-release procedure are tracked in
+[Issue #1](https://github.com/pixieworksinc/pixiecore/issues/1). A closed Issue
+does not replace the gates in this policy or the security policy.
 
-For a fresh public repository, prepare the GitHub source tree independently of
-`npm pack`. The command below exports only the approved tracked-file inventory,
-keeps the private source-to-public mapping outside the candidate, and fails on
-old product names, high-confidence credentials, machine-local paths, private
-archive paths, or symbolic links:
-
-```bash
-npm run prepare:public-snapshot -- \
-  --output=/absolute/path/outside/the/repository \
-  --report=/absolute/path/outside/the/candidate/audit.json \
-  --source-ref=<reviewed-commit-sha>
-```
-
-The output and report paths must be new or empty and must remain outside the
-source repository. The report records file paths, byte counts, hashes, omitted
-private-archive paths, and rule identifiers. It never records matched secret
-values. Review binary metadata and fixture redistribution authority separately;
-passing the automated scan is necessary but not sufficient publication review.
+The [0.1.0 release](release-notes-0.1.0.md) is already published. Preserve its
+source commit, signed tag, GitHub Release assets, and npm package bytes. New
+changes belong to a separately approved version, not a replacement `0.1.0`.
 
 Supported release lines, private vulnerability reporting, coordinated
 disclosure, signed-tag and artifact-digest requirements, npm provenance, and
@@ -76,15 +63,15 @@ Running this workflow is not approval to create a tag, GitHub Release, trusted
 publisher, or npm version. A later publication job must download and verify this
 exact candidate instead of packing the checkout again.
 
-## Publish workflow readiness
+## Subsequent release workflow
 
-The manually dispatched `Publish package` workflow is checked in as a dormant
-release definition. It cannot complete before the repository is public, a
-numeric annotated and independently signed tag is present at the `0.1.x` HEAD,
-the `release` GitHub environment has been configured, and npm authentication is
-ready. The default `authentication: oidc` requires a trusted publisher for the
-exact repository and workflow. The limited first-publication exception is
-described below. The workflow rejects a branch
+The manually dispatched `Publish package` workflow uses OIDC only. It requires
+a public repository, a numeric annotated and independently signed tag at the
+`0.1.x` HEAD, the protected `release` GitHub environment, and an npm trusted
+publisher for repository `pixieworksinc/pixiecore`, workflow `release.yml`,
+environment `release`. It has no token fallback or first-publication mode. The
+existing npm package must remain present; package absence is an error, not
+permission to recreate it. The workflow rejects a branch
 dispatch, a tag/version mismatch, a non-annotated or unsigned tag, a tag not at
 `0.1.x` HEAD, a prerelease or build-metadata version, or a confirmation other
 than `publish:<version>` before any publication. Publication accepts only stable
@@ -93,20 +80,37 @@ workflow and therefore cannot change npm's `latest` tag.
 
 Before separately approving tag creation and publication, a maintainer must:
 
-1. Select a successful `release-candidate.yml` dispatch from this repository's
+1. Agree on the exact next version, release scope, source revision, commit
+   subject, tag name, and authorized signing identity. Do not infer the version
+   from these instructions or reuse `0.1.0`. Merge the reviewed version and
+   release-note changes into `0.1.x`, then require successful CI on that exact
+   revision. The package manifest and lockfile must agree on the chosen version.
+2. Select a successful `release-candidate.yml` dispatch from this repository's
    `0.1.x` branch at the intended release source revision. Record its run ID,
    attempt number, and immutable artifact ID. Candidate approval is approval of
    these exact bytes, not permission to rebuild them.
-2. Inspect the tarball and `release-manifest.json`, including the source revision
+3. Inspect the tarball and `release-manifest.json`, including the source revision
    and SHA-256. Put exactly one `SHA256: <64 lowercase hex characters>` line in
    the annotated tag message before signing it. The digest must be the tarball
    digest, not the manifest-file digest.
-3. Verify the authorized signing identity with `git tag -v`. The workflow also
+4. Verify the authorized signing identity with `git tag -v`. The workflow also
    requires GitHub's tag-object verification to report a valid signature; a
    signature envelope alone is not sufficient. The runner has no signing
    keyring and does not choose who is authorized to approve a release.
-4. Supply `candidate_run_id` and `candidate_artifact_id` along with the exact
-   version and `publish:<version>` confirmation when dispatch is approved.
+5. Obtain explicit approval to push that tag and separately to update the
+   `release` environment's deployment-tag allowlist for the exact chosen tag.
+   The initial allowlist admits only `0.1.0`; it does not admit the next release
+   automatically. Do not broaden it to all tags or remove independent review.
+6. Confirm the npm trusted publisher still matches the repository, workflow,
+   and environment above. After publication approval, dispatch on the signed
+   tag with `version`, `confirmation` set to `publish:<version>`,
+   `candidate_run_id`, and `candidate_artifact_id`. The release operator uses
+   `@ai-yas`; `@naoi` independently approves the protected environment after
+   reviewing the exact source, tag object, candidate IDs, and digest. Keep
+   self-review and administrator bypass disabled. Missing independent approval
+   stops publication.
+7. Record the results listed under [OIDC validation evidence](#oidc-validation-evidence).
+   A successful candidate build or environment approval alone is not a release.
 
 The verification job checks candidate provenance, downloads by immutable ID,
 and compares the actual tarball bytes to both the manifest and signed tag digest.
@@ -133,9 +137,10 @@ Changes to privileged publication tooling require a separately reviewed change;
 a future npm release cannot silently change the publisher used on retry.
 
 Retries are safe only for identical bytes: when the exact version is absent,
-an anonymous package lookup must also confirm either package absence or a stable
-`latest` strictly older than the candidate. Backfills, equal versions, malformed
-metadata, and missing or prerelease `latest` values stop before publication.
+an anonymous package lookup must confirm an existing package with a stable
+`latest` strictly older than the candidate. Package absence, backfills, equal
+versions, malformed metadata, and missing or prerelease `latest` values stop
+before publication.
 Publication runs share one package-wide concurrency group, including different
 versions, so this workflow cannot race its own `latest` updates. External registry
 writes are not controlled by that queue and still require coordinated maintainer
@@ -151,7 +156,7 @@ verified statement must also name this exact npm package and version. Missing or
 unrelated provenance and a moved `latest` stop the workflow; no fallback silently
 restores a distribution tag. Authorization, rate-limit, network, and byte-mismatch failures stop
 the workflow. Registry verification still runs after a skipped publication.
-Immediately after a successful first npm publish, the anonymous registry may
+Immediately after a successful npm publish, the anonymous registry may
 still return HTTP 404 while npm processes the package. Post-publication
 verification waits up to approximately ten minutes for that one condition.
 Other HTTP errors and mismatched metadata fail immediately. If the wait expires,
@@ -171,6 +176,18 @@ complete fields. An existing release with a different digest, source revision,
 tag, or assets fails closed. A failed-job retry resumes an approved draft; it
 does not create a second release or replace its files.
 
+The release command receives the exact annotated tag object admitted by the
+build job. It checks the live remote tag before and after draft creation, before
+resuming assets or adding missing assets, immediately before publication, and
+after the final release readback, including already published releases. A moved,
+deleted or lightweight replacement tag, or a failed tag lookup, stops the job.
+Detection does not roll back or delete a draft, asset or published release; a
+failure after publication requires a maintainer to inspect the remote state.
+These checks narrow and detect race windows but cannot eliminate them: GitHub
+does not atomically lock the tag reference with release writes, and a tag can
+change between checks or after the final read. Protected, immutable release tags
+and coordinated maintainer access remain required.
+
 The candidate transfer uses the pinned action's
 [cross-run artifact inputs](https://github.com/actions/download-artifact/blob/v4.3.0/action.yml)
 and checks the [artifact provenance returned by GitHub](https://docs.github.com/en/rest/actions/artifacts?apiVersion=2022-11-28).
@@ -180,53 +197,38 @@ Certificate-bound bundle verification follows the
 [GitHub CLI verification policy](https://cli.github.com/manual/gh_attestation_verify)
 and [npm's provenance format](https://github.com/npm/provenance).
 
-## One-time first publication
+## OIDC validation evidence
 
-npm trusted publishing requires an existing package. For the separately approved
-first `@pixieworks/pixiecore@0.1.0` publication only, the same workflow accepts
-`authentication: bootstrap` and the additional exact confirmation
-`bootstrap:0.1.0`. Keep the ordinary `publish:0.1.0` confirmation too. OIDC remains
-the default; an OIDC error never triggers token fallback. Leave
-`bootstrap_confirmation` empty for normal OIDC dispatches.
+The first `0.1.0` publication used the former one-time token-authenticated path,
+with OIDC provenance. Its
+[successful publication run](https://github.com/pixieworksinc/pixiecore/actions/runs/37162087728)
+does not demonstrate OIDC-authenticated npm publication. The npm trusted
+publisher is registered and the first-publication environment secret has been
+removed. Registration is setup evidence only; actual OIDC publication remains
+to be verified at the next separately approved release.
 
-1. Review and merge the workflow change, then build and approve a **new candidate
-   at that merged source revision**. A candidate from an older revision cannot
-   be reused. Tag signing, dispatch and publication still need separate approval.
-2. Configure the `release` environment to require independent approval, prevent
-   self-review and administrator bypass, and admit only the approved release tag.
-3. After credential-registration approval, create a short-lived npm granular
-   token with only the permissions needed to create the package in the
-   `pixieworks` scope. Verify account/scope authority and the token's noninteractive
-   publishing permissions, including the required 2FA policy. Put it only in the
-   `release` environment secret `NPM_BOOTSTRAP_TOKEN`, never in a repository file,
-   chat, workflow input or repository-wide secret.
-4. After separate publication approval, dispatch the signed tag with the candidate
-   IDs and bootstrap inputs above. The workflow requires both version and package
-   absence before a new bootstrap publication. Anonymous 404 responses are not
-   proof of scope ownership; npm authorization remains authoritative. Existing
-   packages, registry failures and versions other than `0.1.0` fail closed.
-5. Only the bootstrap publish step receives the credential. Its temporary npm
-   configuration contains an environment-variable reference, not the token;
-   the configuration is removed on shell exit. Lifecycle scripts are disabled.
-   Explicit `--provenance` uses GitHub OIDC for attestation, while the short-lived
-   token authorizes publication. The signed artifact, certificate identity and
-   anonymous post-publication checks are the same as normal OIDC publication.
-6. After exact bytes and provenance are verified, configure the package's npm
-   trusted publisher for `pixieworksinc/pixiecore`, workflow `release.yml`,
-   environment `release`, with direct publication allowed. Revoke the bootstrap
-   token at npm and remove the environment secret, even if the attempt failed;
-   obtain a new narrowly scoped token only if a new publication attempt needs it.
-   All future releases use OIDC. Retire the bootstrap code through a reviewed
-   follow-up after the first release succeeds.
+For that release, retain a public, secret-free verification record containing:
 
-A retry of an already published `0.1.0` skips both publication steps only after
-the existing bytes, provenance and `latest` pass the normal checks, so it needs
-no bootstrap secret. Unverified existing versions stop instead of republishing.
-The GitHub Release job still follows successful registry verification; approval
-to dispatch this workflow therefore covers both npm and GitHub Release creation.
-This procedure does not create a staged placeholder package or publish locally.
+- The approved version, source commit and subject, signed tag object and
+  verification result, candidate run/attempt/artifact IDs, and SHA-256.
+- The actual publication run URL, deployment approval, and successful
+  `Publish immutable package through OIDC` step. If an existing version caused
+  that step to be skipped, report a verified retry, not an OIDC publication test.
+- An anonymous registry read for the exact package/version and `latest`, plus
+  downloaded tarball size, SHA-256, npm integrity, and shasum matching the
+  approved manifest. Record the cryptographic provenance verification result
+  for the exact repository, workflow, source commit, and signed tag.
+- The GitHub Release URL and byte comparison of both uploaded assets with the
+  approved candidate, followed by an installed-package smoke check.
+
+Do not publish an extra version merely to exercise OIDC. Do not move the
+`0.1.0` tag, repack its artifact, or rerun its historical workflow as a way to
+test the new publisher. If authentication fails, stop and diagnose the trusted
+publisher configuration; do not restore a token fallback. Never record secrets
+or authentication tokens in the verification record.
 
 See npm's [trusted-publisher prerequisites](https://docs.npmjs.com/cli/v11/commands/npm-trust/#prerequisites)
 and [provenance instructions](https://docs.npmjs.com/generating-provenance-statements/).
-Source visibility, environment/credential configuration, tag signing, publisher
-configuration, dispatch and all registry writes remain separately approved operations.
+Environment and publisher changes, tag signing/push, dispatch, and all registry
+writes remain separately approved operations. Publication dispatch approval
+covers both npm publication and the subsequent GitHub Release creation.

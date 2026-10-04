@@ -36,7 +36,7 @@ export const FORBIDDEN_PRODUCT_NAMES = Object.freeze([
 /** High-confidence secret forms that can be detected without printing values. */
 export const SECRET_PATTERNS = Object.freeze([
   Object.freeze({ id: 'openai-api-key', pattern: /\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b/u }),
-  Object.freeze({ id: 'github-token', pattern: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/u }),
+  Object.freeze({ id: 'github-token', pattern: /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/u }),
   Object.freeze({ id: 'aws-access-key', pattern: /\b(?:AKIA|ASIA)[A-Z0-9]{16}\b/u }),
   Object.freeze({ id: 'slack-token', pattern: /\bxox[baprs]-[A-Za-z0-9-]{20,}\b/u }),
   Object.freeze({ id: 'private-key', pattern: /-----BEGIN (?:EC |OPENSSH |RSA )?PRIVATE KEY-----/u }),
@@ -56,8 +56,8 @@ export function isPrivateArchivePath(path) {
     || PRIVATE_ARCHIVE_PREFIXES.some(prefix => path.startsWith(prefix));
 }
 
-/** Returns true when a path contains a forbidden generated or user-owned part. */
+/** Rejects forbidden path parts, including every environment-file variant. */
 export function hasForbiddenPublicPathPart(path) {
   const parts = path.split('/');
-  return parts.some(part => FORBIDDEN_PUBLIC_PATH_PARTS.includes(part));
+  return parts.some(part => FORBIDDEN_PUBLIC_PATH_PARTS.includes(part) || part.startsWith('.env.'));
 }

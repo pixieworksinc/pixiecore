@@ -51,11 +51,14 @@ export function renderBlueprintBenchmarkScorecard(
     '',
     '## Results',
     '',
-    '| Target | Provider / model | Runs | Cases | Accuracy | Accuracy SD | Latency mean / p50 / p95 | Tokens | Cost |',
+    '| Target | Provider / model | Runs | Cases | Comparator pass rate | Pass rate SD | Latency mean / p50 / p95 | Tokens | Cost |',
     '|---|---|---:|---:|---:|---:|---:|---:|---:|',
     ...artifact.targets.map(targetRow),
     '',
-    '> Accuracy is always shown with passed and total case counts. The runner seed identifies',
+    '> The accuracy fields report configured comparator pass rates, not a general factuality guarantee.',
+    ...artifact.targets.filter(target => target.limitations?.includes('factuality_not_evaluated'))
+      .map(target => `> ${markdown(target.id)}: includes structural comparisons; factuality was not evaluated for those comparisons.`),
+    '> Pass rate is always shown with passed and total case counts. The runner seed identifies',
     '> this benchmark; it does not prove control over remote model sampling.',
     '',
   ];

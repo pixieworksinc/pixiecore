@@ -377,9 +377,22 @@ Given the case input, it verifies the following without a second provider call:
   meaningful character in the summary is covered by a declared claim.
 
 This permits alternate valid phrasing and omission boundaries while retaining
-typed provenance. It does not prove free-form paraphrase fidelity; a use case
+declared source-field attribution. It does not prove free-form paraphrase fidelity; a use case
 that needs that claim must add a separately specified judge and record its
 model evidence.
+
+The traceable-summary and schema comparators emit the optional result metadata
+`limitations: [factuality_not_evaluated]` on both passes and failures. This is
+not an extra assertion and does not change their pass/fail rules. For example,
+an input about travel to Tokyo and a claim about travel to Mars can pass the
+traceable-summary structural checks when the claim cites a supplied field;
+the limitation explicitly records that this is not evidence of factuality.
+Case results, benchmark runs and targets, and value-free matrix checkpoints
+retain the limitation. CLI and scorecard output call out the limited scope.
+Benchmark `accuracy` fields retain their existing meaning and calculation:
+the configured comparator pass rate, not a general factuality or hallucination
+score. Older artifacts without `limitations` remain valid; an absent or empty
+list does not establish factuality or imply an independent semantic review.
 
 ## Versioning
 
