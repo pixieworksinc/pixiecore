@@ -57,8 +57,10 @@ technical gates.
 
 ## Release signing and provenance
 
-This policy applies to releases created after its adoption. It does not
-retroactively describe the historical `0.1.0` tag or artifact as signed.
+The published `0.1.0` release has a verified signed tag and verified npm
+provenance; its exact source and artifact digest are recorded in the
+[release notes](docs/project/release-notes-0.1.0.md). Later releases must satisfy
+the same signing and artifact checks; existing tags and artifacts stay immutable.
 
 - A release uses the numeric SemVer tag `X.Y.Z`, matching `package.json`.
 - A release-authorized maintainer creates an annotated cryptographically

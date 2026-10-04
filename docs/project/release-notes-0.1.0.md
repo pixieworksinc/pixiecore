@@ -1,7 +1,15 @@
-# PixieCore 0.1.0 release candidate
+# PixieCore 0.1.0
 
-PixieCore 0.1.0 is the planned first public source release of the PixieCore
-TypeScript runtime. It has not yet been tagged or published to npm.
+PixieCore 0.1.0 was published on 2026-10-03 as the first public release of the
+PixieCore TypeScript runtime. The source, signed tag, GitHub Release, and npm
+package are available:
+
+- [GitHub Release and immutable artifacts](https://github.com/pixieworksinc/pixiecore/releases/tag/0.1.0)
+- [npm package: @pixieworks/pixiecore@0.1.0](https://www.npmjs.com/package/@pixieworks/pixiecore/v/0.1.0)
+- [Verified publication run](https://github.com/pixieworksinc/pixiecore/actions/runs/37162087728)
+- Source commit: `696c75bd704dd8ba90a2435f8a9b52dc8b987681` (`chore: Initial commit`).
+- Signed tag object: `88e60d3d37cd1e728b6b3f35cc45ee60297b237c`.
+- Tarball SHA-256: `f84e8f31eb417dcc1319d66f5f7a8eb3e94b8750df036aa33aadcc38b002977b`.
 
 ## Included scope
 
@@ -29,8 +37,10 @@ TypeScript runtime. It has not yet been tagged or published to npm.
 The renamed candidate was checked in isolated source trees on Node.js 22.13.0
 and 24.20.0. Both environments passed the production dependency audit,
 license/SBOM gate, typecheck, POP Core conformance, source coverage floors, and
-installed package, CLI, and plugin smoke checks. Final publication repeats the
-same gates on the exact exported source snapshot.
+installed package, CLI, and plugin smoke checks. The publication run verified
+the approved candidate bytes and npm provenance before creating the GitHub
+Release. These results apply to the release artifact, not to later changes in
+the development branch.
 
 The repository's default test suite is offline. Fake and deterministic
 Providers verify request, response, retry, lifecycle, and error contracts
@@ -52,9 +62,10 @@ real model reaches a particular semantic accuracy, latency, or cost.
   evidence, credentials, user settings, build products, and dependency installs
   are excluded from the fresh public source snapshot.
 
-## Deferred release actions
+## Subsequent releases
 
-Source publication, the `0.1.0` tag, and npm publication are separate approval
-and verification flows. The initial GitHub repository is created private and is
-made public only after its one-commit source inventory and branch policy have
-been reviewed. npm remains unpublished during the source-publication flow.
+The initial publication used token authentication with OIDC provenance. The npm
+trusted publisher is now configured; actual OIDC-authenticated publication will
+be verified at the next separately approved release, not by replacing `0.1.0`.
+Follow the [release policy](release-policy.md) and
+[Issue #1](https://github.com/pixieworksinc/pixiecore/issues/1) for that work.

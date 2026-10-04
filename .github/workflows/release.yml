@@ -19,16 +19,6 @@ on:
         description: Exact immutable artifact ID whose SHA256 is in the signed tag
         required: true
         type: string
-      authentication:
-        description: Use bootstrap only for the separately approved first 0.1.0 publication
-        required: true
-        type: choice
-        default: oidc
-        options: [oidc, bootstrap]
-      bootstrap_confirmation:
-        description: For bootstrap only, type bootstrap:0.1.0; otherwise leave empty
-        required: false
-        type: string
 
 permissions:
   contents: read
@@ -69,15 +59,12 @@ jobs:
           PIXIECORE_RELEASE_CONFIRMATION: ${{ inputs.confirmation }}
           PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
           PIXIECORE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
-          PIXIECORE_PUBLICATION_MODE: ${{ inputs.authentication }}
-          PIXIECORE_BOOTSTRAP_CONFIRMATION: ${{ inputs.bootstrap_confirmation }}
         run: |
           test "$GITHUB_REPOSITORY" = "pixieworksinc/pixiecore"
           test "$PIXIECORE_REPOSITORY_PRIVATE" = "false"
           test "$GITHUB_REF_TYPE" = "tag"
           test "$GITHUB_REF_NAME" = "$PIXIECORE_RELEASE_VERSION"
           test "$PIXIECORE_RELEASE_CONFIRMATION" = "publish:$PIXIECORE_RELEASE_VERSION"
-          node --input-type=module -e 'import { assertPublicationMode } from "./scripts/release/verify-registry.mjs"; assertPublicationMode(process.env.PIXIECORE_PUBLICATION_MODE, process.env.PIXIECORE_RELEASE_VERSION, process.env.PIXIECORE_BOOTSTRAP_CONFIRMATION)'
           node --input-type=module -e 'import { assertStableReleaseVersion } from "./scripts/release/verify-artifact.mjs"; assertStableReleaseVersion(process.env.PIXIECORE_RELEASE_VERSION)'
           tag_object="$(git rev-parse --verify "refs/tags/$GITHUB_REF_NAME")"
           test "$(git cat-file -t "$tag_object")" = "tag"
@@ -188,8 +175,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PIXIECORE_RELEASE_VERSION: ${{ inputs.version }}
-          PIXIECORE_PUBLICATION_MODE: ${{ inputs.authentication }}
-          PIXIECORE_BOOTSTRAP_CONFIRMATION: ${{ inputs.bootstrap_confirmation }}
         run: >-
           node scripts/release/verify-registry.mjs --check-existing
           --version="$PIXIECORE_RELEASE_VERSION"
@@ -197,24 +182,10 @@ jobs:
           --output=release >> "$GITHUB_OUTPUT"
 
       - name: Publish immutable package through OIDC
-        if: steps.registry_version.outputs.publish_required == 'true' && inputs.authentication == 'oidc'
+        if: steps.registry_version.outputs.publish_required == 'true'
         run: |
           tarball="$(node -p "require('./release/release-manifest.json').tarball")"
-          npm publish "./release/$tarball" --access public --tag latest --registry=https://registry.npmjs.org
-
-      - name: Bootstrap first package with provenance
-        if: steps.registry_version.outputs.publish_required == 'true' && inputs.authentication == 'bootstrap'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
-        run: |
-          test -n "$NODE_AUTH_TOKEN" || { echo 'Missing release environment bootstrap credential'; exit 1; }
-          umask 077
-          npm_config_userconfig="$(mktemp "$RUNNER_TEMP/pixiecore-npmrc.XXXXXX")"
-          export npm_config_userconfig
-          trap 'rm -f "$npm_config_userconfig"' EXIT
-          printf '%s\n' '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > "$npm_config_userconfig"
-          tarball="$(node -p "require('./release/release-manifest.json').tarball")"
-          npm publish "./release/$tarball" --ignore-scripts --provenance --access public --tag latest --registry=https://registry.npmjs.org
+          npm publish "./release/$tarball" --ignore-scripts --access public --tag latest --registry=https://registry.npmjs.org
 
       - name: Verify anonymously published package bytes
         env:
