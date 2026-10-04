@@ -9,9 +9,10 @@ import { BlueprintValidationError } from '../../../../core/contracts/errors/inde
 import type { Blueprint, InputPlaceholder } from '../../../../core/contracts/types/index.js';
 import { compileJsonSchema } from './json-schema.js';
 import { isRecord, normalizePlaceholders } from './shared.js';
+import { normalizePrompt } from './scenario.js';
 
 const REQUIRED_FIELDS = ['name', 'version', 'role', 'prompt', 'output_schema'] as const;
-const REQUIRED_TEXT_FIELDS = ['name', 'role', 'prompt'] as const;
+const REQUIRED_TEXT_FIELDS = ['name', 'role'] as const;
 
 /**
  * Configures blueprint validator behavior.
@@ -45,13 +46,16 @@ export class BlueprintValidator {
     }
     validateRequiredFields(input);
     validateRequiredTextFields(input);
+    const prompt = normalizePrompt(input.prompt);
     validateVersion(input.version);
     validateJsonSchema(input.output_schema, 'output_schema', this.compileSchema);
     const placeholders = normalizePlaceholders(input.input_placeholders, 'Invalid type');
     validateOptionalFields(input, this.compileSchema);
-    validateInstructionBindings(input, placeholders);
-    warnForIncompleteRecommendedGherkin(input.prompt as string, this.warn);
-    return input as unknown as Blueprint;
+    validateInstructionBindings({ ...input, prompt }, placeholders);
+    if (typeof input.prompt === 'string') {
+      warnForIncompleteRecommendedGherkin(prompt, this.warn);
+    }
+    return { ...input, prompt } as unknown as Blueprint;
   }
 
   /**

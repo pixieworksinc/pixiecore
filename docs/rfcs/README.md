@@ -21,3 +21,4 @@ No POP RFC has yet completed the post-bootstrap process.
 | [POP-RFC-0001](0001-instruction-text-delivery.md) | Instruction text delivery | `draft` | Compatible normative | Not started |
 | [POP-RFC-0002](0002-input-binding-syntax.md) | Portable input binding syntax | `draft` | Compatible normative | Not started |
 | [POP-RFC-0003](0003-extension-aware-instruction-representations.md) | Extension-aware instruction representations | `draft` | Compatible normative | Not started |
+| [POP-RFC-0004](0004-prompt-first-business-logic.md) | Restore prompt-first business logic | `draft` | Incompatible normative | Not started |

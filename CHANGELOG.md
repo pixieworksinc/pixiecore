@@ -7,6 +7,19 @@ semantic versioning.
 
 Changes below are not part of the published `0.1.0` artifact.
 
+### 0.2 development
+
+- Restore prompt-first POP terminology: deterministic business logic and
+  several reasoning Roles may live in one LLM-executed Blueprint.
+- Accept structured `prompt.Scenario` arrays, validate their shape and input
+  bindings, and serialize them for the existing text-based Role plugin path.
+- Add a PixieCore Blueprint v2 schema at the current schema alias and preserve
+  the unchanged v1 schema at `blueprint/v1-schema.json`.
+- Add a Customer discount example, 18 semantic evaluation cases, and offline
+  delivery/error-detection tests. No real-model accuracy claim is made.
+- Record POP-RFC-0004 and the 0.2 migration plan; retain published POP 0.1
+  identifiers and conformance fixtures without claiming a new portable profile.
+
 ### Changed
 
 - Removed first-publication token authentication from the release workflow;
