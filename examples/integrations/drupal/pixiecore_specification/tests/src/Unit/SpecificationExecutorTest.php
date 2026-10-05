@@ -71,6 +71,29 @@ final class SpecificationExecutorTest extends UnitTestCase {
   }
 
   /**
+   * Tests previously configured paid settings cannot activate the mock demo.
+   */
+  public function testRejectsConfiguredRealModeBeforeTransport(): void {
+    $client = $this->createMock(PixieCoreClientInterface::class);
+    $client->expects($this->never())->method('executeEnvelope');
+    $store = $this->createMock(RevisionStoreInterface::class);
+    $store->expects($this->never())->method('latest');
+    $executor = new SpecificationExecutor(new DiscountBlueprint(), $store, $client, new Settings([
+      'pixiecore_specification' => [
+        'mode' => 'real',
+        'endpoint' => 'http://runtime:3087',
+        'token' => str_repeat('x', 32),
+        'expected_model' => 'fixture-model',
+        'max_cost_micro_usd' => 100,
+      ],
+    ]), $this->createMock(LockBackendInterface::class));
+    $this->assertSame('disabled', $executor->mode());
+    $this->expectException(\RuntimeException::class);
+    $this->expectExceptionMessage('Execution is disabled.');
+    $executor->execute(1, 1, 'instruction', DiscountBlueprint::DEFAULT_INPUTS);
+  }
+
+  /**
    * Tests stale revisions are rejected even when instruction text matches.
    */
   public function testRejectsStaleRevision(): void {
