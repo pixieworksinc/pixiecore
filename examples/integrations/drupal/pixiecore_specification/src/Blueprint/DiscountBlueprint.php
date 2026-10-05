@@ -53,7 +53,6 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       'name',
       'version',
       'role',
-      'permissions',
       'input_placeholders',
       'input_schema',
       'prompt',
@@ -87,7 +86,6 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       'name',
       'version',
       'role',
-      'permissions',
       'temperature',
       'input_placeholders',
       'input_schema',
@@ -97,12 +95,6 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     ];
     if (array_diff(array_keys($blueprint), $allowed) !== []) {
       throw new \InvalidArgumentException('Blueprint contains unsupported fields.');
-    }
-    // PixieCore separates authenticated caller context from business inputs
-    // only when the Blueprint declares a permissions object. The demo grants
-    // no Blueprint-level privileges; Drupal controls the editor permission.
-    if (!is_array($blueprint['permissions']) || $blueprint['permissions'] !== []) {
-      throw new \InvalidArgumentException('Blueprint permissions must be an empty mapping.');
     }
     if (!is_array($blueprint['input_placeholders']) || !array_is_list($blueprint['input_placeholders'])
       || count($blueprint['input_placeholders']) !== 2

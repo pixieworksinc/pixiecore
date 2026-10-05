@@ -28,11 +28,9 @@ purchases strictly above 1000; the nonmatching examples explicitly produce no
 discount.
 The two schemas are a fixed demo contract: Save rejects additional schema
 keywords instead of accepting a revision that PixieCore might reject later.
-The demo role is fixed to `assistant`. The required empty `permissions: {}`
-mapping lets PixieCore separate authenticated server-injected caller context
-from the strict business input schema; it does not grant Blueprint privileges.
-Provider model selection is owned by trusted deployment settings, not editable
-Blueprint YAML.
+The demo role is fixed to `assistant`. The offline fixture server does not
+inject caller identity into the strict business input schema. Provider model
+selection is owned by trusted deployment settings, not editable Blueprint YAML.
 
 ## Ownership and safety
 

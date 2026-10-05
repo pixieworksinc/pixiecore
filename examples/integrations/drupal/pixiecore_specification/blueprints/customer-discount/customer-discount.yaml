@@ -2,7 +2,6 @@ name: Apply customer discount policy
 version: 1.0.0
 role: assistant
 temperature: 0
-permissions: {}
 
 input_placeholders:
   - name: customer_tier
