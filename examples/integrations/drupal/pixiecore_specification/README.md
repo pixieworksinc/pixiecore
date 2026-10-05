@@ -28,6 +28,8 @@ purchases strictly above 1000; the nonmatching examples explicitly produce no
 discount.
 The two schemas are a fixed demo contract: Save rejects additional schema
 keywords instead of accepting a revision that PixieCore might reject later.
+The demo role is fixed to `assistant`. Provider model selection is owned by
+trusted deployment settings, not editable Blueprint YAML.
 
 ## Ownership and safety
 

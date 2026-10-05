@@ -88,8 +88,17 @@ final class DiscountBlueprintTest extends UnitTestCase {
       'quoted temperature is not numeric YAML' => [['temperature'], '0'],
       'null temperature is not numeric YAML' => [['temperature'], NULL],
       'null model is not a model name' => [['model'], NULL],
+      'model override is not allowed' => [['model'], 'unapproved-model'],
+      'unregistered runtime role' => [['role'], 'reviewer'],
       'null examples are not a sequence' => [['examples'], NULL],
       'placeholder description must be text' => [['input_placeholders', 0, 'description'], NULL],
+      'placeholders must be a sequence' => [
+        ['input_placeholders'],
+        [
+          'first' => ['name' => 'customer_tier', 'type' => 'string', 'required' => TRUE],
+          'second' => ['name' => 'purchase_amount', 'type' => 'number', 'required' => TRUE],
+        ],
+      ],
       'examples must be a sequence' => [
         ['examples'],
         [
@@ -131,7 +140,6 @@ final class DiscountBlueprintTest extends UnitTestCase {
       ['{"customer_tier":" ","purchase_amount":1200}'],
       ['{"customer_tier":"\u00a0","purchase_amount":1200}'],
       ['{"customer_tier":"\ufeff","purchase_amount":1200}'],
-      ['{"customer_tier":"' . str_repeat("\u{1F600}", 21) . '","purchase_amount":1200}'],
       ['{"customer_tier":"Gold","purchase_amount":-1}'],
       ['{"customer_tier":"Gold","purchase_amount":1000001}'],
       ['{"customer_tier":"Gold","purchase_amount":1e999}'],
@@ -174,6 +182,18 @@ final class DiscountBlueprintTest extends UnitTestCase {
     $builder->validateResult(['discount' => 0.20, 'final_price' => 960], $inputs);
     $builder->validateResult(['discount' => 0, 'final_price' => 1200], $inputs);
     $this->assertSame(1200, $inputs['purchase_amount']);
+  }
+
+  /**
+   * Tests schema maxLength counts supplementary characters as code points.
+   */
+  public function testAcceptsSupplementaryUnicodeTier(): void {
+    $tier = str_repeat("\u{1F600}", 21);
+    $json = json_encode([
+      'customer_tier' => $tier,
+      'purchase_amount' => 1200,
+    ], JSON_THROW_ON_ERROR);
+    $this->assertSame($tier, (new DiscountBlueprint())->inputs($json)['customer_tier']);
   }
 
   /**

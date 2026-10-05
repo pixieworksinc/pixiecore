@@ -61,6 +61,9 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       || !is_string($blueprint['prompt']) || trim($blueprint['prompt']) === '') {
       throw new \InvalidArgumentException('Blueprint name, version, role, and prompt must be valid nonempty values.');
     }
+    if ($blueprint['role'] !== 'assistant') {
+      throw new \InvalidArgumentException('The demo runtime only supports the assistant role.');
+    }
     // Match the runtime's Mustache and legacy single-brace reference grammar.
     $references = preg_match_all('/\{\{[ \t]*([A-Za-z_][A-Za-z0-9_.-]*)[ \t]*\}\}|\{[ \t]*([A-Za-z_][A-Za-z0-9_.-]*)[ \t]*\}/u', $blueprint['prompt'], $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL);
     if ($references === FALSE) {
@@ -81,12 +84,12 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       'prompt',
       'output_schema',
       'examples',
-      'model',
     ];
     if (array_diff(array_keys($blueprint), $allowed) !== []) {
       throw new \InvalidArgumentException('Blueprint contains unsupported fields.');
     }
-    if (!is_array($blueprint['input_placeholders']) || count($blueprint['input_placeholders']) !== 2
+    if (!is_array($blueprint['input_placeholders']) || !array_is_list($blueprint['input_placeholders'])
+      || count($blueprint['input_placeholders']) !== 2
       || array_column($blueprint['input_placeholders'], 'name') !== ['customer_tier', 'purchase_amount']) {
       throw new \InvalidArgumentException('Blueprint must declare customer_tier and purchase_amount inputs in order.');
     }
@@ -134,9 +137,8 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       throw new \InvalidArgumentException('Blueprint input and output schemas do not match the demo contract.');
     }
     if (array_key_exists('temperature', $blueprint) && ((!is_int($blueprint['temperature']) && !is_float($blueprint['temperature']))
-      || !is_finite((float) $blueprint['temperature']) || $blueprint['temperature'] < 0 || $blueprint['temperature'] > 2)
-      || array_key_exists('model', $blueprint) && (!is_string($blueprint['model']) || trim($blueprint['model']) === '')) {
-      throw new \InvalidArgumentException('Blueprint model settings are invalid.');
+      || !is_finite((float) $blueprint['temperature']) || $blueprint['temperature'] < 0 || $blueprint['temperature'] > 2)) {
+      throw new \InvalidArgumentException('Blueprint temperature is invalid.');
     }
     if (array_key_exists('examples', $blueprint)) {
       if (!is_array($blueprint['examples']) || !array_is_list($blueprint['examples'])) {
@@ -185,10 +187,7 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     // Match the JSON Schema \S check, including non-ASCII separators and BOM.
     $hasNonWhitespace = is_string($tier)
       && preg_match('/[^\p{Z}\x{0009}-\x{000D}\x{FEFF}]/u', $tier) === 1;
-    // JSON Schema string lengths count UTF-16 code units, not code points.
-    $length = $hasNonWhitespace
-      ? intdiv(strlen(mb_convert_encoding($tier, 'UTF-16LE', 'UTF-8')), 2) : 0;
-    if (!$hasNonWhitespace || $length > 40) {
+    if (!$hasNonWhitespace || mb_strlen($tier, 'UTF-8') > 40) {
       throw new \InvalidArgumentException('customer_tier must be a nonempty string of at most 40 characters.');
     }
     if ((!is_int($amount) && !is_float($amount)) || !is_finite((float) $amount) || $amount < 0 || $amount > 1000000) {
