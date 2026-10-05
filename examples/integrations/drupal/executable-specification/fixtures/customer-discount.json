@@ -1,0 +1,4 @@
+[
+  {"threshold_text": "1000", "inputs": {"customer_tier": "Gold", "purchase_amount": 1200}, "expected": {"discount": 0.20, "final_price": 960}},
+  {"threshold_text": "2000", "inputs": {"customer_tier": "Gold", "purchase_amount": 1200}, "expected": {"discount": 0, "final_price": 1200}}
+]

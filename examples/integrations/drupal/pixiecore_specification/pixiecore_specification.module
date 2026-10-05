@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Hooks for the PixieCore Blueprint demo module.
+ */
+
+/**
+ * Implements hook_codemirror_mode_info_alter().
+ */
+function pixiecore_specification_codemirror_mode_info_alter(array &$modes): void {
+  foreach (['javascript', 'yaml'] as $mode) {
+    if (isset($modes[$mode])) {
+      $modes[$mode]['usage'][] = 'pixiecore_specification';
+    }
+  }
+}

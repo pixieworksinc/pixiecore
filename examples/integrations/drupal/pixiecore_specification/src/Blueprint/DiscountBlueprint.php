@@ -1,0 +1,213 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\pixiecore_specification\Blueprint;
+
+use Drupal\Component\Serialization\Yaml;
+
+/**
+ * Validates and preserves the complete editable Blueprint document.
+ */
+final class DiscountBlueprint implements DiscountBlueprintInterface {
+
+  /**
+   * Maximum editable Blueprint size in bytes.
+   */
+  public const MAX_BLUEPRINT_BYTES = 8192;
+
+  /**
+   * Maximum synthetic input size in bytes.
+   */
+  public const MAX_INPUT_BYTES = 2048;
+
+  /**
+   * Initial business inputs, not runtime configuration.
+   */
+  public const DEFAULT_INPUTS = '{"customer_tier":"Gold","purchase_amount":1200}';
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultBlueprint(): string {
+    return $this->loadBundledBlueprint();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function build(string $blueprintYaml): string {
+    if (trim($blueprintYaml) === '' || strlen($blueprintYaml) > self::MAX_BLUEPRINT_BYTES) {
+      throw new \InvalidArgumentException('Blueprint must contain 1 to 8192 bytes.');
+    }
+    try {
+      $blueprint = Yaml::decode($blueprintYaml);
+    }
+    catch (\Throwable) {
+      throw new \InvalidArgumentException('Blueprint must be valid YAML.');
+    }
+    if (!is_array($blueprint)) {
+      throw new \InvalidArgumentException('Blueprint must be a YAML mapping.');
+    }
+    $required = ['name', 'version', 'role', 'input_placeholders', 'input_schema', 'prompt', 'output_schema'];
+    foreach ($required as $key) {
+      if (!array_key_exists($key, $blueprint)) {
+        throw new \InvalidArgumentException('Blueprint is missing a required field: ' . $key . '.');
+      }
+    }
+    if (!is_string($blueprint['name']) || trim($blueprint['name']) === ''
+      || !is_string($blueprint['version']) || !preg_match('/^\d+\.\d+(?:\.\d+)?$/', $blueprint['version'])
+      || !is_string($blueprint['role']) || trim($blueprint['role']) === ''
+      || !is_string($blueprint['prompt']) || trim($blueprint['prompt']) === '') {
+      throw new \InvalidArgumentException('Blueprint name, version, role, and prompt must be valid nonempty values.');
+    }
+    $allowed = [
+      'name',
+      'version',
+      'role',
+      'temperature',
+      'input_placeholders',
+      'input_schema',
+      'prompt',
+      'output_schema',
+      'examples',
+      'model',
+    ];
+    if (array_diff(array_keys($blueprint), $allowed) !== []) {
+      throw new \InvalidArgumentException('Blueprint contains unsupported fields.');
+    }
+    if (!is_array($blueprint['input_placeholders']) || count($blueprint['input_placeholders']) !== 2
+      || array_column($blueprint['input_placeholders'], 'name') !== ['customer_tier', 'purchase_amount']) {
+      throw new \InvalidArgumentException('Blueprint must declare customer_tier and purchase_amount inputs in order.');
+    }
+    foreach ($blueprint['input_placeholders'] as $placeholder) {
+      if (!is_array($placeholder) || !in_array($placeholder['type'] ?? NULL, ['string', 'number'], TRUE)
+        || ($placeholder['required'] ?? NULL) !== TRUE) {
+        throw new \InvalidArgumentException('Blueprint inputs must be required string and number values.');
+      }
+    }
+    $inputProperties = $blueprint['input_schema']['properties'] ?? NULL;
+    $outputProperties = $blueprint['output_schema']['properties'] ?? NULL;
+    $inputKeys = is_array($inputProperties) ? array_keys($inputProperties) : [];
+    $outputKeys = is_array($outputProperties) ? array_keys($outputProperties) : [];
+    sort($inputKeys);
+    sort($outputKeys);
+    if (!is_array($blueprint['input_schema']) || ($blueprint['input_schema']['type'] ?? NULL) !== 'object'
+      || ($blueprint['input_schema']['additionalProperties'] ?? NULL) !== FALSE
+      || ($blueprint['input_schema']['required'] ?? NULL) !== ['customer_tier', 'purchase_amount']
+      || $inputKeys !== ['customer_tier', 'purchase_amount']
+      || !is_array($inputProperties['customer_tier'] ?? NULL)
+      || !is_array($inputProperties['purchase_amount'] ?? NULL)
+      || ($inputProperties['customer_tier']['type'] ?? NULL) !== 'string'
+      || ($inputProperties['customer_tier']['minLength'] ?? NULL) !== 1
+      || ($inputProperties['customer_tier']['maxLength'] ?? NULL) !== 40
+      || ($inputProperties['customer_tier']['pattern'] ?? NULL) !== '\\S'
+      || ($inputProperties['purchase_amount']['type'] ?? NULL) !== 'number'
+      || ($inputProperties['purchase_amount']['minimum'] ?? NULL) !== 0
+      || ($inputProperties['purchase_amount']['maximum'] ?? NULL) !== 1000000
+      || !is_array($blueprint['output_schema']) || ($blueprint['output_schema']['type'] ?? NULL) !== 'object'
+      || ($blueprint['output_schema']['additionalProperties'] ?? NULL) !== FALSE
+      || ($blueprint['output_schema']['required'] ?? NULL) !== ['discount', 'final_price']
+      || $outputKeys !== ['discount', 'final_price']
+      || !is_array($outputProperties['discount'] ?? NULL)
+      || !is_array($outputProperties['final_price'] ?? NULL)
+      || ($outputProperties['discount']['type'] ?? NULL) !== 'number'
+      || ($outputProperties['discount']['minimum'] ?? NULL) !== 0
+      || ($outputProperties['discount']['maximum'] ?? NULL) !== 1
+      || ($outputProperties['final_price']['type'] ?? NULL) !== 'number'
+      || ($outputProperties['final_price']['minimum'] ?? NULL) !== 0) {
+      throw new \InvalidArgumentException('Blueprint input and output schemas do not match the demo contract.');
+    }
+    if (isset($blueprint['temperature']) && (!is_numeric($blueprint['temperature']) || $blueprint['temperature'] < 0 || $blueprint['temperature'] > 2)
+      || isset($blueprint['model']) && (!is_string($blueprint['model']) || trim($blueprint['model']) === '')) {
+      throw new \InvalidArgumentException('Blueprint model settings are invalid.');
+    }
+    if (isset($blueprint['examples'])) {
+      if (!is_array($blueprint['examples'])) {
+        throw new \InvalidArgumentException('Blueprint examples must be a sequence.');
+      }
+      foreach ($blueprint['examples'] as $example) {
+        if (!is_array($example) || !is_array($example['input'] ?? NULL) || !is_array($example['output'] ?? NULL)) {
+          throw new \InvalidArgumentException('Each Blueprint example must declare input and output mappings.');
+        }
+        try {
+          $exampleInputs = $this->inputs(json_encode($example['input'], JSON_THROW_ON_ERROR));
+          $this->validateResult($example['output'], $exampleInputs);
+        }
+        catch (\Throwable) {
+          throw new \InvalidArgumentException('Blueprint examples must satisfy the input and arithmetic contracts.');
+        }
+      }
+    }
+    return $blueprintYaml;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function inputs(string $json): array {
+    if (strlen($json) > self::MAX_INPUT_BYTES) {
+      throw new \InvalidArgumentException('Inputs exceed the 2048 byte limit.');
+    }
+    try {
+      $value = json_decode($json, FALSE, 16, JSON_THROW_ON_ERROR);
+    }
+    catch (\JsonException) {
+      throw new \InvalidArgumentException('Inputs must be a JSON object.');
+    }
+    if (!$value instanceof \stdClass) {
+      throw new \InvalidArgumentException('Inputs must be a JSON object.');
+    }
+    $inputs = (array) $value;
+    $keys = array_keys($inputs);
+    sort($keys);
+    if ($keys !== ['customer_tier', 'purchase_amount']) {
+      throw new \InvalidArgumentException('Only customer_tier and purchase_amount are permitted.');
+    }
+    $tier = $inputs['customer_tier'];
+    $amount = $inputs['purchase_amount'];
+    if (!is_string($tier) || trim($tier) === '' || mb_strlen($tier) > 40) {
+      throw new \InvalidArgumentException('customer_tier must be a nonempty string of at most 40 characters.');
+    }
+    if ((!is_int($amount) && !is_float($amount)) || !is_finite((float) $amount) || $amount < 0 || $amount > 1000000) {
+      throw new \InvalidArgumentException('purchase_amount must be a finite number from 0 to 1000000.');
+    }
+    return $inputs;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateResult(array $result, array $inputs): void {
+    $keys = array_keys($result);
+    sort($keys);
+    if ($keys !== ['discount', 'final_price']) {
+      throw new \UnexpectedValueException('Output fields do not match the contract.');
+    }
+    foreach ($result as $number) {
+      if ((!is_int($number) && !is_float($number)) || !is_finite((float) $number)) {
+        throw new \UnexpectedValueException('Output values must be finite numbers.');
+      }
+    }
+    if ($result['discount'] < 0 || $result['discount'] > 1 || $result['final_price'] < 0) {
+      throw new \UnexpectedValueException('Output numbers are outside the contract.');
+    }
+    $expected = $inputs['purchase_amount'] * (1 - $result['discount']);
+    if (abs($expected - $result['final_price']) > 0.000001) {
+      throw new \UnexpectedValueException('Output arithmetic is inconsistent.');
+    }
+  }
+
+  /**
+   * Loads the bundled contract, never a path supplied by a caller.
+   */
+  private function loadBundledBlueprint(): string {
+    $path = dirname(__DIR__, 2) . '/blueprints/customer-discount/customer-discount.yaml';
+    $source = file_get_contents($path);
+    if ($source === FALSE) {
+      throw new \RuntimeException('The bundled Blueprint is unavailable.');
+    }
+    return $source;
+  }
+
+}

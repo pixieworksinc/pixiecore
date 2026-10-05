@@ -1,0 +1,8 @@
+name: PixieCore Blueprint demo
+type: module
+description: Edits and executes a saved Blueprint through a separately operated PixieCore runtime.
+package: PixieCore examples
+core_version_requirement: ^11
+dependencies:
+  - codemirror_editor:codemirror_editor
+  - pixiecore_integration:pixiecore_integration

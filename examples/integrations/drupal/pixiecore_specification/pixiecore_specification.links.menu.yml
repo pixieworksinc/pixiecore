@@ -1,0 +1,6 @@
+pixiecore_specification.demo:
+  title: 'PixieCore Blueprint demo'
+  description: 'Edit and execute the PixieCore Blueprint demo.'
+  parent: system.admin_config_development
+  route_name: pixiecore_specification.demo
+  weight: 50

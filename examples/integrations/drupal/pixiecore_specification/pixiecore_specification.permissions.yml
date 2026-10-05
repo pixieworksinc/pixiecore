@@ -1,0 +1,4 @@
+use pixiecore specification demo:
+  title: Use the PixieCore specification demo
+  description: Save synthetic pricing instructions and send them to the configured demo runtime.
+  restrict access: true

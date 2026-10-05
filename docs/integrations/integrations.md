@@ -93,6 +93,23 @@ Drupal code still owns form access, user/session mapping, queueing, persistence,
 messaging, and any entity mutation. The included PHPUnit test proves that the
 HTTP request contains only Blueprint YAML and business inputs.
 
+### Drupal Blueprint demo
+
+The [PixieCore Blueprint demo module](../../examples/integrations/drupal/pixiecore_specification/README.md)
+adds a Form API editor for a complete Blueprint, synthetic JSON inputs, and
+per-user revision and execution records. The separate PixieCore HTTP service
+executes the saved Blueprint; Drupal does not implement its discount rule.
+
+Follow the [clean-install guide](../../examples/integrations/drupal/executable-specification/README.md)
+to create an isolated Drupal 11/SQLite site, install the required CodeMirror
+editor and both custom modules, and start an offline fixture runtime. The
+rehearsal changes the Gold/1200 threshold from strictly above 1000 to strictly
+above 2000, changing the fixture result from 20%/960 to 0%/1200 without a
+code change, rebuild, deployment, or restart. The fixture provider supports
+only these documented inputs and instructions; it does not measure LLM
+accuracy. A real provider requires separate credentials, controls, and budget
+approval.
+
 ## Production checklist
 
 - Pin PixieCore, Blueprint, dataset, framework, and adapter versions.

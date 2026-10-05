@@ -1,0 +1,9 @@
+editor:
+  css:
+    theme:
+      assets/css/editor.css: {}
+  js:
+    assets/js/editor.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
