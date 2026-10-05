@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pixiecore:drupal-metered-execution:execute-v1",
+  "title": "PixieCore Drupal metered execution success v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "data", "metadata"],
+  "properties": {
+    "status": { "const": "success" },
+    "data": { "type": "object" },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract", "provider", "model", "duration_ms", "provider_calls", "input_tokens", "output_tokens", "estimated_cost_usd", "pricing_source", "pricing_effective_at", "budget_record_id"],
+      "properties": {
+        "contract": { "const": "pixiecore.drupal-metered-execution/v1" },
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "duration_ms": { "type": "number", "minimum": 0 },
+        "provider_calls": { "const": 1 },
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 },
+        "estimated_cost_usd": { "type": "number", "minimum": 0 },
+        "pricing_source": { "type": "string", "minLength": 1 },
+        "pricing_effective_at": { "type": "string", "minLength": 1 },
+        "budget_record_id": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

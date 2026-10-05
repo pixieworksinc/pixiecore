@@ -35,6 +35,13 @@ usage when available. Failed, interrupted, or unmetered calls retain their
 worst-case reservation. One owner controls retries; the demo's first version
 has no automatic retry. A server restart must not reset the budget ledger.
 
+The initial [capability](../../examples/integrations/drupal/real-provider/contracts/capabilities-v1.schema.json)
+and [execution](../../examples/integrations/drupal/real-provider/contracts/execute-v1.schema.json)
+schemas, with [synthetic fixtures](../../examples/integrations/drupal/real-provider/contracts/fixtures/),
+pin the wire shape. They do not themselves implement preflight, a provider,
+or a budget ledger. The caller must additionally compare provider and model to
+trusted settings and verify the returned cost is within the configured cap.
+
 ## Configuration and trust
 
 - Model, endpoint, pricing, call/amount caps, output-token cap, timeout, and

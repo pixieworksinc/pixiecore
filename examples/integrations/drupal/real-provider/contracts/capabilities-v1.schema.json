@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pixiecore:drupal-metered-execution:capabilities-v1",
+  "title": "PixieCore Drupal metered execution capability v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract", "status", "provider", "model", "usage_complete", "durable_budget", "max_output_tokens"],
+  "properties": {
+    "contract": { "const": "pixiecore.drupal-metered-execution/v1" },
+    "status": { "const": "ready" },
+    "provider": { "type": "string", "minLength": 1 },
+    "model": { "type": "string", "minLength": 1 },
+    "usage_complete": { "const": true },
+    "durable_budget": { "const": true },
+    "max_output_tokens": { "type": "integer", "minimum": 1 }
+  }
+}

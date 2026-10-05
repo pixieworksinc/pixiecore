@@ -1,0 +1,9 @@
+{
+  "contract": "pixiecore.drupal-metered-execution/v1",
+  "status": "ready",
+  "provider": "fixture-provider",
+  "model": "fixture-model",
+  "usage_complete": true,
+  "durable_budget": true,
+  "max_output_tokens": 256
+}
