@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Defines revision and execution storage for the specification demo.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_schema().
+ */
+function pixiecore_specification_schema(): array {
+  return [
+    'pixiecore_spec_revision' => [
+      'description' => 'Immutable user-owned specification revisions.',
+      'fields' => [
+        'id' => ['type' => 'serial', 'not null' => TRUE],
+        'uid' => ['type' => 'int', 'not null' => TRUE],
+        'revision' => ['type' => 'int', 'not null' => TRUE],
+        'source_hash' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+        'instruction' => ['type' => 'text', 'size' => 'big', 'not null' => TRUE],
+        'blueprint' => ['type' => 'text', 'size' => 'big', 'not null' => TRUE],
+        'inputs_json' => ['type' => 'text', 'size' => 'big', 'not null' => FALSE],
+        'created' => ['type' => 'int', 'not null' => TRUE],
+      ],
+      'primary key' => ['id'],
+      'unique keys' => ['owner_revision' => ['uid', 'revision']],
+    ],
+    'pixiecore_spec_run' => [
+      'description' => 'Synthetic execution records without credentials.',
+      'fields' => [
+        'id' => ['type' => 'serial', 'not null' => TRUE],
+        'uid' => ['type' => 'int', 'not null' => TRUE],
+        'revision' => ['type' => 'int', 'not null' => TRUE],
+        'source_hash' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+        'record' => ['type' => 'text', 'size' => 'big', 'not null' => TRUE],
+        'created' => ['type' => 'int', 'not null' => TRUE],
+      ],
+      'primary key' => ['id'],
+      'indexes' => ['owner_run' => ['uid', 'id']],
+    ],
+  ];
+}
+
+/**
+ * Adds saved inputs without inventing values for historical revisions.
+ */
+function pixiecore_specification_update_10001(): void {
+  $schema = \Drupal::database()->schema();
+  if ($schema->fieldExists('pixiecore_spec_revision', 'inputs_json')) {
+    return;
+  }
+  $schema->addField('pixiecore_spec_revision', 'inputs_json', [
+    'type' => 'text',
+    'size' => 'big',
+    'not null' => FALSE,
+  ]);
+}

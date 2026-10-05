@@ -1,0 +1,9 @@
+services:
+  pixiecore_specification.blueprint:
+    class: Drupal\pixiecore_specification\Blueprint\DiscountBlueprint
+  pixiecore_specification.store:
+    class: Drupal\pixiecore_specification\Storage\RevisionStore
+    arguments: ['@database', '@datetime.time']
+  pixiecore_specification.execution:
+    class: Drupal\pixiecore_specification\Execution\SpecificationExecutor
+    arguments: ['@pixiecore_specification.blueprint', '@pixiecore_specification.store', '@pixiecore_integration.client', '@settings', '@lock']

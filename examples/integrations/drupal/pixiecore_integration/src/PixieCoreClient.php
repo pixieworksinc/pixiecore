@@ -7,9 +7,14 @@ namespace Drupal\pixiecore_integration;
 use Drupal\Component\Serialization\Json;
 use GuzzleHttp\ClientInterface;
 
-/** Calls the narrow PixieCore execution boundary without submitting identity. */
-final class PixieCoreClient {
+/**
+ * Calls the narrow PixieCore execution boundary without submitting identity.
+ */
+final class PixieCoreClient implements PixieCoreClientInterface {
 
+  /**
+   * Constructs the client with an injected HTTP transport.
+   */
   public function __construct(
     private readonly ClientInterface $httpClient,
   ) {}
@@ -17,6 +22,12 @@ final class PixieCoreClient {
   /**
    * Executes one inline Blueprint through a separately operated PixieCore API.
    *
+   * @param string $baseUrl
+   *   Trusted runtime base URL.
+   * @param string $bearerToken
+   *   Server-side transport credential.
+   * @param string $blueprintYaml
+   *   Complete serialized Blueprint.
    * @param array<string, mixed> $inputs
    *   Blueprint business inputs. Never add caller identity or server secrets.
    *
@@ -24,6 +35,18 @@ final class PixieCoreClient {
    *   The validated Blueprint result.
    */
   public function execute(
+    string $baseUrl,
+    string $bearerToken,
+    string $blueprintYaml,
+    array $inputs,
+  ): array {
+    return $this->executeEnvelope($baseUrl, $bearerToken, $blueprintYaml, $inputs)['data'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function executeEnvelope(
     string $baseUrl,
     string $bearerToken,
     string $blueprintYaml,
@@ -44,6 +67,8 @@ final class PixieCoreClient {
         'inputs' => $inputs,
       ],
       'timeout' => 30,
+      'connect_timeout' => 5,
+      'allow_redirects' => FALSE,
     ]);
     $payload = Json::decode((string) $response->getBody());
 
@@ -53,7 +78,7 @@ final class PixieCoreClient {
     if (!isset($payload['data']) || !is_array($payload['data'])) {
       throw new \UnexpectedValueException('PixieCore response data must be an object.');
     }
-    return $payload['data'];
+    return $payload;
   }
 
 }

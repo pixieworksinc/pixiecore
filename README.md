@@ -483,6 +483,7 @@ dependency or license change therefore requires an intentional notice update.
 - [Human-review handoff contracts](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/runtime/human-review.md)
 - [Portable RAG metadata and explicit retrieval](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/runtime/rag-metadata.md)
 - [MCP, LangChain/LangGraph, and Drupal integrations](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/integrations/integrations.md)
+- [Clean-install Drupal Blueprint demo](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/examples/integrations/drupal/executable-specification/README.md)
 - [Canonical OCR document-review demo](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/blueprints/ocr-demo.md)
 - [Configuration](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/guides/configuration.md)
 - [Providers](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/plugins/providers.md)

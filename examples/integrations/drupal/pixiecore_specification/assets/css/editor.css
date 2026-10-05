@@ -1,0 +1,33 @@
+.specification-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.specification-panes pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.specification-panes .CodeMirror {
+  height: auto;
+  min-height: 8rem;
+}
+
+.specification-panes > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.specification-panes textarea {
+  font-family: monospace;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 48rem) {
+  .specification-panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

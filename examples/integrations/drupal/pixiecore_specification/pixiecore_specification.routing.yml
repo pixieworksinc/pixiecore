@@ -1,0 +1,11 @@
+pixiecore_specification.demo:
+  path: '/admin/config/pixiecore/specification'
+  defaults:
+    _form: '\Drupal\pixiecore_specification\Form\SpecificationForm'
+    _title: 'PixieCore Blueprint demo'
+  requirements:
+    _permission: 'use pixiecore specification demo'
+    _user_is_logged_in: 'TRUE'
+  options:
+    _admin_route: true
+    no_cache: true
