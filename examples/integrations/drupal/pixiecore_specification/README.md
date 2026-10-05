@@ -46,16 +46,12 @@ stale/dirty revisions are rejected server-side even without JavaScript.
 Backend settings are supplied through settings.php, never exported configuration
 or the browser. Use Drupal trusted_host_patterns and normal web-server request
 limits. Editable Blueprint/input byte limits and the demo schema contract are
-validated before transport.
-The HTTP client does not follow redirects and has bounded connect/request
-timeouts. Non-loopback endpoints require HTTPS. No request is automatically
-retried by this module.
-The only non-loopback HTTP exception is a real-mode endpoint explicitly
-matched by `private_http_endpoint` in trusted settings. Keep that endpoint on
-an isolated private network; the module cannot prove a DNS name is private.
-Public IP literals are rejected even when configured as the exception.
-IPv4-mapped IPv6 literals are also rejected for private HTTP, regardless of
-their embedded address; use HTTPS instead.
+validated before transport. The HTTP client does not follow redirects and has
+bounded connect/request timeouts. This example accepts only a loopback HTTP
+fixture endpoint without credentials. Any non-MOCK mode is disabled before
+transport; no request is automatically retried by this module. A separately
+reviewed real-provider integration is tracked in
+[Issue #6](https://github.com/pixieworksinc/pixiecore/issues/6).
 
 Output is escaped text, not HTML. The module checks the fixed output shape and
 arithmetic but does not manufacture results or implement the discount rule.
@@ -73,21 +69,12 @@ The default mock backend supports only two exact Gold/1200 threshold fixtures. I
 always labeled MOCK, does not interpret arbitrary natural-language rules, and
 rejects unsupported Blueprints. Its usage fields remain null, not zero.
 
-The optional real-provider deployment
-uses a separate authenticated, non-public PixieCore container. It accepts only
-the bounded Blueprint contract, makes at most one
-bounded OpenAI request per Execute, and stores observed token usage and an
-estimated cost in both its durable budget ledger and Drupal's run record. A
-failed or unmetered call retains its worst-case reservation. The Drupal screen
-labels the mode REAL. `business_accuracy` remains `not_measured`; output shape
-and arithmetic checks are not an evaluation of arbitrary Blueprints.
-
-Unknown modes are disabled before transport. Trust the configured endpoint:
-the mock label is not a network sandbox and cannot stop a misconfigured endpoint
-from making a paid call. Point it only at the provided offline fixture server.
-
-Before any further real evaluation, approve model, calls, USD cap, retries, and
-exact fixtures independently of deployment.
-Annual spending, regional rules, exception precedence, and nonmatching inputs
-also require an owner-defined business contract. The initial two cases do not
-establish natural-language accuracy or superiority over all rules engines.
+This repository example does not provide real-provider execution or metered
+usage evidence. Do not point it at `pixiecore serve` with an OpenAI provider;
+the only supported backend is the provided offline fixture server. A real
+adapter must first define its response and budget contracts and prove them with
+offline tests. Any later paid evaluation requires separate approval of model,
+calls, USD cap, retries, and exact fixtures. Annual spending, regional rules,
+exception precedence, and nonmatching inputs also require an owner-defined
+business contract. The initial two cases do not establish natural-language
+accuracy or superiority over all rules engines.

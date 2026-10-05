@@ -73,9 +73,7 @@ final class SpecificationForm extends FormBase {
     $form['#attached']['library'][] = 'pixiecore_specification/editor';
     $form['#attributes']['data-specification-editor'] = '';
     $mode = $this->executor->mode();
-    $modeDetail = $mode === 'real'
-      ? 'OpenAI calls consume the approved deployment budget.'
-      : 'Offline contract rehearsal; model accuracy is not measured.';
+    $modeDetail = 'Offline contract rehearsal; model accuracy is not measured.';
     $form['mode'] = [
       '#type' => 'item',
       '#title' => $this->t('Mode'),
