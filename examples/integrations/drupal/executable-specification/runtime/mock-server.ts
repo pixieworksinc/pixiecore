@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { PromptRuntime, type GenerateRequest, type GenerateResponse, type Provider } from '@pixieworks/pixiecore';
-import { createApp, type PixieCoreApiServer } from '@pixieworks/pixiecore/api';
+import { createApp, type ApiCallerResolver, type PixieCoreApiServer } from '@pixieworks/pixiecore/api';
 
 interface DiscountFixture {
   threshold_text: string;
@@ -36,7 +36,10 @@ function renderedFixture(fixture: DiscountFixture): string {
 }
 
 /** Starts a loopback-only server without reading credentials or a .env file. */
-export async function startMockSpecificationHost(port = 0): Promise<MockSpecificationHost> {
+export async function startMockSpecificationHost(
+  port = 0,
+  callerResolver?: ApiCallerResolver,
+): Promise<MockSpecificationHost> {
   const calls: GenerateRequest[] = [];
   const provider: Provider = {
     name: 'fixture-mock',
@@ -69,7 +72,11 @@ export async function startMockSpecificationHost(port = 0): Promise<MockSpecific
     mcpConfigPath: 'disabled', promotionsPath: 'disabled',
     logToConsole: false, logToFile: false,
   });
-  const server = createApp({ runtime, environment, maxFileSize: 4096, maxRequestSize: 32_768, logToConsole: false, logToFile: false });
+  const server = createApp({
+    runtime, environment, maxFileSize: 4096, maxRequestSize: 32_768,
+    logToConsole: false, logToFile: false,
+    ...(callerResolver ? { callerResolver } : {}),
+  });
   try {
     await new Promise<void>((resolve, reject) => {
       server.once('error', reject);

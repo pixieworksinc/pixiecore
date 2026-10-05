@@ -49,16 +49,25 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     if (!is_array($blueprint)) {
       throw new \InvalidArgumentException('Blueprint must be a YAML mapping.');
     }
-    $required = ['name', 'version', 'role', 'input_placeholders', 'input_schema', 'prompt', 'output_schema'];
+    $required = [
+      'name',
+      'version',
+      'role',
+      'permissions',
+      'input_placeholders',
+      'input_schema',
+      'prompt',
+      'output_schema',
+    ];
     foreach ($required as $key) {
       if (!array_key_exists($key, $blueprint)) {
         throw new \InvalidArgumentException('Blueprint is missing a required field: ' . $key . '.');
       }
     }
-    if (!is_string($blueprint['name']) || trim($blueprint['name']) === ''
+    if (!is_string($blueprint['name']) || !$this->hasNonWhitespace($blueprint['name'])
       || !is_string($blueprint['version']) || !preg_match('/^\d+\.\d+(?:\.\d+)?$/', $blueprint['version'])
-      || !is_string($blueprint['role']) || trim($blueprint['role']) === ''
-      || !is_string($blueprint['prompt']) || trim($blueprint['prompt']) === '') {
+      || !is_string($blueprint['role']) || !$this->hasNonWhitespace($blueprint['role'])
+      || !is_string($blueprint['prompt']) || !$this->hasNonWhitespace($blueprint['prompt'])) {
       throw new \InvalidArgumentException('Blueprint name, version, role, and prompt must be valid nonempty values.');
     }
     if ($blueprint['role'] !== 'assistant') {
@@ -78,6 +87,7 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       'name',
       'version',
       'role',
+      'permissions',
       'temperature',
       'input_placeholders',
       'input_schema',
@@ -87,6 +97,12 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     ];
     if (array_diff(array_keys($blueprint), $allowed) !== []) {
       throw new \InvalidArgumentException('Blueprint contains unsupported fields.');
+    }
+    // PixieCore separates authenticated caller context from business inputs
+    // only when the Blueprint declares a permissions object. The demo grants
+    // no Blueprint-level privileges; Drupal controls the editor permission.
+    if (!is_array($blueprint['permissions']) || $blueprint['permissions'] !== []) {
+      throw new \InvalidArgumentException('Blueprint permissions must be an empty mapping.');
     }
     if (!is_array($blueprint['input_placeholders']) || !array_is_list($blueprint['input_placeholders'])
       || count($blueprint['input_placeholders']) !== 2
@@ -185,8 +201,7 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     $tier = $inputs['customer_tier'];
     $amount = $inputs['purchase_amount'];
     // Match the JSON Schema \S check, including non-ASCII separators and BOM.
-    $hasNonWhitespace = is_string($tier)
-      && preg_match('/[^\p{Z}\x{0009}-\x{000D}\x{FEFF}]/u', $tier) === 1;
+    $hasNonWhitespace = is_string($tier) && $this->hasNonWhitespace($tier);
     if (!$hasNonWhitespace || mb_strlen($tier, 'UTF-8') > 40) {
       throw new \InvalidArgumentException('customer_tier must be a nonempty string of at most 40 characters.');
     }
@@ -225,6 +240,13 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
   private function hasOnlyKeys(mixed $value, array $allowed): bool {
     return is_array($value)
       && array_diff(array_keys($value), $allowed) === [];
+  }
+
+  /**
+   * Matches the runtime's JavaScript trim boundary for required text.
+   */
+  private function hasNonWhitespace(string $value): bool {
+    return preg_match('/[^\p{Z}\x{0009}-\x{000D}\x{FEFF}]/u', $value) === 1;
   }
 
   /**

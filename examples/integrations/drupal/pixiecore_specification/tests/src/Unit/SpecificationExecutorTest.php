@@ -75,6 +75,9 @@ final class SpecificationExecutorTest extends UnitTestCase {
     return [
       'different private address' => ['http://172.17.0.1:3087', 'http://172.17.0.2:3087'],
       'public address' => ['http://8.8.8.8:3087', 'http://8.8.8.8:3087'],
+      'public integer address' => ['http://134744072:3087', 'http://134744072:3087'],
+      'public hexadecimal address' => ['http://0x08080808:3087', 'http://0x08080808:3087'],
+      'public octal address' => ['http://010.010.010.010:3087', 'http://010.010.010.010:3087'],
       'public IPv6 address' => ['http://[2606:4700:4700::1111]:3087', 'http://[2606:4700:4700::1111]:3087'],
       'IPv4-mapped public address' => ['http://[::ffff:8.8.8.8]:3087', 'http://[::ffff:8.8.8.8]:3087'],
       'IPv4-mapped public hex address' => ['http://[::ffff:808:808]:3087', 'http://[::ffff:808:808]:3087'],

@@ -26,6 +26,7 @@ final class DiscountBlueprintTest extends UnitTestCase {
     $blueprint = Yaml::decode($builder->build($text));
     $this->assertSame($text, $builder->build($text));
     $this->assertSame('assistant', $blueprint['role']);
+    $this->assertSame([], $blueprint['permissions']);
     $this->assertSame('Apply exactly one customer discount policy to the supplied purchase.', strtok($blueprint['prompt'], "\n"));
     $this->assertSame(0.20, $blueprint['examples'][0]['output']['discount']);
     $this->assertSame(1200, $blueprint['examples'][0]['output']['final_price']);
@@ -90,6 +91,9 @@ final class DiscountBlueprintTest extends UnitTestCase {
       'null model is not a model name' => [['model'], NULL],
       'model override is not allowed' => [['model'], 'unapproved-model'],
       'unregistered runtime role' => [['role'], 'reviewer'],
+      'nonempty permissions' => [['permissions', 'allow_roles'], ['editor']],
+      'nonbreaking-space name' => [['name'], "\u{00A0}"],
+      'byte-order-mark prompt' => [['prompt'], "\u{FEFF}"],
       'null examples are not a sequence' => [['examples'], NULL],
       'placeholder description must be text' => [['input_placeholders', 0, 'description'], NULL],
       'placeholders must be a sequence' => [

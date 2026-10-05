@@ -83,7 +83,11 @@ final class SpecificationExecutor implements SpecificationExecutorInterface {
       // Reject it over HTTP even when its embedded IPv4 is public.
       $mappedIpv4 = is_string($ipBytes) && strlen($ipBytes) === 16
         && str_starts_with($ipBytes, str_repeat("\0", 10) . "\xff\xff");
-      $requiresHttps = $mappedIpv4 || ($ipLiteral
+      // HTTP clients may interpret integer, octal, and hexadecimal hosts as
+      // IPv4 even though FILTER_VALIDATE_IP rejects those spellings.
+      $numericHost = !$ipLiteral && is_string($ipHost)
+        && preg_match('/^(?:0[xX][0-9A-Fa-f]+|[0-9]+)(?:\.(?:0[xX][0-9A-Fa-f]+|[0-9]+))*\.?$/', $ipHost) === 1;
+      $requiresHttps = $numericHost || $mappedIpv4 || ($ipLiteral
         && filter_var($ipHost, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== FALSE);
       $trustedPrivateEndpoint = $mode === 'real' && !$requiresHttps
         && is_string($privateEndpoint) && $privateEndpoint !== ''

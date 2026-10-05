@@ -60,3 +60,21 @@ test('Drupal mock rejects unknown instructions and rejects invalid inputs before
     await host.close();
   }
 });
+
+test('Drupal demo Blueprint accepts server-injected caller context without relaxing business inputs', async () => {
+  const host = await startMockSpecificationHost(0, () => ({ role: 'demo-user', userId: 'synthetic-user' }));
+  const endpoint = `http://127.0.0.1:${(host.server.address() as AddressInfo).port}/execute`;
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blueprint: stringify(template), inputs: { customer_tier: 'Gold', purchase_amount: 1200 } }),
+    });
+    assert.equal(response.status, 200);
+    const result = await response.json() as { status: string; data: { final_price: number } };
+    assert.equal(result.status, 'success');
+    assert.equal(result.data.final_price, 960);
+    assert.equal(host.calls.length, 1);
+  } finally {
+    await host.close();
+  }
+});
