@@ -93,6 +93,11 @@ Drupal code still owns form access, user/session mapping, queueing, persistence,
 messaging, and any entity mutation. The included PHPUnit test proves that the
 HTTP request contains only Blueprint YAML and business inputs.
 
+The separately planned [metered Drupal demo boundary](drupal-metered-execution.md)
+records the capability, usage, and budget contract required before a hosted
+real-provider demo can send paid requests. The clean-install example remains
+offline until that contract is implemented and tested.
+
 ## Production checklist
 
 - Pin PixieCore, Blueprint, dataset, framework, and adapter versions.
