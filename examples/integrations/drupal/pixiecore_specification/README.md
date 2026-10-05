@@ -26,6 +26,8 @@ declares its input and output schemas, Mustache placeholders, role, instruction,
 and examples in one place. Its initial rule applies a 20% discount only to Gold
 purchases strictly above 1000; the nonmatching examples explicitly produce no
 discount.
+The two schemas are a fixed demo contract: Save rejects additional schema
+keywords instead of accepting a revision that PixieCore might reject later.
 
 ## Ownership and safety
 

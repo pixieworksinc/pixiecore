@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\pixiecore_specification\Unit;
 
 use Drupal\Component\Serialization\Yaml;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Tests\UnitTestCase;
 use Drupal\pixiecore_specification\Blueprint\DiscountBlueprint;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -38,6 +39,54 @@ final class DiscountBlueprintTest extends UnitTestCase {
   public function testRejectsNonBlueprintYaml(): void {
     $this->expectException(\InvalidArgumentException::class);
     (new DiscountBlueprint())->build("Scenario: not a complete Blueprint\n");
+  }
+
+  /**
+   * Tests Save rejects revisions that would fail before runtime execution.
+   */
+  #[DataProvider('invalidBlueprintValues')]
+  public function testRejectsRuntimeIncompatibleBlueprint(
+    array $path,
+    mixed $value,
+  ): void {
+    $builder = new DiscountBlueprint();
+    $blueprint = Yaml::decode($builder->defaultBlueprint());
+    NestedArray::setValue($blueprint, $path, $value);
+
+    $this->expectException(\InvalidArgumentException::class);
+    $builder->build(Yaml::encode($blueprint));
+  }
+
+  /**
+   * Provides wrong types, scalar settings, mappings, and unknown schema keys.
+   */
+  public static function invalidBlueprintValues(): array {
+    return [
+      'customer tier must be a string' => [['input_placeholders', 0, 'type'], 'number'],
+      'purchase amount must be a number' => [['input_placeholders', 1, 'type'], 'string'],
+      'quoted temperature is not numeric YAML' => [['temperature'], '0'],
+      'null temperature is not numeric YAML' => [['temperature'], NULL],
+      'null model is not a model name' => [['model'], NULL],
+      'null examples are not a sequence' => [['examples'], NULL],
+      'placeholder description must be text' => [['input_placeholders', 0, 'description'], NULL],
+      'examples must be a sequence' => [
+        ['examples'],
+        [
+          'first' => [
+            'input' => ['customer_tier' => 'Gold', 'purchase_amount' => 1500],
+            'output' => ['discount' => 0.20, 'final_price' => 1200],
+          ],
+        ],
+      ],
+      'input schema cannot add an invalid keyword' => [
+        ['input_schema', 'properties', 'purchase_amount', 'multipleOf'],
+        'invalid',
+      ],
+      'output schema cannot add an invalid keyword' => [
+        ['output_schema', 'properties', 'discount', 'multipleOf'],
+        'invalid',
+      ],
+    ];
   }
 
   /**

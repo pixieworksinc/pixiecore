@@ -75,6 +75,7 @@ final class SpecificationExecutorTest extends UnitTestCase {
     return [
       'different private address' => ['http://172.17.0.1:3087', 'http://172.17.0.2:3087'],
       'public address' => ['http://8.8.8.8:3087', 'http://8.8.8.8:3087'],
+      'public IPv6 address' => ['http://[2606:4700:4700::1111]:3087', 'http://[2606:4700:4700::1111]:3087'],
       'unapproved hostname' => ['http://runtime:3087', ''],
       'different hostname' => ['http://runtime:3087', 'http://other-runtime:3087'],
     ];
@@ -202,6 +203,12 @@ final class SpecificationExecutorTest extends UnitTestCase {
         [
           'endpoint' => 'http://172.17.0.1:3087',
           'private_http_endpoint' => 'http://172.17.0.1:3087',
+        ],
+      ],
+      'private IPv6 address' => [
+        [
+          'endpoint' => 'http://[fd00::1]:3087',
+          'private_http_endpoint' => 'http://[fd00::1]:3087',
         ],
       ],
     ];

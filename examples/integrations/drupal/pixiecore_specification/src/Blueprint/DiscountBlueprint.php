@@ -80,9 +80,12 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       || array_column($blueprint['input_placeholders'], 'name') !== ['customer_tier', 'purchase_amount']) {
       throw new \InvalidArgumentException('Blueprint must declare customer_tier and purchase_amount inputs in order.');
     }
-    foreach ($blueprint['input_placeholders'] as $placeholder) {
-      if (!is_array($placeholder) || !in_array($placeholder['type'] ?? NULL, ['string', 'number'], TRUE)
-        || ($placeholder['required'] ?? NULL) !== TRUE) {
+    foreach ($blueprint['input_placeholders'] as $index => $placeholder) {
+      $expectedType = $index === 0 ? 'string' : 'number';
+      if (!$this->hasOnlyKeys($placeholder, ['name', 'type', 'required', 'description'])
+        || ($placeholder['type'] ?? NULL) !== $expectedType
+        || ($placeholder['required'] ?? NULL) !== TRUE
+        || (array_key_exists('description', $placeholder) && !is_string($placeholder['description']))) {
         throw new \InvalidArgumentException('Blueprint inputs must be required string and number values.');
       }
     }
@@ -92,12 +95,13 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     $outputKeys = is_array($outputProperties) ? array_keys($outputProperties) : [];
     sort($inputKeys);
     sort($outputKeys);
-    if (!is_array($blueprint['input_schema']) || ($blueprint['input_schema']['type'] ?? NULL) !== 'object'
+    if (!$this->hasOnlyKeys($blueprint['input_schema'], ['type', 'additionalProperties', 'required', 'properties'])
+      || ($blueprint['input_schema']['type'] ?? NULL) !== 'object'
       || ($blueprint['input_schema']['additionalProperties'] ?? NULL) !== FALSE
       || ($blueprint['input_schema']['required'] ?? NULL) !== ['customer_tier', 'purchase_amount']
       || $inputKeys !== ['customer_tier', 'purchase_amount']
-      || !is_array($inputProperties['customer_tier'] ?? NULL)
-      || !is_array($inputProperties['purchase_amount'] ?? NULL)
+      || !$this->hasOnlyKeys($inputProperties['customer_tier'] ?? NULL, ['type', 'minLength', 'maxLength', 'pattern'])
+      || !$this->hasOnlyKeys($inputProperties['purchase_amount'] ?? NULL, ['type', 'minimum', 'maximum'])
       || ($inputProperties['customer_tier']['type'] ?? NULL) !== 'string'
       || ($inputProperties['customer_tier']['minLength'] ?? NULL) !== 1
       || ($inputProperties['customer_tier']['maxLength'] ?? NULL) !== 40
@@ -105,12 +109,13 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       || ($inputProperties['purchase_amount']['type'] ?? NULL) !== 'number'
       || ($inputProperties['purchase_amount']['minimum'] ?? NULL) !== 0
       || ($inputProperties['purchase_amount']['maximum'] ?? NULL) !== 1000000
-      || !is_array($blueprint['output_schema']) || ($blueprint['output_schema']['type'] ?? NULL) !== 'object'
+      || !$this->hasOnlyKeys($blueprint['output_schema'], ['type', 'additionalProperties', 'required', 'properties'])
+      || ($blueprint['output_schema']['type'] ?? NULL) !== 'object'
       || ($blueprint['output_schema']['additionalProperties'] ?? NULL) !== FALSE
       || ($blueprint['output_schema']['required'] ?? NULL) !== ['discount', 'final_price']
       || $outputKeys !== ['discount', 'final_price']
-      || !is_array($outputProperties['discount'] ?? NULL)
-      || !is_array($outputProperties['final_price'] ?? NULL)
+      || !$this->hasOnlyKeys($outputProperties['discount'] ?? NULL, ['type', 'minimum', 'maximum'])
+      || !$this->hasOnlyKeys($outputProperties['final_price'] ?? NULL, ['type', 'minimum'])
       || ($outputProperties['discount']['type'] ?? NULL) !== 'number'
       || ($outputProperties['discount']['minimum'] ?? NULL) !== 0
       || ($outputProperties['discount']['maximum'] ?? NULL) !== 1
@@ -118,12 +123,13 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       || ($outputProperties['final_price']['minimum'] ?? NULL) !== 0) {
       throw new \InvalidArgumentException('Blueprint input and output schemas do not match the demo contract.');
     }
-    if (isset($blueprint['temperature']) && (!is_numeric($blueprint['temperature']) || $blueprint['temperature'] < 0 || $blueprint['temperature'] > 2)
-      || isset($blueprint['model']) && (!is_string($blueprint['model']) || trim($blueprint['model']) === '')) {
+    if (array_key_exists('temperature', $blueprint) && ((!is_int($blueprint['temperature']) && !is_float($blueprint['temperature']))
+      || !is_finite((float) $blueprint['temperature']) || $blueprint['temperature'] < 0 || $blueprint['temperature'] > 2)
+      || array_key_exists('model', $blueprint) && (!is_string($blueprint['model']) || trim($blueprint['model']) === '')) {
       throw new \InvalidArgumentException('Blueprint model settings are invalid.');
     }
-    if (isset($blueprint['examples'])) {
-      if (!is_array($blueprint['examples'])) {
+    if (array_key_exists('examples', $blueprint)) {
+      if (!is_array($blueprint['examples']) || !array_is_list($blueprint['examples'])) {
         throw new \InvalidArgumentException('Blueprint examples must be a sequence.');
       }
       foreach ($blueprint['examples'] as $example) {
@@ -196,6 +202,14 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     if (abs($expected - $result['final_price']) > 0.000001) {
       throw new \UnexpectedValueException('Output arithmetic is inconsistent.');
     }
+  }
+
+  /**
+   * Rejects uninspected schema keywords in the fixed demo contract.
+   */
+  private function hasOnlyKeys(mixed $value, array $allowed): bool {
+    return is_array($value)
+      && array_diff(array_keys($value), $allowed) === [];
   }
 
   /**

@@ -74,9 +74,12 @@ final class SpecificationExecutor implements SpecificationExecutorInterface {
     }
     if ($scheme === 'http' && !in_array($host, ['127.0.0.1', 'localhost', '[::1]'], TRUE)) {
       $privateEndpoint = $options['private_http_endpoint'] ?? NULL;
-      $publicIp = is_string($host)
-        && filter_var($host, FILTER_VALIDATE_IP) !== FALSE
-        && filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== FALSE;
+      // parse_url() retains IPv6 brackets, but FILTER_VALIDATE_IP does not.
+      $ipHost = is_string($host) && str_starts_with($host, '[') && str_ends_with($host, ']')
+        ? substr($host, 1, -1) : $host;
+      $publicIp = is_string($ipHost)
+        && filter_var($ipHost, FILTER_VALIDATE_IP) !== FALSE
+        && filter_var($ipHost, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== FALSE;
       $trustedPrivateEndpoint = $mode === 'real' && !$publicIp
         && is_string($privateEndpoint) && $privateEndpoint !== ''
         && hash_equals($privateEndpoint, $endpoint);
