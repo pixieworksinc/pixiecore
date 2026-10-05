@@ -77,10 +77,15 @@ final class SpecificationExecutor implements SpecificationExecutorInterface {
       // parse_url() retains IPv6 brackets, but FILTER_VALIDATE_IP does not.
       $ipHost = is_string($host) && str_starts_with($host, '[') && str_ends_with($host, ']')
         ? substr($host, 1, -1) : $host;
-      $publicIp = is_string($ipHost)
-        && filter_var($ipHost, FILTER_VALIDATE_IP) !== FALSE
-        && filter_var($ipHost, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== FALSE;
-      $trustedPrivateEndpoint = $mode === 'real' && !$publicIp
+      $ipLiteral = is_string($ipHost) && filter_var($ipHost, FILTER_VALIDATE_IP) !== FALSE;
+      $ipBytes = $ipLiteral ? inet_pton($ipHost) : FALSE;
+      // An IPv4-mapped address appears reserved to the IPv6 filter.
+      // Reject it over HTTP even when its embedded IPv4 is public.
+      $mappedIpv4 = is_string($ipBytes) && strlen($ipBytes) === 16
+        && str_starts_with($ipBytes, str_repeat("\0", 10) . "\xff\xff");
+      $requiresHttps = $mappedIpv4 || ($ipLiteral
+        && filter_var($ipHost, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== FALSE);
+      $trustedPrivateEndpoint = $mode === 'real' && !$requiresHttps
         && is_string($privateEndpoint) && $privateEndpoint !== ''
         && hash_equals($privateEndpoint, $endpoint);
       if (!$trustedPrivateEndpoint) {

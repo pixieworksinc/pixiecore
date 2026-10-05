@@ -49,6 +49,8 @@ The only non-loopback HTTP exception is a real-mode endpoint explicitly
 matched by `private_http_endpoint` in trusted settings. Keep that endpoint on
 an isolated private network; the module cannot prove a DNS name is private.
 Public IP literals are rejected even when configured as the exception.
+IPv4-mapped IPv6 literals are also rejected for private HTTP, regardless of
+their embedded address; use HTTPS instead.
 
 Output is escaped text, not HTML. The module checks the fixed output shape and
 arithmetic but does not manufacture results or implement the discount rule.

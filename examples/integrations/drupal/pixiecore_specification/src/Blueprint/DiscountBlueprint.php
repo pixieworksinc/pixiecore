@@ -61,6 +61,16 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
       || !is_string($blueprint['prompt']) || trim($blueprint['prompt']) === '') {
       throw new \InvalidArgumentException('Blueprint name, version, role, and prompt must be valid nonempty values.');
     }
+    // Match the runtime's Mustache and legacy single-brace reference grammar.
+    $references = preg_match_all('/\{\{[ \t]*([A-Za-z_][A-Za-z0-9_.-]*)[ \t]*\}\}|\{[ \t]*([A-Za-z_][A-Za-z0-9_.-]*)[ \t]*\}/u', $blueprint['prompt'], $matches, PREG_SET_ORDER | PREG_UNMATCHED_AS_NULL);
+    if ($references === FALSE) {
+      throw new \InvalidArgumentException('Blueprint prompt contains invalid references.');
+    }
+    foreach ($matches as $match) {
+      if (!in_array($match[1] ?? $match[2], ['customer_tier', 'purchase_amount'], TRUE)) {
+        throw new \InvalidArgumentException('Blueprint prompt references an undeclared input.');
+      }
+    }
     $allowed = [
       'name',
       'version',
@@ -172,7 +182,13 @@ final class DiscountBlueprint implements DiscountBlueprintInterface {
     }
     $tier = $inputs['customer_tier'];
     $amount = $inputs['purchase_amount'];
-    if (!is_string($tier) || trim($tier) === '' || mb_strlen($tier) > 40) {
+    // Match the JSON Schema \S check, including non-ASCII separators and BOM.
+    $hasNonWhitespace = is_string($tier)
+      && preg_match('/[^\p{Z}\x{0009}-\x{000D}\x{FEFF}]/u', $tier) === 1;
+    // JSON Schema string lengths count UTF-16 code units, not code points.
+    $length = $hasNonWhitespace
+      ? intdiv(strlen(mb_convert_encoding($tier, 'UTF-16LE', 'UTF-8')), 2) : 0;
+    if (!$hasNonWhitespace || $length > 40) {
       throw new \InvalidArgumentException('customer_tier must be a nonempty string of at most 40 characters.');
     }
     if ((!is_int($amount) && !is_float($amount)) || !is_finite((float) $amount) || $amount < 0 || $amount > 1000000) {

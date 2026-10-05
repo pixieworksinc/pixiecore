@@ -42,6 +42,27 @@ final class DiscountBlueprintTest extends UnitTestCase {
   }
 
   /**
+   * Tests undeclared references are rejected before a revision is saved.
+   */
+  #[DataProvider('undeclaredReferences')]
+  public function testRejectsUndeclaredPromptReference(string $reference): void {
+    $builder = new DiscountBlueprint();
+    $source = str_replace('{{ customer_tier }}', $reference, $builder->defaultBlueprint());
+    $this->expectException(\InvalidArgumentException::class);
+    $builder->build($source);
+  }
+
+  /**
+   * Provides both supported placeholder syntaxes with undeclared names.
+   */
+  public static function undeclaredReferences(): array {
+    return [
+      'Mustache typo' => ['{{ customer_teir }}'],
+      'legacy placeholder' => ['{ region }'],
+    ];
+  }
+
+  /**
    * Tests Save rejects revisions that would fail before runtime execution.
    */
   #[DataProvider('invalidBlueprintValues')]
@@ -108,6 +129,9 @@ final class DiscountBlueprintTest extends UnitTestCase {
       ['{"customer_tier":"Gold","purchase_amount":"1200"}'],
       ['{"customer_tier":[],"purchase_amount":1200}'],
       ['{"customer_tier":" ","purchase_amount":1200}'],
+      ['{"customer_tier":"\u00a0","purchase_amount":1200}'],
+      ['{"customer_tier":"\ufeff","purchase_amount":1200}'],
+      ['{"customer_tier":"' . str_repeat("\u{1F600}", 21) . '","purchase_amount":1200}'],
       ['{"customer_tier":"Gold","purchase_amount":-1}'],
       ['{"customer_tier":"Gold","purchase_amount":1000001}'],
       ['{"customer_tier":"Gold","purchase_amount":1e999}'],
