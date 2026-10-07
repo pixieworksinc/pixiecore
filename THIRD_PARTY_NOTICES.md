@@ -12,10 +12,10 @@ own license files remain authoritative.
 The release gate accepts only the reviewed SPDX expressions listed here. A
 new expression fails the gate until it is explicitly reviewed.
 
-- Production package versions: 76
+- Production package versions: 77
 - Direct dependencies: 9
 - Optional lockfile entries: 12
-- Declared licenses: `0BSD` (1), `Apache-2.0` (2), `BSD-2-Clause` (1), `BSD-3-Clause` (2), `ISC` (4), `MIT` (66)
+- Declared licenses: `0BSD` (1), `Apache-2.0` (4), `BSD-2-Clause` (1), `BSD-3-Clause` (2), `ISC` (4), `MIT` (65)
 
 | Package | Version | Declared license | Relationship |
 |---|---:|---|---|
@@ -30,8 +30,9 @@ new expression fails the gate until it is explicitly reviewed.
 | `@azure/msal-browser` | `5.18.0` | `MIT` | transitive |
 | `@azure/msal-common` | `16.12.0` | `MIT` | transitive |
 | `@azure/msal-node` | `5.5.0` | `MIT` | transitive |
-| `@modelcontextprotocol/client` | `2.0.0` | `MIT` | direct |
+| `@modelcontextprotocol/client` | `2.3.1` | `Apache-2.0` | direct |
 | `@modelcontextprotocol/core` | `2.0.0` | `MIT` | transitive |
+| `@modelcontextprotocol/core` | `2.3.1` | `Apache-2.0` | transitive |
 | `@modelcontextprotocol/server` | `2.0.0` | `MIT` | direct |
 | `@napi-rs/canvas` | `1.0.6` | `MIT` | optional |
 | `@napi-rs/canvas-android-arm64` | `1.0.6` | `MIT` | optional |
