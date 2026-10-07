@@ -208,7 +208,7 @@
   },
   "dependencies": {
     "@azure/identity": "^4.13.1",
-    "@modelcontextprotocol/client": "^2.0.0",
+    "@modelcontextprotocol/client": "^2.2.0",
     "@modelcontextprotocol/server": "^2.0.0",
     "ajv": "^8.17.1",
     "dotenv": "^17.4.2",
