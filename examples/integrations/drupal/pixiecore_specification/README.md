@@ -47,9 +47,7 @@ limits. Editable Blueprint/input byte limits and the demo schema contract are
 validated before transport. The HTTP client does not follow redirects and has
 bounded connect/request timeouts. This example accepts only a loopback HTTP
 fixture endpoint without credentials. Any non-MOCK mode is disabled before
-transport; no request is automatically retried by this module. A separately
-reviewed real-provider integration is tracked in
-[Issue #6](https://github.com/pixieworksinc/pixiecore/issues/6).
+transport; no request is automatically retried by this module.
 
 Output is escaped text, not HTML. The module checks the fixed output shape and
 arithmetic but does not manufacture results or implement the discount rule.
@@ -69,9 +67,18 @@ rejects unsupported Blueprints. Its usage fields remain null, not zero.
 
 This repository example does not provide real-provider execution or metered
 usage evidence. Do not point it at `pixiecore serve` with an OpenAI provider;
-the only supported backend is the provided offline fixture server. A real
-adapter must first define its response and budget contracts and prove them with
-offline tests. Any later paid evaluation requires separate approval of model,
+the only supported backend is the provided offline fixture server.
+
+The proposal for a separate runtime budget ledger in
+[Issue #6](https://github.com/pixieworksinc/pixiecore/issues/6) was closed as
+unnecessary, and PR #7 was closed without merging. It is not a pending
+implementation task or a prerequisite for a real-provider adapter. This example
+does not implement a separate budget ledger; provider-side billing controls are
+configured with the provider.
+
+A real-provider adapter would need separately reviewed implementation,
+authentication, request/response contracts, and offline tests. Any later paid
+evaluation requires separate approval of model,
 calls, USD cap, retries, and exact fixtures. Annual spending, regional rules,
 exception precedence, and nonmatching inputs also require an owner-defined
 business contract. The initial two cases do not establish natural-language

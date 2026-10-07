@@ -3,6 +3,17 @@
 This is an offline Drupal/PixieCore integration rehearsal, not an LLM evaluation.
 Do not deploy it to a production Drupal site. No API key or paid request is needed.
 
+## Reproducible scope
+
+The instructions below reproduce the checked-in mock runtime and Drupal modules.
+This example does not include a real-provider server, a Dockerfile, or a Compose
+deployment. A separately operated live demo does not establish that its runtime
+can be rebuilt from this checkout. Renaming or tagging a local container image
+does not supply its source, dependency versions, or build instructions.
+
+See the module's [current evidence boundary](../pixiecore_specification/README.md#current-evidence-boundary)
+for the supported backend and the closed metering proposal.
+
 ## 1. Build and start the fixture runtime
 
 From the PixieCore checkout, with Node.js meeting the package engine requirement:
