@@ -11,8 +11,10 @@ const data = testData('logging persistence');
 test('rotation handles zero, one, and many backups at the exact byte boundary', async () => {
   await withTempDirectory(async directory => {
     const values = ['first', 'second', 'third', 'fourth', 'fifth']
-      .map(label => data.text(`rotation ${label}`).slice(-4));
+      // Keep a unique record marker and a seeded suffix within four bytes.
+      .map((label, index) => `${index}${data.text(`rotation ${label}`).slice(-3)}`);
     assert.equal(new Set(values).size, values.length);
+    assert.ok(values.every(value => Buffer.byteLength(value) === 4));
 
     const zero = join(directory, `${data.text('zero filename')}.log`);
     appendRotating(zero, values[0]!, 4, 0);
