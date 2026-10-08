@@ -21,6 +21,7 @@ export interface FakeMcpServerOptions {
   malformedInitializeResponse?: string;
   malformedToolsResponse?: string;
   initializeFile?: string;
+  clientInfoFile?: string;
 }
 
 /** Writes a deterministic JSON-lines stdio MCP server for offline integration tests. */
@@ -59,6 +60,7 @@ lines.on('line', line => {
   const message = JSON.parse(line);
   if (message.method === 'initialize') {
     if (options.initializeFile) writeFileSync(options.initializeFile, 'initialized');
+    if (options.clientInfoFile) writeFileSync(options.clientInfoFile, JSON.stringify(message.params.clientInfo));
     if (options.exitOnInitialize) process.exit(17);
     if (options.hangOnInitialize) return;
     if (options.malformedInitializeResponse) {

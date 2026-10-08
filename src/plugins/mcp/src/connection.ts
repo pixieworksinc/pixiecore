@@ -5,11 +5,15 @@
 import { Client, type CallToolResult, type Tool } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { errorMessage } from '../../../core/component/diagnostics/index.js';
+import { readPixieCoreVersion } from '../../../core/component/package-root/index.js';
 import { McpConnectionError, McpToolError } from '../../../core/contracts/errors/index.js';
 import type { McpServerConfig } from '../../../core/contracts/mcp/index.js';
 
 const DEFAULT_TIMEOUT_SECONDS = 30;
-const CLIENT_INFO = { name: 'pixiecore', version: '0.1.0' } as const;
+const CLIENT_INFO = {
+  name: 'pixiecore',
+  version: readPixieCoreVersion(import.meta.url),
+} as const;
 
 /**
  * Encapsulates mcp connection behavior and lifecycle.

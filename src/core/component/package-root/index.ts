@@ -64,6 +64,13 @@ export function resolveOwningPackageRoot(
   }
 }
 
+/** Reads PixieCore's release version from its bundled package manifest. */
+export function readPixieCoreVersion(moduleUrl: string | URL): string {
+  return (JSON.parse(readFileSync(new URL('../../../../package.json', moduleUrl), 'utf8')) as {
+    version: string;
+  }).version;
+}
+
 function readPackageManifest(
   path: string,
   expectedName: string,
