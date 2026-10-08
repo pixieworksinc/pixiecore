@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.logging
 name: PixieCore Logging
-version: '0.1.0'
+version: '0.1.1'
 description: Provides PixieCore's scope-local logging service.
 entry: ./logging.js
 

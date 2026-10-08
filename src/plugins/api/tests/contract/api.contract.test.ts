@@ -17,6 +17,7 @@ import {
   captureLogs,
 } from '../../../../index.js';
 import { createApp, type ApiRuntime } from '../../../../core/kernel/api/index.js';
+import { readPixieCoreVersion } from '../../../../core/component/package-root/index.js';
 import { FakeApiRuntime, apiMessages } from '../../../../../tests/helpers/fake-api-runtime.js';
 import { responseJson, startApiServer, stopApiServer } from '../../../../../tests/helpers/http-server.js';
 import { RecordingLoggerPort } from '../../../../../tests/helpers/recording-logger.js';
@@ -54,6 +55,10 @@ test('HTTP health, OpenAPI, Swagger, ReDoc, not-found, request IDs, and CORS con
     assert.equal(openapi.status, 200);
     const specification = await responseJson(openapi);
     assert.equal(specification.openapi, '3.1.0');
+    assert.equal(
+      specification.info.version,
+      readPixieCoreVersion(new URL('../../src/openapi.ts', import.meta.url)),
+    );
     assert.ok(specification.paths['/health']);
     assert.ok(specification.paths['/execute']);
     assert.ok(specification.components.schemas.ExecuteRequest);

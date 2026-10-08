@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.providers.apisix
 name: PixieCore Apache APISIX Provider
-version: '0.1.0'
+version: '0.1.1'
 description: Provides an OpenAI-compatible Apache APISIX AI Gateway provider factory.
 entry: ./apisix.js
 

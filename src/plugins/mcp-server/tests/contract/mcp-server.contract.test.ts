@@ -9,11 +9,20 @@ import type {
 import type { ExecuteOptions } from '../../../../core/contracts/types/index.js';
 import {
   createPixieCoreMcpServer,
+  PIXIECORE_MCP_SERVER_INFO,
   PIXIECORE_MCP_TOOL_NAMES,
 } from '../../../../core/kernel/mcp-server/index.js';
+import { readPixieCoreVersion } from '../../../../core/component/package-root/index.js';
 import { testData } from '../../../../../tests/helpers/test-data.js';
 
 const data = testData('MCP server contract');
+
+test('MCP server advertises the owning package version', () => {
+  assert.equal(
+    PIXIECORE_MCP_SERVER_INFO.version,
+    readPixieCoreVersion(new URL('../../src/constants.ts', import.meta.url)),
+  );
+});
 
 test('MCP server lists and executes file and inline blueprint tools', async () => {
   const runtime = new RecordingRuntime();

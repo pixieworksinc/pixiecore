@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.providers.anthropic
 name: PixieCore Anthropic Provider
-version: '0.1.0'
+version: '0.1.1'
 description: Provides the Anthropic provider factory.
 entry: ./anthropic.js
 

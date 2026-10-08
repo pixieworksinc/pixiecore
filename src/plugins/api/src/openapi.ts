@@ -3,6 +3,7 @@
  */
 
 import { EXECUTE_REQUEST_SCHEMA, FILE_SCHEMA, MESSAGE_SCHEMA } from './schema.js';
+import { readPixieCoreVersion } from '../../../core/component/package-root/index.js';
 
 /** Stable OpenAPI document and documentation pages for the API core plugin. */
 
@@ -23,7 +24,7 @@ export const OPENAPI_DOCUMENT = {
   openapi: '3.1.0',
   info: {
     title: 'PixieCore REST API',
-    version: '0.1.0',
+    version: readPixieCoreVersion(import.meta.url),
     description: 'Execute PixieCore Blueprints over HTTP.',
   },
   paths: {

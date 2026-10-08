@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
 import { ConfigurationError, getConfig, PromptRuntime } from '../../src/index.js';
 import { resolvePixieCorePackageRoot } from '../../src/core/bootstrap/config/package-root.js';
+import { readPixieCoreVersion } from '../../src/core/component/package-root/index.js';
 import { withEnvironment } from '../helpers/environment.js';
 import { ScriptedProvider } from '../helpers/fake-provider.js';
 import { testData } from '../helpers/test-data.js';
@@ -221,6 +222,14 @@ test('package-root discovery selects the nearest valid owning package', async ()
 
     assert.equal(resolvePixieCorePackageRoot(pathToFileURL(modulePath)), owningRoot);
   });
+});
+
+test('PixieCore version discovery reads the bundled package manifest', async () => {
+  const moduleUrl = new URL('../../src/plugins/api/src/openapi.ts', import.meta.url);
+  const manifest = JSON.parse(await readFile(new URL('../../../../package.json', moduleUrl), 'utf8')) as {
+    version: string;
+  };
+  assert.equal(readPixieCoreVersion(moduleUrl), manifest.version);
 });
 
 test('package-root discovery exposes the exact public error for the nearest wrong package name', async () => {

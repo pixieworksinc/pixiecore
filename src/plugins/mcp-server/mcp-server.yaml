@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.mcp-server
 name: PixieCore MCP Server
-version: '0.1.0'
+version: '0.1.1'
 description: Exposes PixieCore blueprint execution through an MCP server.
 entry: ./mcp-server.js
 

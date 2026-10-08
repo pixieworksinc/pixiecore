@@ -4,6 +4,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { McpManager, McpToolError, PromptRuntime } from '../../../../index.js';
+import { readPixieCoreVersion } from '../../../../core/component/package-root/index.js';
 import { ScriptedProvider } from '../../../../../tests/helpers/fake-provider.js';
 import { writeFakeMcpServer } from '../../../../../tests/helpers/fake-mcp-server.js';
 import { testData } from '../../../../../tests/helpers/test-data.js';
@@ -15,11 +16,12 @@ test('official MCP stdio client lazily aggregates tool pages, drains stderr, cal
   await withTempDirectory(async root => {
     const pidFile = join(root, 'server.pid');
     const shutdownFile = join(root, 'server.closed');
+    const clientInfoFile = join(root, 'client-info.json');
     const script = await writeFakeMcpServer(root, [
       { name: 'echo', description: 'Echo arguments' },
       { name: 'fail', result: 'expected failure', isError: true },
       { name: 'protocol_fail', protocolError: 'protocol failure' },
-    ], { pageSize: 1, stderrBytes: 512 * 1024, pidFile, shutdownFile });
+    ], { pageSize: 1, stderrBytes: 512 * 1024, pidFile, shutdownFile, clientInfoFile });
     const config = await writeConfig(root, {
       main: { command: process.execPath, args: [script], timeout_seconds: 2 },
     });
@@ -31,6 +33,10 @@ test('official MCP stdio client lazily aggregates tool pages, drains stderr, cal
       const echo = await manager.getTool('mcp.main.echo');
       assert.equal(echo?.description, 'Echo arguments');
       const tools = await manager.getTools();
+      assert.deepEqual(JSON.parse(await readFile(clientInfoFile, 'utf8')), {
+        name: 'pixiecore',
+        version: readPixieCoreVersion(new URL('../../src/connection.ts', import.meta.url)),
+      });
       assert.deepEqual(tools.map(tool => tool.name), [
         'mcp.main.echo',
         'mcp.main.fail',

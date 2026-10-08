@@ -1181,7 +1181,7 @@ interface ExpectedApiValueContracts {
     readonly openapi: '3.1.0';
     readonly info: {
       readonly title: 'PixieCore REST API';
-      readonly version: '0.1.0';
+      readonly version: string;
       readonly description: 'Execute PixieCore Blueprints over HTTP.';
     };
     readonly paths: {
@@ -1206,7 +1206,7 @@ type ApiExactContracts = readonly [
   Assert<Equal<typeof api.EXECUTE_REQUEST_SCHEMA.additionalProperties, true>>,
   Assert<Equal<typeof api.OPENAPI_DOCUMENT.openapi, '3.1.0'>>,
   Assert<Equal<typeof api.OPENAPI_DOCUMENT.info.title, 'PixieCore REST API'>>,
-  Assert<Equal<typeof api.OPENAPI_DOCUMENT.info.version, '0.1.0'>>,
+  Assert<Equal<typeof api.OPENAPI_DOCUMENT.info.version, string>>,
   Assert<Equal<ApiOptions['pluginConfigPath'], string | 'disabled' | null | undefined>>,
 ];
 

@@ -1,6 +1,6 @@
 {
   "name": "@pixieworks/pixiecore",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Clean-room TypeScript runtime for documented Prompt-Oriented Programming contracts",
   "type": "module",
   "sideEffects": false,

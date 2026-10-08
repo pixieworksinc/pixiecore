@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.providers
 name: PixieCore Providers
-version: '0.1.0'
+version: '0.1.1'
 description: Provides shared transport support for PixieCore's provider-family plugins.
 entry: ./providers.js
 
