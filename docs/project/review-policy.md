@@ -63,8 +63,7 @@ review.
 
 A Blueprint change is accepted only when reviewers can answer all of these:
 
-- Does the unit declare a coherent prompt-first business result, with explicit
-  policy and ordered reasoning responsibilities where several Roles cooperate?
+- Does the unit perform exactly one independently meaningful cognitive verb?
 - Do typed placeholders, `input_schema`, and `output_schema` express the real
   caller and consumer contract without server-owned identity or secrets?
 - Are unsupported, ambiguous, missing, and invalid inputs handled without

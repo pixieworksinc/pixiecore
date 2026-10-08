@@ -1,13 +1,6 @@
 # Application composition
 
-The `0.2.x` direction permits multiple reasoning Roles and deterministic
-business policy inside one Blueprint. See
-[POP principles](../specification/pop-principles.md) and the
-[Customer discount example](../../examples/customer-discount/README.md).
-The host-composition facilities below remain compatible integration tools;
-their inherited 0.1 decisions do not constrain the restored POP model.
-
-The inherited 0.1 reference applications execute one small Blueprint at a time and compose those
+PixieCore executes one small Blueprint at a time. Applications compose those
 calls in ordinary TypeScript and keep orchestration, state, I/O, authorization,
 and side effects outside prompt text.
 
