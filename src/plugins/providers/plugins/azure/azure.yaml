@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.providers.azure
 name: PixieCore Azure Providers
-version: '0.1.0'
+version: '0.1.1'
 description: Provides Azure OpenAI and Azure Native provider factories.
 entry: ./azure.js
 

@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.providers.openai
 name: PixieCore OpenAI Provider
-version: '0.1.0'
+version: '0.1.1'
 description: Provides the OpenAI provider factory.
 entry: ./openai.js
 

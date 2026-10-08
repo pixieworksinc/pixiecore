@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.providers.apisix.ai-rag
 name: PixieCore APISIX AI RAG
-version: '0.1.0'
+version: '0.1.1'
 description: Contributes declarative ai-rag configuration for Apache APISIX.
 entry: ./ai-rag.js
 

@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.runtime
 name: PixieCore Runtime
-version: '0.1.0'
+version: '0.1.1'
 description: Provides PixieCore's scope-local runtime execution services.
 entry: ./runtime.js
 

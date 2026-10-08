@@ -1,7 +1,7 @@
 schema: pixiecore.plugin/v1
 id: pixiecore.recipe
 name: PixieCore Recipe
-version: '0.1.0'
+version: '0.1.1'
 description: Provides PixieCore's mandatory locked standard composition.
 entry: ./recipe.js
 

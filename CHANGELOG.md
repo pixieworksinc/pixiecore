@@ -7,22 +7,31 @@ semantic versioning.
 
 Changes below are not part of the published `0.1.0` artifact.
 
-### Changed
+## 0.1.1 - 2026-10-08
 
-- Removed first-publication token authentication from the release workflow;
-  subsequent releases use OIDC only, without a token fallback.
-- Recorded the completed `0.1.0` publication and documented approval and
-  verification gates for the next release. Trusted publisher registration is
-  not yet evidence of an OIDC-authenticated publication.
+### Security
+
+- Raised the minimum `@modelcontextprotocol/client` version to `^2.2.0` and
+  locked the tested dependency graph to version `2.3.1`.
 
 ### Fixed
 
+- Corrected collisions in the seeded log-rotation test fixtures without
+  changing production logging behavior.
 - Detect fine-grained GitHub tokens and reject environment-file variants in
   public source snapshots without exposing matched credential values.
 - Recheck the approved tag object around GitHub Release writes and final
   verification; fail closed on changed tags without deleting remote state.
 - Preserve explicit factuality limitations in structural-summary evaluation
   results and reports. Comparator pass rates are not factual-accuracy claims.
+
+### Changed
+
+- Removed first-publication token authentication from the release workflow;
+  subsequent releases use OIDC only, without a token fallback.
+- Recorded the completed `0.1.0` publication and documented approval and
+  verification gates for subsequent releases. Trusted publisher registration
+  is not evidence of an OIDC-authenticated publication.
 
 ## 0.1.0 - 2026-10-03
 

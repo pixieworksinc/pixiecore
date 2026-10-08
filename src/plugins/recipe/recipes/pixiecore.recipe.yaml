@@ -1,7 +1,7 @@
 schema: pixiecore.recipe/v1
 id: pixiecore.standard
 name: PixieCore Standard
-version: 0.1.0
+version: 0.1.1
 description: Installs PixieCore's locked foundation and activates its constructor-visible contributions.
 locked: true
 plugins:
