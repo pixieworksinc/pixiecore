@@ -189,6 +189,10 @@ function changedYamlFiles(root, base) {
 function sourceAtBase(root, base, path) {
   if (!path) return undefined;
   try {
+    execFileSync('git', ['cat-file', '-e', `${base}:${path}`], {
+      cwd: root,
+      stdio: 'ignore',
+    });
     return git(root, ['show', `${base}:${path}`]);
   } catch {
     return undefined;
@@ -218,7 +222,8 @@ export function checkRepository({ root = process.cwd(), base } = {}) {
   }
 
   git(root, ['cat-file', '-e', `${base}^{commit}`]);
-  const allowRemoval = packageMajorAdvanced(root, base);
+  const allowPackageMajorRemoval = packageMajorAdvanced(root, base);
+  const publishedBase = latestPublishedReleaseBase(root, base);
   for (const change of changedYamlFiles(root, base)) {
     const displayPath = change.status === 'R'
       ? `${change.previousPath} -> ${change.currentPath}`
@@ -229,12 +234,34 @@ export function checkRepository({ root = process.cwd(), base } = {}) {
     const currentCandidate = parseBlueprint(currentSource, displayPath).candidate;
     if (!previousCandidate && !currentCandidate) continue;
     checked++;
+    const previouslyPublished = publishedBase
+      ? parseBlueprint(sourceAtBase(root, publishedBase, change.previousPath), displayPath).candidate
+      : previousCandidate;
     errors.push(...checkBlueprintTransition(previousSource, currentSource, displayPath, {
-      allowRemoval,
-      identityChanged: change.status === 'R' && change.previousPath !== change.currentPath,
+      allowRemoval: allowPackageMajorRemoval || !previouslyPublished,
+      identityChanged: previouslyPublished
+        && change.status === 'R'
+        && change.previousPath !== change.currentPath,
     }));
   }
   return { base, checked, errors };
+}
+
+function latestPublishedReleaseBase(root, base) {
+  const tags = git(root, ['tag', '--list'])
+    .split('\n')
+    .filter(tag => /^\d+\.\d+\.\d+$/.test(tag))
+    .sort((left, right) => compareVersions(parseVersion(right), parseVersion(left)));
+
+  for (const tag of tags) {
+    try {
+      git(root, ['merge-base', '--is-ancestor', `${tag}^{commit}`, base]);
+      const manifest = JSON.parse(git(root, ['show', `${tag}:package.json`]));
+      if (manifest.version === tag) return tag;
+    } catch {
+      // An unrelated tag or malformed package version cannot define a baseline.
+    }
+  }
 }
 
 function packageMajorAdvanced(root, base) {

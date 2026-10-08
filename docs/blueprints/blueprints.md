@@ -108,9 +108,12 @@ forms. `output_schema` may be an object or a JSON string.
 Repository CI treats standalone syntax and version transitions as separate
 checks. A changed Blueprint must advance its version. Changes to `role`, input
 placeholders, input or output schemas, tools, or permissions require a
-Blueprint major bump. Moving the file changes its stable repository identity
-and also requires a major bump. YAML comments and formatting alone do not.
-Physical removal is accepted only together with a PixieCore package major bump.
+Blueprint major bump. Moving a Blueprint that exists in a published package
+changes its stable repository identity and also requires a major bump. YAML
+comments and formatting alone do not. Physical removal of a Blueprint present
+in a published package requires a PixieCore package major bump. A Blueprint
+added only after the latest stable package release may be removed without a
+major bump because it has not been part of a released package contract.
 Run the same policy locally against a known base commit with:
 
 ```bash

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import test from 'node:test';
 import YAML from 'yaml';
@@ -129,6 +129,50 @@ test('repository policy compares the worktree with an explicit Git base', async 
     }));
     assert.deepEqual(checkRepository({ root, base }).errors, []);
   }, 'pixiecore-blueprint-version-');
+});
+
+test('repository policy permits removing a Blueprint absent from the latest published package', async () => {
+  await withTempDirectory(async root => {
+    const path = join(root, 'examples', 'unreleased.yaml');
+    await mkdir(join(root, 'examples'), { recursive: true });
+    await writeFile(join(root, 'package.json'), '{"version":"0.1.0"}\n');
+    git(root, ['init', '--quiet']);
+    git(root, ['config', 'user.name', data.person('release baseline author')]);
+    git(root, ['config', 'user.email', `${data.text('release baseline email')}@example.test`]);
+    git(root, ['add', 'package.json']);
+    git(root, ['commit', '--quiet', '-m', data.text('published release baseline')]);
+    git(root, ['tag', '0.1.0']);
+
+    await writeFile(path, blueprint());
+    git(root, ['add', path]);
+    git(root, ['commit', '--quiet', '-m', data.text('unpublished development addition')]);
+    const base = git(root, ['rev-parse', 'HEAD']).trim();
+    await rm(path);
+
+    assert.deepEqual(checkRepository({ root, base }).errors, []);
+  }, 'pixiecore-blueprint-unreleased-removal-');
+});
+
+test('repository policy still requires a major package bump to remove a published Blueprint', async () => {
+  await withTempDirectory(async root => {
+    const path = join(root, 'examples', 'released.yaml');
+    await mkdir(join(root, 'examples'), { recursive: true });
+    await writeFile(path, blueprint());
+    await writeFile(join(root, 'package.json'), '{"version":"0.1.0"}\n');
+    git(root, ['init', '--quiet']);
+    git(root, ['config', 'user.name', data.person('published Blueprint author')]);
+    git(root, ['config', 'user.email', `${data.text('published Blueprint email')}@example.test`]);
+    git(root, ['add', '.']);
+    git(root, ['commit', '--quiet', '-m', data.text('published Blueprint release')]);
+    git(root, ['tag', '0.1.0']);
+    const base = git(root, ['rev-parse', 'HEAD']).trim();
+    await rm(path);
+
+    assert.match(
+      checkRepository({ root, base }).errors[0],
+      /removing a Blueprint requires a PixieCore package major bump/,
+    );
+  }, 'pixiecore-blueprint-published-removal-');
 });
 
 function git(root: string, args: string[]): string {
