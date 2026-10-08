@@ -31,7 +31,7 @@
     },
     "./audit/schema.json": "./schemas/pixiecore.signed-audit-export-v1.schema.json",
     "./adoption/snapshot-schema.json": "./schemas/pixiecore.adoption-snapshot-v1.schema.json",
-    "./blueprint/schema.json": "./schemas/pixiecore.blueprint-v2.schema.json",
+    "./blueprint/schema.json": "./schemas/pixiecore.blueprint-v1.schema.json",
     "./blueprint/package-schema.json": "./schemas/pixiecore.blueprint-package-v1.schema.json",
     "./blueprint/quality-catalog-schema.json": "./schemas/pixiecore.blueprint-quality-catalog-v1.schema.json",
     "./blueprint-packages": {
@@ -111,8 +111,7 @@
     "./pop/conformance-suite-schema.json": "./schemas/pop.conformance-suite-0.1.schema.json",
     "./pop/conformance-suite.json": "./conformance/pop-0.1/suite.json",
     "./pop/conformance-report-schema.json": "./schemas/pop.conformance-report-0.1.schema.json",
-    "./package.json": "./package.json",
-    "./blueprint/v1-schema.json": "./schemas/pixiecore.blueprint-v1.schema.json"
+    "./package.json": "./package.json"
   },
   "bin": {
     "pixiecore": "./dist/core/kernel/cli/index.js"

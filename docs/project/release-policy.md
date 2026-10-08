@@ -24,9 +24,13 @@ increment the major version. Security-hardening defaults are recorded in the
 Blueprint versions are independent of the PixieCore package version. CI compares
 changed Blueprint YAML against the pull-request or push base. Every semantic
 content change advances the Blueprint version; declared contract and stable-path
-changes require a Blueprint major bump. Blueprint removal additionally requires
-a PixieCore package major bump. A standalone Blueprint with valid version syntax
-does not by itself satisfy this repository transition policy.
+changes require a Blueprint major bump. Removal of a Blueprint included in the
+latest stable package requires a PixieCore package major bump. A Blueprint added
+only after that release may be removed without a package major bump because it
+was never part of a published contract. If no valid stable release tag exists,
+the check fails closed and treats the comparison base as published. A standalone
+Blueprint with valid version syntax does not by itself satisfy this repository
+transition policy.
 
 Release work is tracked in repository Issues. The post-publication cleanup and
 next-release procedure are tracked in

@@ -1,11 +1,5 @@
 # Evidence-admitted deterministic execution
 
-This inherited opt-in extension remains available for compatibility and is
-under review in the [0.2 development plan](../project/0.2-development.md).
-Compiled execution must be identified separately from
-[prompt-first LLM execution](../specification/pop-principles.md) when reporting
-accuracy. The Customer discount example does not use this path.
-
 PixieCore can promote a repeatedly measured Blueprint execution to a small,
 deterministic data program. This path is optional. It is intended for narrow
 operations such as field projection, arithmetic, lookup, comparison, and

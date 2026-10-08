@@ -8,10 +8,9 @@ artifacts. Read the [Code of Conduct](CODE_OF_CONDUCT.md) and
 ## Choose the smallest contribution
 
 - Fix documentation when behavior is already correct but unclear.
-- Add or improve a Blueprint when prompt-defined business behavior is missing.
-  Several reasoning Roles and deterministic rules may share its contract.
-- Add a Tool for an explicit external capability. Deterministic business logic
-  is not automatically moved out of the prompt.
+- Add or improve one Blueprint when one independently meaningful cognitive
+  operation is missing.
+- Add a Tool for deterministic callable behavior.
 - Add a Plugin only for trusted executable capabilities that cannot be
   expressed as data-only Blueprints or Tools.
 - Propose an RFC or decision record before changing a normative POP contract,
@@ -52,7 +51,7 @@ unknown.
 
 ## Good-first Blueprint workflow
 
-A good-first Blueprint has a coherent business result with typed input and output,
+A good-first Blueprint performs one operation with a typed input and output,
 has no hidden side effect, and can be evaluated offline with authorized data.
 Use the issue form in `.github/ISSUE_TEMPLATE/good-first-blueprint.yml` to
 define the unit before implementation.

@@ -1,14 +1,14 @@
 # PixieCore Blueprints
 
-A Blueprint declares prompt-first business behavior with inputs, instructions,
-and a JSON Schema output contract. It can combine several reasoning Roles and
-deterministic rules serving the declared result. See
-[POP principles](../specification/pop-principles.md) for the `0.2.x` direction.
+A Blueprint is one small, typed, independently testable cognitive function. Its
+YAML describes one operation's role, prompt, inputs, and JSON Schema output. An
+application is a collection or graph of Blueprint calls; it is not one large
+Blueprint.
 
-PixieCore validates and executes one Blueprint per
+PixieCore 0.1 validates and executes one Blueprint per
 `execute(path, inputs, options)` or `executeYaml(source, inputs, options)` call.
-Host code supplies runtime and integration mechanics. Business comparisons,
-branching, calculations, and routing policy can remain inside the Blueprint.
+Application host code currently owns composition, data mapping, state,
+persistence, routing side effects, and application-level failure policy.
 
 Read [POP concepts](../specification/pop-concepts.md) for canonical terminology and the
 [Blueprint granularity guide](../architecture/blueprint-granularity.md) before designing a
@@ -108,9 +108,12 @@ forms. `output_schema` may be an object or a JSON string.
 Repository CI treats standalone syntax and version transitions as separate
 checks. A changed Blueprint must advance its version. Changes to `role`, input
 placeholders, input or output schemas, tools, or permissions require a
-Blueprint major bump. Moving the file changes its stable repository identity
-and also requires a major bump. YAML comments and formatting alone do not.
-Physical removal is accepted only together with a PixieCore package major bump.
+Blueprint major bump. Moving a Blueprint that exists in a published package
+changes its stable repository identity and also requires a major bump. YAML
+comments and formatting alone do not. Physical removal of a Blueprint present
+in a published package requires a PixieCore package major bump. A Blueprint
+added only after the latest stable package release may be removed without a
+major bump because it has not been part of a released package contract.
 Run the same policy locally against a known base commit with:
 
 ```bash
@@ -129,13 +132,14 @@ Optional fields are:
 - `model` and `temperature`: request-level provider overrides.
 - `tools`: names of registered tools available to this Blueprint.
 
-These fields define a business contract. Several Roles may work together
-inside its instructions. External capabilities and side effects must be explicit;
-reasoning about an approval or route does not itself persist or notify anything.
+These fields define one operation. Do not use a large prompt or output schema
+to hide unrelated extraction, validation, approval, notification, persistence,
+and routing behavior inside one Blueprint. Split those responsibilities and
+compose the results in the application.
 
 Plain Gherkin is the recommended authoring form for `prompt`, using
 `Feature`, `Scenario`, `Given`, `When`, and `Then`. This makes a Blueprint's
-preconditions, business behavior, and expected result easy to review without
+preconditions, single operation, and expected result easy to review without
 changing the runtime data type.
 
 ```yaml
@@ -147,47 +151,11 @@ prompt: |
       Then the result contains the corresponding yyyy-mm-dd calendar date
 ```
 
-This is a recommendation, not a compatibility requirement. Text `prompt` values
-remain valid, and PixieCore does not invoke a Gherkin parser for text. When a prompt starts using `Feature`
+This is a recommendation, not a compatibility requirement. `prompt` remains
+a non-blank string, ordinary free-form prompts remain valid, and PixieCore does
+not require or invoke a Gherkin parser. When a prompt starts using `Feature`
 or `Scenario`, the validator emits only a soft warning if the recommended five
 keywords are incomplete. A warning never blocks loading or execution.
-
-### Structured Scenario prompts
-
-The `0.2.x` branch also accepts a structured `prompt` with an optional
-`agent_role` and a non-empty `Scenario` array:
-
-```yaml
-prompt:
-  agent_role: orchestrator
-  Scenario:
-    - Role: classifier
-      Instruction:
-        Given: The customer tier is {{ customer_tier }} and the amount is {{ purchase_amount }}.
-        When: Evaluate exact Gold membership and whether the amount is greater than 1000.
-        Then: Choose a 0.15 discount only when both conditions are true; otherwise choose 0.
-    - Role: converter
-      Instruction:
-        Given: The discount has been selected.
-        When: Calculate the final purchase price.
-        Then: Multiply the original purchase_amount by (1 - discount).
-        And: Return the result without rounding.
-```
-
-Each step requires a non-blank `Role` and an `Instruction` object containing
-non-blank `Given`, `When`, and `Then` strings. Optional `And` accepts a string
-or a non-empty array of non-blank strings. Unknown fields in this structure
-are rejected so instruction typos do not silently disappear.
-
-Validation serializes the structure to YAML text in array order. Input binding
-then uses the same renderer as text prompts, including declared-placeholder
-checks. The validated `Blueprint.prompt` remains a string for existing Role
-plugins. The LLM executes all policy and calculation instructions; this is not
-a host-code Scenario interpreter. Inner Role names do not need plugin
-registration. Top-level `role` still selects the message-preparation plugin.
-
-The [Customer discount unit](../../examples/customer-discount/README.md)
-contains the complete runnable declaration and its semantic evaluation corpus.
 
 In recommended Gherkin, `Given` states context, `When` states the action or
 event, and `Then` states an observable outcome. JSON structure belongs in
@@ -240,7 +208,7 @@ settings after installing PixieCore:
 ```json
 {
   "yaml.schemas": {
-    "./node_modules/@pixieworks/pixiecore/schemas/pixiecore.blueprint-v2.schema.json": [
+    "./node_modules/@pixieworks/pixiecore/schemas/pixiecore.blueprint-v1.schema.json": [
       "blueprints/**/*.yaml",
       "**/blueprints/**/*.yaml"
     ]

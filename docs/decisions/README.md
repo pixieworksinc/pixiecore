@@ -37,4 +37,3 @@ Valid statuses are `proposed`, `accepted`, `rejected`, `superseded`, and
 | [0008](0008-colocate-recipe-plugin.md) | accepted | Co-locate Recipe with bundled plugins |
 | [0009](0009-group-repeated-source-prefixes.md) | accepted | Group repeated production source prefixes |
 | [0010](0010-fractal-directory-ownership.md) | accepted | Use fractal directory ownership at every level |
-| [0011](0011-prompt-first-0.2-development.md) | proposed | Restore prompt-first POP on the 0.2 development branch |
