@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pop:schema:blueprint:0.1",
+  "title": "POP Blueprint 0.1",
+  "description": "Implementation-independent serialization of one Prompt-Oriented Programming cognitive operation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "name", "version", "role", "instructions", "output_schema"],
+  "properties": {
+    "schema": { "const": "pop.blueprint/0.1" },
+    "id": { "$ref": "#/$defs/namespacedId" },
+    "name": { "$ref": "#/$defs/nonBlankString" },
+    "version": { "$ref": "#/$defs/semanticVersion" },
+    "role": { "$ref": "#/$defs/roleId" },
+    "description": { "$ref": "#/$defs/nonBlankString" },
+    "instructions": { "$ref": "#/$defs/nonBlankString" },
+    "inputs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/inputDeclaration" }
+    },
+    "input_schema": { "$ref": "#/$defs/jsonSchema" },
+    "output_schema": {
+      "allOf": [
+        { "$ref": "#/$defs/jsonSchema" },
+        {
+          "type": "object",
+          "required": ["type"],
+          "properties": { "type": { "const": "object" } }
+        }
+      ]
+    },
+    "examples": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/example" }
+    },
+    "localization": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "input_locale": { "$ref": "#/$defs/locale" },
+        "output_locale": { "$ref": "#/$defs/locale" },
+        "preserve_terms": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonBlankString" }
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/namespacedId" }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_hint": { "$ref": "#/$defs/nonBlankString" },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2 }
+      }
+    },
+    "requires": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/namespacedId" }
+    },
+    "extensions": {
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/namespacedId" }
+    }
+  },
+  "$defs": {
+    "nonBlankString": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "namespacedId": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^(?!pop\\.)(?:[a-z0-9]+(?:[._-][a-z0-9]+)+)$"
+    },
+    "semanticVersion": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-(?:(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "roleId": {
+      "type": "string",
+      "maxLength": 120,
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+    },
+    "locale": {
+      "type": "string",
+      "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$"
+    },
+    "jsonSchema": {
+      "type": "object"
+    },
+    "inputDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" },
+        "description": { "$ref": "#/$defs/nonBlankString" },
+        "required": { "type": "boolean" },
+        "schema": { "$ref": "#/$defs/jsonSchema" },
+        "default": true
+      }
+    },
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inputs", "output"],
+      "properties": {
+        "description": { "$ref": "#/$defs/nonBlankString" },
+        "inputs": { "type": "object" },
+        "output": { "type": "object" }
+      }
+    }
+  }
+}

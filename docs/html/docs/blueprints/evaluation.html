@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Blueprint evaluation datasets · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="./blueprint-library.html">blueprint library</a></li><li><a href="./blueprint-packages.html">blueprint packages</a></li><li><a href="./blueprint-publishing.html">blueprint publishing</a></li><li><a href="./blueprints.html">blueprints</a></li><li><a href="./evaluation.html">evaluation</a></li><li><a href="./ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/blueprints/evaluation.md</code></p><h1 id="blueprint-evaluation-datasets">Blueprint evaluation datasets</h1>
+<p>A PixieCore evaluation dataset records inputs, expected outputs, semantic
+comparison policy, and tags for one versioned Blueprint target. The v1 format
+is validated by the published JSON Schema at
+<code>@pixieworks/pixiecore/eval/dataset-schema.json</code>.</p>
+<p>Dataset validation fixes the shape of evaluation data. PixieCore executes the
+dataset through <code>pixiecore blueprint eval</code> or <code>runBlueprintEvaluation()</code> and
+publishes the result contract at <code>@pixieworks/pixiecore/eval/result-schema.json</code>.</p>
+<p>Applications can import the comparison API from <code>@pixieworks/pixiecore/eval</code>:</p>
+<pre><code class="language-ts">import { compareEvaluationOutput } from '@pixieworks/pixiecore/eval';
+
+const result = await compareEvaluationOutput(
+  { date: '2026-02-04' },
+  { date: '2026-02-04' },
+  { mode: 'exact' },
+);</code></pre>
+<h2 id="seeded-property-corpus">Seeded property corpus</h2>
+<p><code>createEvaluationPropertyCorpus()</code> produces a versioned, JSON-only set of
+date, amount, locale, Unicode, whitespace, and numeric-boundary cases. A seed
+is required: the same seed and <code>casesPerKind</code> reproduce the exact artifact,
+while another seed changes generated dates, amounts, Unicode suffixes, and case
+IDs. Fixed Gregorian leap-year, zero/negative-cent, whitespace-family, and safe
+integer boundary anchors ensure that random selection cannot omit core edges.</p>
+<pre><code class="language-ts">import { createEvaluationPropertyCorpus } from '@pixieworks/pixiecore/eval';
+
+const corpus = createEvaluationPropertyCorpus({
+  seed: process.env.TEST_SEED ?? 'documented-example',
+  casesPerKind: 8,
+});
+
+const dateInputs = corpus.cases
+  .filter(item =&gt; item.kind === 'date')
+  .map(item =&gt; ({ date_text: item.value }));</code></pre>
+<p>The corpus supplies candidate values, not semantic expected outputs. A
+Blueprint-specific dataset author must map each candidate into the Blueprint&#39;s
+typed input and declare the expected result. The schema is published as
+<code>@pixieworks/pixiecore/eval/property-corpus-schema.json</code>.</p>
+<p>To execute a complete dataset from an application without writing an artifact
+to disk:</p>
+<pre><code class="language-ts">import { runBlueprintEvaluation } from '@pixieworks/pixiecore/eval';
+
+const artifact = await runBlueprintEvaluation({
+  datasetPath: 'evaluations/date-converter.yaml',
+  seed: 'release-candidate-1',
+});</code></pre>
+<h2 id="cli-runner">CLI runner</h2>
+<pre><code class="language-bash">pixiecore blueprint eval evaluations/date-converter.yaml
+pixiecore blueprint eval evaluations/date-converter.yaml --seed=release-candidate-1
+pixiecore blueprint eval evaluations/date-converter.yaml \
+  --seed=release-candidate-1 \
+  --output=artifacts/date-converter.json</code></pre>
+<p>Without <code>--output</code>, the complete result artifact is written to stdout and no
+result file is created. File persistence requires the explicit option. A run
+with any comparison failure or execution error exits with status <code>1</code> and writes
+the Blueprint path/version, affected JSON Pointer fields when available,
+same-seed replay command, and actionable correction suggestions to stderr.
+Invalid command arguments exit with status <code>2</code>.</p>
+<p><code>blueprint play --mode=real</code> and <code>--mode=both</code> also exit with status <code>1</code> when
+the real-provider result does not match the selected fixture. The JSON artifact
+remains on stdout; the value-free diagnostic on stderr identifies the
+Blueprint, differing fields, replay command, and next corrective action.</p>
+<p>The runner seed identifies the run and is preserved in the artifact and replay
+command. Its scope is recorded as <code>runner</code>; the current Provider contract does
+not expose a universal model-decoding seed, so the value must not be presented
+as proof that a remote model is deterministic.</p>
+<h2 id="real-provider-usage-and-estimated-cost">Real-provider usage and estimated cost</h2>
+<p>Every case produced by <code>runBlueprintEvaluation()</code> records <code>provider_usage</code>.
+The real block produced by <code>runBlueprintPlayground()</code> does the same. Each
+provider/model entry contains the call count, <code>input_tokens</code>, <code>output_tokens</code>,
+<code>total_tokens</code>, estimated cost, cost status, and the pricing snapshot used for
+the estimate. Mock playground executions do not contain provider accounting.</p>
+<p>PixieCore includes one narrowly scoped default pricing snapshot for
+<code>gpt-4.1-mini</code> when the configured provider is <code>openai</code> and the request uses
+the official OpenAI API endpoint. The snapshot was verified on 2026-08-26 and
+uses USD 0.40 per million input tokens and USD 1.60 per million output tokens.
+The artifact retains those rates, their effective timestamp, and the official
+pricing URL, so a later price change does not make an old estimate ambiguous.
+All input tokens are charged at the standard input rate; cached-input discounts
+are not inferred from the normalized Provider contract.</p>
+<p>For another provider, model, or OpenAI-compatible endpoint, pass exact rules in
+the <code>pricing</code> option. Explicit rules override the bundled rule for the same
+provider/model pair:</p>
+<pre><code class="language-ts">const artifact = await runBlueprintEvaluation({
+  datasetPath: 'evaluations/date-converter.yaml',
+  pricing: [{
+    provider: 'provider-name',
+    model: 'model-name',
+    currency: 'USD',
+    inputPerMillionTokens: 1,
+    outputPerMillionTokens: 4,
+    source: 'https://provider.example/pricing',
+    effectiveAt: '2026-08-26T00:00:00.000Z',
+  }],
+});</code></pre>
+<p>If the Provider omits complete usage, token fields and estimated cost are
+<code>null</code> with <code>cost_status: &#39;missing_usage&#39;</code>. Complete usage without an exact
+pricing rule keeps the token values but records a null estimate with
+<code>cost_status: &#39;missing_pricing&#39;</code>. PixieCore does not guess either value.</p>
+<h2 id="opt-in-providermodel-benchmark">Opt-in provider/model benchmark</h2>
+<p><code>runBlueprintBenchmark()</code> compares explicit provider/model targets over the
+same dataset and repeated run count. It reports case accuracy, accuracy
+standard deviation, mean/p50/p95 latency, token usage, and cost when the caller
+supplies both complete provider usage and pricing. The versioned, value-free
+artifact schema is published at <code>@pixieworks/pixiecore/eval/benchmark-schema.json</code>.</p>
+<p>Each target must create a fresh explicit <code>Provider</code> instance for every run.
+This makes remote execution and cost opt-in, prevents an environment default
+from silently selecting a provider, and gives every target an independent
+lifecycle. Provider/model identity must remain stable within one target.</p>
+<pre><code class="language-ts">import { createProvider } from '@pixieworks/pixiecore';
+import { runBlueprintBenchmark } from '@pixieworks/pixiecore/eval';
+
+const report = await runBlueprintBenchmark({
+  datasetPath: 'evaluations/date-converter.yaml',
+  runsPerTarget: 3,
+  targets: [{
+    id: 'openai-primary',
+    pricing: {
+      currency: 'USD',
+      inputPerMillionTokens: 1,
+      outputPerMillionTokens: 4,
+    },
+    createRuntimeOptions: () =&gt; ({
+      provider: createProvider('openai', { model: 'configured-model' }),
+      model: 'configured-model',
+    }),
+  }],
+});</code></pre>
+<p>Pricing is caller-supplied because provider prices change independently of
+PixieCore releases. A run without complete usage remains valid but publishes
+<code>usage: null</code> and <code>cost: null</code>. Benchmark seeds identify dataset runs; they do
+not claim control over remote model sampling.</p>
+<h2 id="reference-quality-regression-gates">Reference quality regression gates</h2>
+<p>The eight repository-owned Role examples declare their canonical thresholds in
+<code>examples/blueprints/quality-gates.yaml</code>. <code>npm run check:quality-gates</code>
+requires exact coverage of the active Blueprint catalog, validates each
+dataset/version pin and minimum case count, then runs all eight seeded offline
+contract suites. CI executes this gate independently before the full test
+suite.</p>
+<p>The current threshold is 100% across 71 canonical cases, with zero comparison
+failures and zero execution errors. This is a deterministic contract
+regression claim: fixture Providers return declared expected outputs while the
+tests verify prompt inputs, attachment handling, schema validation, and domain
+guards. It is not a claim that a remote model achieves 100% accuracy. Real
+provider quality must be measured with <code>runBlueprintBenchmark()</code> and reported
+with provider, model, dataset version, run count, pricing source, and variance.</p>
+<h2 id="release-scorecards">Release scorecards</h2>
+<p><code>renderBlueprintBenchmarkScorecard()</code> converts one value-free benchmark
+artifact into stable Markdown. Publication metadata must include the release,
+generation timestamp, exact reproduction command, and methodology. A pricing
+source becomes mandatory whenever any target reports cost.</p>
+<pre><code class="language-ts">import { renderBlueprintBenchmarkScorecard } from '@pixieworks/pixiecore/eval';
+
+const markdown = renderBlueprintBenchmarkScorecard(report, {
+  release: '0.1.0',
+  generatedAt: new Date().toISOString(),
+  reproductionCommand: 'npm run benchmark:reference -- &lt;explicit release options&gt;',
+  methodology: 'Exact and schema comparisons from the versioned dataset.',
+  pricingSource: 'Provider price sheets captured on the generation date.',
+});</code></pre>
+<p>Every percentage is rendered beside passed and total case counts, with dataset
+and Blueprint hashes, runner seed, run count, provider/model identity,
+variance, latency, usage, and cost. PixieCore does not ship a fabricated remote
+provider scorecard or prior real-provider artifacts. The public quality catalog
+contains deterministic offline-contract measurements only. A maintainer may
+create a new local, value-free remote measurement through the bounded runner
+after approving its provider, model, call ceiling, and budget.
+The typechecked <a href="../../examples/benchmarks/index.html">reference release runner</a>
+provides the concrete opt-in command and refuses execution without explicit
+remote-cost confirmation.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-yaml">schema: pixiecore.blueprint-eval-dataset/v1
+name: Japanese date conversion
+version: 1.0.0
+description: Converts declared Japanese date expressions to ISO calendar dates.
+blueprint:
+  path: ../blueprints/date-converter.yaml
+  version: '1.0'
+tags: [converter, date, ja-JP]
+cases:
+  - id: japanese-long-date
+    description: Converts a year-month-day expression without adding a timezone.
+    tags: [ordinary]
+    inputs:
+      date_expression: 2026年2月4日
+    expected_output:
+      date: '2026-02-04'
+    comparison:
+      mode: exact</code></pre>
+<p>The Blueprint path is resolved relative to the dataset file. The runner rejects
+absolute paths, lexical escapes, and symlinks that resolve outside the nearest
+project root containing <code>package.json</code>. Without a project manifest, the dataset
+directory is the permitted root. The optional Blueprint version asserts the
+version expected by the dataset.</p>
+<h2 id="required-dataset-fields">Required dataset fields</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>schema</code></td>
+<td>Exact format identifier <code>pixiecore.blueprint-eval-dataset/v1</code>.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Human-readable dataset name.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Dataset SemVer, independent of the Blueprint version.</td>
+</tr>
+<tr>
+<td><code>blueprint.path</code></td>
+<td>Relative path to the Blueprint under evaluation.</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>Dataset-level selection and reporting tags.</td>
+</tr>
+<tr>
+<td><code>cases</code></td>
+<td>One or more independently addressable evaluation cases.</td>
+</tr>
+</tbody></table>
+<p>Each case requires a stable <code>id</code>, at least one tag, an <code>inputs</code> object, an
+<code>expected_output</code> object, and one comparison policy. Case IDs must be unique in
+the dataset; this semantic constraint is enforced by the runner because
+JSON Schema cannot express property uniqueness across objects in an array.</p>
+<p>Dataset and case tags are combined for selection and reporting. Tags describe
+dimensions such as Role, language, ordinary input, ambiguity, boundary, or
+known regression. They must not contain credentials or personal identifiers.</p>
+<h2 id="comparison-policies">Comparison policies</h2>
+<h3 id="exact"><code>exact</code></h3>
+<p>The actual JSON object must deeply equal <code>expected_output</code>. Object property
+order is irrelevant; array order and duplicate values remain significant.</p>
+<pre><code class="language-yaml">comparison: { mode: exact }</code></pre>
+<h3 id="schema"><code>schema</code></h3>
+<p>The actual output and <code>expected_output</code> must both satisfy the Blueprint output
+schema. Their semantic values are not compared. This mode measures structural
+validity only and must never be presented as semantic accuracy.</p>
+<pre><code class="language-yaml">comparison: { mode: schema }</code></pre>
+<h3 id="fields"><code>fields</code></h3>
+<p>Only values selected by the listed RFC 6901 JSON Pointers are compared exactly.
+Every pointer must exist in both actual and expected output.</p>
+<pre><code class="language-yaml">comparison:
+  mode: fields
+  pointers: [/date, /destination/level]</code></pre>
+<h3 id="set"><code>set</code></h3>
+<p>Arrays at one JSON Pointer are compared as mathematical sets. Order and
+duplicates are ignored. Use <code>exact</code> when multiplicity matters.</p>
+<pre><code class="language-yaml">comparison:
+  mode: set
+  pointer: /matched_fields</code></pre>
+<h3 id="numeric_tolerance"><code>numeric_tolerance</code></h3>
+<p>Numbers at the listed JSON Pointers are compared using an absolute tolerance,
+a relative tolerance, or both. With both values present, the comparator
+passes when the absolute difference is no greater than the larger permitted
+difference: <code>max(absolute_tolerance, abs(expected) * relative_tolerance)</code>.</p>
+<pre><code class="language-yaml">comparison:
+  mode: numeric_tolerance
+  pointers: [/amount]
+  absolute_tolerance: 0.01
+  relative_tolerance: 0.001</code></pre>
+<h3 id="custom"><code>custom</code></h3>
+<p>A namespaced comparator ID selects explicitly registered trusted comparison
+code. The dataset contains an ID and JSON configuration, never a module path or
+executable source. An unregistered comparator is an evaluation configuration
+error, not a failed case.</p>
+<pre><code class="language-yaml">comparison:
+  mode: custom
+  comparator: acme.travel-policy-v1
+  config:
+    require_evidence: true</code></pre>
+<p>An LLM judge can be implemented as a custom comparator only when its provider,
+model, prompt, output schema, and evaluation result are recorded. Use a
+deterministic comparator whenever possible.</p>
+<p>Custom comparator code is registered by the application in a
+<code>ReadonlyMap&lt;string, EvaluationCustomComparator&gt;</code> supplied to
+<code>compareEvaluationOutput</code>. PixieCore reserves the <code>pixiecore.*</code> namespace for
+built-in comparators and resolves those before an application map. The
+comparator receives cloned actual, expected, configuration, and, when the
+runner has it, case-input values so it cannot mutate caller evaluation data.</p>
+<h4 id="built-in-traceable-summary-comparator">Built-in traceable summary comparator</h4>
+<p><code>pixiecore.traceable-summary-v1</code> is a deterministic comparator for a bounded
+summary with declared claims. It is not a general natural-language judge and
+does not claim to determine whether two sentences mean the same thing. Its
+configuration lists the closed source-field vocabulary and its priority order:</p>
+<pre><code class="language-yaml">comparison:
+  mode: custom
+  comparator: pixiecore.traceable-summary-v1
+  config:
+    source_fields: [request.purpose, request.start_date, request.end_date]
+    priority: [request.purpose, request.start_date, request.end_date]</code></pre>
+<p>Given the case input, it verifies the following without a second provider call:</p>
+<ul>
+<li><code>status</code>, <code>summary</code>, and <code>character_count</code> agree with the available source
+facts and the caller&#39;s Unicode character limit.</li>
+<li>Every listed source field appears exactly once across claim citations,
+omissions, and missing fields.</li>
+<li>Unavailable fields are reported as missing, supplied fields are not.</li>
+<li>A lower-priority field is not claimed while a higher-priority supplied field
+is omitted.</li>
+<li>Every claim is a literal substring of the returned summary, and every
+meaningful character in the summary is covered by a declared claim.</li>
+</ul>
+<p>This permits alternate valid phrasing and omission boundaries while retaining
+declared source-field attribution. It does not prove free-form paraphrase fidelity; a use case
+that needs that claim must add a separately specified judge and record its
+model evidence.</p>
+<p>The traceable-summary and schema comparators emit the optional result metadata
+<code>limitations: [factuality_not_evaluated]</code> on both passes and failures. This is
+not an extra assertion and does not change their pass/fail rules. For example,
+an input about travel to Tokyo and a claim about travel to Mars can pass the
+traceable-summary structural checks when the claim cites a supplied field;
+the limitation explicitly records that this is not evidence of factuality.
+Case results, benchmark runs and targets, and value-free matrix checkpoints
+retain the limitation. CLI and scorecard output call out the limited scope.
+Benchmark <code>accuracy</code> fields retain their existing meaning and calculation:
+the configured comparator pass rate, not a general factuality or hallucination
+score. Older artifacts without <code>limitations</code> remain valid; an absent or empty
+list does not establish factuality or imply an independent semantic review.</p>
+<h2 id="versioning">Versioning</h2>
+<ul>
+<li>Increment the dataset patch version when correcting metadata without changing
+expected outcomes.</li>
+<li>Increment the minor version when adding compatible cases or tags.</li>
+<li>Increment the major version when changing existing inputs, expected outputs,
+comparison meaning, or the declared evaluation domain.</li>
+<li>Pin the dataset content hash in a published result artifact so later changes
+cannot silently rewrite historical evidence.</li>
+<li>A Blueprint version and dataset version are separate and must both appear in
+evaluation results.</li>
+</ul>
+<h2 id="security-and-privacy">Security and privacy</h2>
+<ul>
+<li>Do not store provider credentials, access tokens, or executable comparator
+paths in a dataset.</li>
+<li>Use synthetic or explicitly authorized documents for committed fixtures.</li>
+<li>Treat attachment paths as untrusted input and resolve them within an allowed
+root before execution.</li>
+<li>Redact personal and confidential information before persisting result
+artifacts.</li>
+<li>A dataset does not authorize Tool side effects. Evaluation should use fake or
+read-only Tools unless an isolated environment explicitly permits otherwise.</li>
+</ul>
+<h2 id="result-separation">Result separation</h2>
+<p>The dataset records the question and expected answer. A result artifact records
+what happened during a particular run, including dataset and Blueprint hashes,
+provider/model configuration, time, runner seed, per-case latency, actual
+output, comparison differences, and sanitized execution errors. Cost and model
+version are not inferred when a Provider does not expose them. Keeping dataset
+and result separate prevents transient execution data from changing the
+evaluation contract.</p>
+</main></div>
+  
+</body>
+</html>

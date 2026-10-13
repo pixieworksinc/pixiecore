@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Prompt-Oriented Programming Core Specification 0.1 · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="./category-landscape.html">category landscape</a></li><li><a href="./pop-concepts.html">pop concepts</a></li><li><a href="./pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="./pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="./pop-governance.html">pop governance</a></li><li><a href="./pop-overview.html">pop overview</a></li><li><a href="./pop-principles.html">pop principles</a></li><li><a href="./pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/specification/pop-core-specification-0.1.md</code></p><h1 id="prompt-oriented-programming-core-specification-01">Prompt-Oriented Programming Core Specification 0.1</h1>
+<ul>
+<li>Status: Draft specification</li>
+<li>Version: 0.1</li>
+</ul>
+<p>Changes to this specification follow the public <a href="./pop-governance.html">POP specification governance
+process</a>. Published version identifiers are immutable.</p>
+<h2 id="1-scope">1. Scope</h2>
+<p>Prompt-Oriented Programming (POP) is a programming model for building
+applications from small, typed, independently testable cognitive functions
+called Blueprints.</p>
+<p>This specification defines:</p>
+<ul>
+<li>the abstract Blueprint data model;</li>
+<li>the observable behavior of validators and runtimes;</li>
+<li>input, output, error, and cancellation boundaries;</li>
+<li>independent semantic evaluation;</li>
+<li>application-composition responsibilities; and</li>
+<li>conformance claims and optional-capability reporting.</li>
+</ul>
+<p>This specification does not select a programming language, file format, model
+provider, transport, storage system, plugin mechanism, user interface, or
+workflow language. The versioned <a href="./pop-schemas-0.1.html">POP 0.1 serialization
+schemas</a> are separate artifacts, as are the conformance
+fixtures.</p>
+<h2 id="2-normative-language">2. Normative language</h2>
+<p>The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT,
+RECOMMENDED, MAY, and OPTIONAL are to be interpreted as described by RFC 2119
+and RFC 8174 when, and only when, they appear in all capitals.</p>
+<h2 id="3-core-concepts">3. Core concepts</h2>
+<h3 id="31-cognitive-operation">3.1 Cognitive operation</h3>
+<p>A cognitive operation maps declared input to structured output where natural
+language interpretation, classification, extraction, summarization,
+verification, conversion, localization, or routing judgment may be required.
+Deterministic code MAY perform all or part of an operation.</p>
+<h3 id="32-blueprint">3.2 Blueprint</h3>
+<p>A Blueprint is a versioned declaration of exactly one cognitive operation. It
+MUST be independently validatable, executable, and evaluable without executing
+an entire application.</p>
+<p>A Blueprint MUST NOT conceal unrelated workflow control, persistence,
+notification, approval, or deployment behavior inside its instructions.</p>
+<h3 id="33-application">3.3 Application</h3>
+<p>An application is a collection or graph of Blueprint invocations combined with
+deterministic code, tools, data, and interfaces. The application owns control
+flow, state, mappings, authorization context, persistence, and side effects.</p>
+<h3 id="34-role">3.4 Role</h3>
+<p>A Role identifies the behavioral strategy used to prepare or execute one
+Blueprint operation. Role identifiers form an open set. A runtime MUST report
+an unsupported Role explicitly and MUST NOT silently substitute a different
+Role.</p>
+<h3 id="35-tool">3.5 Tool</h3>
+<p>A Tool is a named capability with a declared argument contract and a bounded
+implementation. Tool execution is OPTIONAL. When supported, a runtime MUST
+validate generated arguments before invoking the Tool and MUST restrict
+available Tools to the Blueprint&#39;s declared allowlist.</p>
+<h2 id="4-blueprint-abstract-data-model">4. Blueprint abstract data model</h2>
+<p>A Blueprint declaration MUST contain:</p>
+<ol>
+<li>a non-empty human-readable name;</li>
+<li>a numeric <code>major.minor</code> or <code>major.minor.patch</code> version;</li>
+<li>a non-empty Role identifier;</li>
+<li>non-empty instructions for one cognitive operation; and</li>
+<li>an output contract expressed as JSON Schema.</li>
+</ol>
+<p>A Blueprint declaration MAY contain:</p>
+<ul>
+<li>named or typed input declarations;</li>
+<li>an input contract expressed as JSON Schema;</li>
+<li>examples;</li>
+<li>localization settings;</li>
+<li>Tool identifiers;</li>
+<li>model-selection hints;</li>
+<li>sampling hints;</li>
+<li>authorization-policy metadata; and</li>
+<li>namespaced extensions.</li>
+</ul>
+<p>If no input declaration or input schema is present, the effective input
+contract is an unconstrained JSON object. A runtime MUST NOT infer required
+input fields solely from prose instructions.</p>
+<p>The output contract MUST describe a JSON object. Schema success proves only
+structural validity; it MUST NOT be reported as semantic correctness.</p>
+<p>An implementation MUST reject an invalid required field. It MAY ignore an
+unsupported optional extension, but it MUST preserve the distinction between
+an ignored optional extension and an unsupported capability required for
+execution.</p>
+<h2 id="5-blueprint-boundary">5. Blueprint boundary</h2>
+<p>A conforming Blueprint MUST have one independently meaningful verb, one input
+boundary, and one output boundary. It SHOULD be replaceable without modifying
+the fixtures or instructions of unrelated Blueprints.</p>
+<p>The following are appropriate boundaries:</p>
+<ul>
+<li>extract requested fields from one document;</li>
+<li>classify one item under one supplied policy;</li>
+<li>summarize one supplied record without adding claims;</li>
+<li>validate one form against one supplied rule set;</li>
+<li>compare one submitted record with one evidence record;</li>
+<li>convert one expression to one declared representation;</li>
+<li>localize one text while preserving declared terms; or</li>
+<li>recommend one next route from one supplied routing table.</li>
+</ul>
+<p>A declaration that extracts data, applies several unrelated policies, approves
+a request, sends a notification, and updates storage is an application, not one
+Blueprint.</p>
+<h2 id="6-validation-and-execution">6. Validation and execution</h2>
+<h3 id="61-declaration-validation">6.1 Declaration validation</h3>
+<p>A validator MUST validate the required abstract fields and every declared JSON
+Schema without contacting a model provider or executing a Tool.</p>
+<p>A runtime MUST perform declaration validation before an execution attempt.
+Invalid declarations MUST fail before provider, Tool, or application side
+effects.</p>
+<h3 id="62-input-processing">6.2 Input processing</h3>
+<p>A runtime MUST accept one JSON object as business input. It MUST validate that
+input against the effective input contract before cognitive execution.</p>
+<p>If an implementation supports declared defaults or type normalization, it MUST
+apply them deterministically before input-schema validation and MUST document
+the rules. It MUST NOT silently repair a value that cannot be normalized under
+those rules.</p>
+<p>Authentication and authorization context are host-owned execution context.
+They MUST NOT be inserted into business input unless the Blueprint explicitly
+declares them as business fields.</p>
+<h3 id="63-instruction-rendering">6.3 Instruction rendering</h3>
+<p>Every referenced named input MUST be resolved from the normalized business
+input. A missing required value MUST fail before cognitive execution. Rendering
+MUST NOT reinterpret control-flow syntax or execute embedded host-language
+code.</p>
+<h3 id="64-cognitive-execution">6.4 Cognitive execution</h3>
+<p>A runtime MAY use a remote model, a local model, deterministic code, a human
+operation, or a combination of these mechanisms. The mechanism MUST NOT change
+the declared input and output boundaries.</p>
+<p>Provider, model, temperature, seed-like controls, and Tool use that can affect
+results SHOULD be exposed as execution metadata. Credentials MUST NOT appear in
+results, replay commands, or evaluation artifacts.</p>
+<h3 id="65-output-processing">6.5 Output processing</h3>
+<p>A successful execution MUST return one JSON object satisfying the declared
+output schema. A runtime MUST NOT return structurally invalid output as a
+success.</p>
+<p>A runtime MAY attempt output correction. Correction attempts MUST be bounded,
+MUST retain the same Blueprint and input contract, and MUST be distinguishable
+from application-level retries.</p>
+<h3 id="66-cancellation">6.6 Cancellation</h3>
+<p>A runtime MUST accept or provide an equivalent cancellation mechanism. Once an
+execution is cancelled, the runtime MUST NOT begin a later Tool or correction
+attempt for that execution. Cancellation MUST NOT be converted into an
+ordinary semantic failure.</p>
+<h2 id="7-errors">7. Errors</h2>
+<p>A conforming implementation MUST distinguish at least:</p>
+<ul>
+<li>invalid Blueprint declaration;</li>
+<li>invalid business input;</li>
+<li>unsupported required capability or Role;</li>
+<li>cognitive execution failure;</li>
+<li>invalid structured output; and</li>
+<li>cancellation.</li>
+</ul>
+<p>Errors SHOULD identify the Blueprint version and failed stage. They MUST NOT
+include credentials. Implementations SHOULD avoid retaining raw inputs and
+outputs in errors unless an explicit host policy authorizes that retention.</p>
+<h2 id="8-semantic-evaluation">8. Semantic evaluation</h2>
+<p>Every published Blueprint SHOULD have a versioned evaluation dataset that is
+independent from application end-to-end tests. Each case MUST define:</p>
+<ul>
+<li>a stable case identifier;</li>
+<li>JSON business input;</li>
+<li>expected JSON output;</li>
+<li>an explicit comparison policy; and</li>
+<li>tags sufficient to identify ordinary, boundary, ambiguous, and failure
+behavior.</li>
+</ul>
+<p>Comparison MAY be exact, schema-only, selected-field, set-equivalent,
+numeric-tolerance, or a named custom comparator. A custom comparator MUST be
+versioned or otherwise reproducibly identified.</p>
+<p>An evaluation result MUST distinguish schema pass rate from semantic pass rate.
+Any accuracy claim MUST state the Blueprint version, dataset version, case
+count, run count, execution mechanism, and comparison method. Model-based
+execution SHOULD also record provider, model, execution time, and available
+sampling controls.</p>
+<p>Failed randomized evaluations MUST report a replay value or seed when the
+execution mechanism provides one. Repeating the same seed and inputs MUST be
+possible without changing the dataset.</p>
+<h2 id="9-application-composition">9. Application composition</h2>
+<p>An application MAY invoke a Blueprint more than once and MAY combine different
+Blueprint versions. It MUST explicitly own:</p>
+<ul>
+<li>node order, branching, joining, and parallelism;</li>
+<li>mapping one output into another input;</li>
+<li>application state and persistence;</li>
+<li>authorization and tenant boundaries;</li>
+<li>application budgets, deadlines, and retry policy;</li>
+<li>notifications, approvals, writes, and other side effects; and</li>
+<li>end-to-end failure and compensation behavior.</li>
+</ul>
+<p>Mapping MUST be testable independently of model output generation. An
+application MUST NOT rely on undeclared field-name matching or hidden coercion
+between Blueprint boundaries.</p>
+<p>Runtime-level output correction and application-level retry MUST have one
+explicit owner at a time. Cancellation MUST propagate across active nodes and
+MUST prevent unstarted dependent nodes from beginning.</p>
+<p>POP does not require a workflow serialization. Host-language code, an existing
+workflow engine, or an agent graph MAY own composition if the Blueprint
+boundaries remain observable and independently evaluable.</p>
+<h2 id="10-security-and-side-effects">10. Security and side effects</h2>
+<p>Blueprint declarations are data and MUST NOT gain executable-code authority
+merely by being loaded. A distribution MAY contain executable extensions, but
+their trust level MUST be represented separately from data-only Blueprints.</p>
+<p>Network retrieval, Tool execution, filesystem access, approval, notification,
+and persistence are side effects. A runtime MUST NOT perform them implicitly
+because prose instructions mention them. The host or an explicitly enabled
+capability MUST authorize each side-effect boundary.</p>
+<p>Implementations SHOULD support redaction and retention policy at the host
+boundary. Metadata labels such as access level or sensitivity MUST NOT be
+treated as authorization grants by themselves.</p>
+<h2 id="11-versioning-and-compatibility">11. Versioning and compatibility</h2>
+<p>Blueprint versions identify behavior and contract revisions. A publisher MUST
+change the version when instructions, input behavior, output behavior, or
+policy can change an observable result.</p>
+<p>A compatible update MUST preserve every previously valid required input and
+the meaning of every previously promised output field. Adding a required input,
+removing an output field, changing a field&#39;s meaning, or changing a documented
+semantic policy is incompatible.</p>
+<p>Applications SHOULD pin Blueprint versions. Distribution systems SHOULD retain
+or make recoverable the previous pin because even compatible model-facing
+changes can alter observed results.</p>
+<h2 id="12-conformance">12. Conformance</h2>
+<p>An implementation MAY claim one of two Core 0.1 profiles:</p>
+<h3 id="121-pop-core-01-validator">12.1 POP Core 0.1 Validator</h3>
+<p>A conforming Validator MUST implement declaration and JSON Schema validation
+defined in Sections 4 and 6.1. It MUST report unsupported required capabilities
+without executing the Blueprint.</p>
+<h3 id="122-pop-core-01-runtime">12.2 POP Core 0.1 Runtime</h3>
+<p>A conforming Runtime MUST satisfy the Validator profile and Sections 6, 7, and
+10. It MUST preserve the runtime/application responsibility boundary defined
+in Section 9 and expose enough execution metadata to identify the Blueprint
+version and execution mechanism.</p>
+<p>A conformance statement MUST list supported OPTIONAL capabilities, including
+Tools, multimodal input, localization, examples, authorization policy,
+correction, and provider selection. Absence of an OPTIONAL capability is not a
+Core violation when it is reported before execution.</p>
+<p>Conformance is established by the versioned <a href="./pop-conformance-0.1.html">POP Core 0.1 conformance
+fixtures</a>, not by implementation language, package
+name, or self-assertion alone.</p>
+<h2 id="13-non-goals">13. Non-goals</h2>
+<p>POP Core 0.1 does not define:</p>
+<ul>
+<li>a universal application or workflow language;</li>
+<li>a provider wire protocol;</li>
+<li>model quality thresholds for every domain;</li>
+<li>a plugin sandbox;</li>
+<li>a hosted registry or trust authority;</li>
+<li>storage, queue, cache, or vector-database APIs;</li>
+<li>human-review user interfaces; or</li>
+<li>automatic authority to perform external side effects.</li>
+</ul>
+<p>These capabilities may be specified independently without enlarging the
+Blueprint unit.</p>
+</main></div>
+  
+</body>
+</html>

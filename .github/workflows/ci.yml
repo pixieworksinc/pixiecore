@@ -93,6 +93,9 @@ jobs:
       - name: Check documentation drift
         run: npm run check:docs
 
+      - name: Check generated HTML documentation
+        run: npm run check:html-docs
+
       - name: Build package
         run: npm run build
 

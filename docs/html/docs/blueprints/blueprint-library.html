@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore reference Blueprint library contract · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="./blueprint-library.html">blueprint library</a></li><li><a href="./blueprint-packages.html">blueprint packages</a></li><li><a href="./blueprint-publishing.html">blueprint publishing</a></li><li><a href="./blueprints.html">blueprints</a></li><li><a href="./evaluation.html">evaluation</a></li><li><a href="./ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/blueprints/blueprint-library.md</code></p><h1 id="pixiecore-reference-blueprint-library-contract">PixieCore reference Blueprint library contract</h1>
+<p>This document defines the repository and package contract for PixieCore&#39;s
+first-party reference Blueprint library. It covers directory layout, stable
+identity, naming, versioning, ownership, and deprecation. It does not make every
+third-party Blueprint part of the PixieCore standard library.</p>
+<p>The machine-readable source of the current inventory is
+<a href="../../examples/blueprints/catalog.yaml"><code>examples/blueprints/catalog.yaml</code></a>.
+The repository-owned <a href="../../examples/blueprints/catalog-site/index.html">searchable catalog</a>
+combines that inventory with Blueprint schemas and explicit quality evidence.</p>
+<h2 id="directory-and-artifact-contract">Directory and artifact contract</h2>
+<p>Every library unit has this path:</p>
+<pre><code class="language-text">examples/blueprints/&lt;role-family&gt;/&lt;unit-slug&gt;/
+├── &lt;unit-slug&gt;.yaml
+├── README.md
+├── evaluations/
+│   └── &lt;unit-slug&gt;.yaml
+├── tests/
+│   └── &lt;unit-slug&gt;.contract.test.ts
+├── fixtures/                  # required when external policy/data/files exist
+└── scripts/                   # optional reproducible fixture generation only</code></pre>
+<p>The Blueprint, policy explanation, semantic dataset, expected outputs, and
+offline contract test are owned as one change unit. A fixture directory is
+required when the evaluation depends on data not fully contained in the
+dataset, such as PDFs, images, policies, or CSV tables. Generated fixtures must
+have a checked-in generator when practical.</p>
+<p>These files are package content. Consumers can inspect and run them after
+installation; package verification compares every packed byte with the source
+tree.</p>
+<h2 id="stable-identity-and-naming">Stable identity and naming</h2>
+<p>The stable library ID is <code>&lt;role-family&gt;/&lt;unit-slug&gt;</code>, for example
+<code>converter/date-normalizer</code>. Both segments use lowercase ASCII kebab-case and
+must match the physical path. Renaming either segment creates a new ID; Git
+history or a redirect does not preserve the old contract.</p>
+<p>The role-family segment describes the primary cognitive operation. The unit
+slug describes its bounded object or policy. Combined public labels use one
+canonical directory family: Translator / Localizer uses <code>translator</code>, and
+Router / Orchestrator uses <code>router</code>.</p>
+<p>Human-readable Blueprint <code>name</code> values may change without changing the stable
+ID when their meaning remains equivalent. File names, catalog paths, dataset
+paths, and contract-test names must match the unit slug exactly.</p>
+<h2 id="version-layers">Version layers</h2>
+<p>Four versions are intentionally independent:</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Location</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Package</td>
+<td><code>package.json</code></td>
+<td>PixieCore runtime and packed-library release</td>
+</tr>
+<tr>
+<td>Library catalog</td>
+<td><code>examples/blueprints/catalog.yaml</code></td>
+<td>Catalog contract and inventory shape</td>
+</tr>
+<tr>
+<td>Quality catalog</td>
+<td><code>examples/blueprints/quality-catalog.yaml</code></td>
+<td>License and explicitly scoped evaluation evidence</td>
+</tr>
+<tr>
+<td>Blueprint unit</td>
+<td>Blueprint <code>version</code> and catalog entry</td>
+<td>One unit&#39;s input, output, and semantic behavior</td>
+</tr>
+<tr>
+<td>Evaluation/policy</td>
+<td>Dataset and caller-supplied fixture versions</td>
+<td>Regression corpus and independently changing business policy</td>
+</tr>
+</tbody></table>
+<p>Catalog and first-party library unit versions use complete SemVer 2.0.0. A
+dataset pins the exact Blueprint version it evaluates. Applications should pin
+an exact unit version until they have evaluated a newer one.</p>
+<h2 id="quality-catalog">Quality catalog</h2>
+<p>The machine-readable quality catalog is validated by
+<code>@pixieworks/pixiecore/blueprint/quality-catalog-schema.json</code>. Every measurement names its
+evidence kind, provider, tested model, dataset path and version, score, passed
+and total cases, run count, and evidence path. Each unit also states its
+license.</p>
+<p>Every entry includes an <code>offline_contract</code> measurement from deterministic
+fixture Providers. They prove repository contract behavior and are not remote
+model quality claims. A <code>remote_provider</code> entry additionally requires a
+published benchmark artifact. The initial public catalog contains deterministic
+offline-contract measurements only. A later remote-provider entry must preserve
+its provider, pinned model, corpus versions, pass counts, and known limitations
+without storing prompt or data values.</p>
+<p>An <code>evidence_status: historical</code> marker means the referenced result remains
+auditable, but its dataset or comparison policy is no longer the active one.
+Historical remote evidence is displayed with that label and excluded from the
+default provider and score filters. A fresh authorized run must replace it
+before the catalog can make a current remote-quality claim for that unit.</p>
+<h2 id="searchable-catalog">Searchable catalog</h2>
+<p><code>examples/blueprints/catalog-site</code> is a dependency-free static site that can be
+served locally or copied unchanged to static hosting. It searches by declared
+use case, schema term, quality-evidence kind, provider, license, and minimum
+score. Its <code>catalog.json</code> is generated deterministically from the library and
+quality catalogs plus the referenced Blueprint schemas.</p>
+<p>The generator fails when a searchable unit lacks quality evidence or declared
+use cases. CI also rejects generated-catalog drift. The site does not turn
+offline fixture scores into remote-provider claims, and it does not introduce a
+hosted registry, account system, telemetry collector, or network dependency.</p>
+<p>For a library unit:</p>
+<ul>
+<li>Major: removes or renames inputs/results, changes schema meaning, changes a
+status interpretation, or otherwise makes an existing valid call incompatible.</li>
+<li>Minor: adds a compatible capability without changing existing input meanings
+or expected results. A strict output object cannot gain fields merely because
+they look optional to the producer; consumers may perform exact validation.</li>
+<li>Patch: corrects documentation, prompts, fixtures, or implementation while
+preserving the declared contract and passing the existing regression corpus.</li>
+</ul>
+<p>Any intended semantic behavior change requires a new expected-result review,
+even when its SemVer classification is patch-compatible.</p>
+<h2 id="ownership">Ownership</h2>
+<p>The catalog <code>owner</code> is an accountable repository ownership token, not a package
+scope or runtime permission. Current first-party units are owned by
+<code>pixiecore-maintainers</code>. Owners must review contract meaning, schema changes,
+evaluation evidence, fixture rights, and deprecation metadata together.</p>
+<p>A unit cannot be added by copying YAML alone. Its owner must accept the complete
+artifact contract and keep offline tests credential-free. Ownership transfer is
+a catalog change reviewed by both the previous and new owner when the previous
+owner is available. Third-party units remain third-party even when PixieCore can
+load or execute them.</p>
+<h2 id="deprecation-and-removal">Deprecation and removal</h2>
+<p>Deprecation never silently reuses a stable ID:</p>
+<ol>
+<li>Change catalog <code>status</code> from <code>active</code> to <code>deprecated</code> and set <code>replacement</code>
+to another stable ID when one exists.</li>
+<li>Document the migration and first deprecated package version in the unit
+README and CHANGELOG.</li>
+<li>Keep the Blueprint, evaluation corpus, fixtures, and offline contract test
+passing throughout the announced support window.</li>
+<li>Retain a deprecated unit for at least one subsequent package minor release.</li>
+<li>Remove it only in a package major release, except when continued distribution
+creates a security, legal, or data-rights risk. Exceptional removal must be
+called out in release notes.</li>
+</ol>
+<p><code>retired</code> catalog records may preserve identity history after physical removal,
+but an active or deprecated record must resolve to its complete unit directory.
+A replacement receives its own ID and version history.</p>
+<h2 id="automated-enforcement">Automated enforcement</h2>
+<p>The architecture contract test verifies catalog uniqueness, naming, SemVer,
+ownership/status metadata, exact paths, required artifacts, Blueprint/dataset
+version agreement, and one-to-one correspondence between active directories
+and catalog entries. Documentation drift and packed-artifact checks verify links
+and distribution.</p>
+<p>The repository-level <code>check:blueprint-versions</code> gate compares changed Blueprint
+YAML with its Git base. It rejects content changes without a forward version
+bump and conservatively requires a major bump for role, input, output, tool,
+permission, or stable-path changes. It ignores comments and formatting. Removal
+requires the PixieCore package major version to advance and remains subject to
+the deprecation process above.</p>
+<p>Adding or changing a library unit is complete only when type-checking,
+architecture checks, offline contract tests, documentation checks, and package
+installation verification all pass.</p>
+</main></div>
+  
+</body>
+</html>

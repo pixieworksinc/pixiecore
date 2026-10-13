@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore REST API · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="./cache.html">cache</a></li><li><a href="./data-policy.html">data policy</a></li><li><a href="./human-review.html">human review</a></li><li><a href="./jit.html">jit</a></li><li><a href="./logging.html">logging</a></li><li><a href="./mcp.html">mcp</a></li><li><a href="./provider-fallback.html">provider fallback</a></li><li><a href="./rag-metadata.html">rag metadata</a></li><li><a href="./rest-api.html">rest api</a></li><li><a href="./telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/runtime/rest-api.md</code></p><h1 id="pixiecore-rest-api">PixieCore REST API</h1>
+<p>PixieCore exposes Blueprint execution through a small HTTP API. Build and start
+the packaged CLI with:</p>
+<pre><code class="language-bash">npm run build
+PIXIECORE_API_PORT=8000 npm start</code></pre>
+<p>The CLI listens only on <code>127.0.0.1</code> by default. To bind externally, configure a
+Bearer token at the same time:</p>
+<pre><code class="language-bash">PIXIECORE_API_HOST=0.0.0.0 \
+PIXIECORE_API_TOKEN='replace-with-a-secret' \
+npm start</code></pre>
+<p>Requests to <code>POST /execute</code> must then include
+<code>Authorization: Bearer replace-with-a-secret</code>. API environment variables use
+the <code>PIXIECORE_*</code> namespace exclusively.</p>
+<h2 id="routes">Routes</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET</code></td>
+<td><code>/health</code></td>
+<td>Return <code>{&quot;status&quot;:&quot;ok&quot;}</code>.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/execute</code></td>
+<td>Validate and execute a YAML Blueprint.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/openapi.json</code></td>
+<td>Return the OpenAPI 3.1 document.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/docs</code></td>
+<td>Serve Swagger UI for the OpenAPI document.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/redoc</code></td>
+<td>Serve ReDoc for the OpenAPI document.</td>
+</tr>
+</tbody></table>
+<p>Every response has a UUID in the <code>x-request-id</code> header. JSON endpoints use
+<code>application/json</code>. Unknown routes return a structured <code>not_found</code> error.</p>
+<h2 id="execute-a-blueprint">Execute a Blueprint</h2>
+<p><code>POST /execute</code> accepts this JSON shape:</p>
+<pre><code class="language-json">{
+  &quot;blueprint&quot;: &quot;name: Greeting\nversion: '1.0'\nrole: assistant\n...&quot;,
+  &quot;inputs&quot;: {
+    &quot;name&quot;: &quot;World&quot;
+  },
+  &quot;messages&quot;: [
+    { &quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Use a friendly tone&quot; }
+  ],
+  &quot;files&quot;: {
+    &quot;image_path&quot;: [
+      { &quot;filename&quot;: &quot;chart.png&quot;, &quot;content&quot;: &quot;&lt;base64&gt;&quot; }
+    ],
+    &quot;file_path&quot;: [
+      { &quot;filename&quot;: &quot;report.pdf&quot;, &quot;content&quot;: &quot;&lt;base64&gt;&quot; }
+    ]
+  }
+}</code></pre>
+<p><code>blueprint</code> is required. <code>inputs</code> must be an object. By default, <code>messages</code>
+accepts only <code>user</code> messages with string content; an embedding application can
+explicitly allow additional roles with <code>remoteMessageRoles</code>. Each file
+field must be an array of <code>{ filename, content }</code> objects. Documented extra
+top-level, message, and file-object fields are ignored and cannot override
+server-side provider configuration. The <code>files</code> object itself accepts only the
+documented <code>file_path</code> and <code>image_path</code> keys.</p>
+<p>Remote callers cannot submit <code>image_path</code> or <code>file_path</code> directly in <code>inputs</code>.
+Use <code>files</code> so PixieCore can validate and own the temporary-file lifecycle.
+Each upload must use canonical base64, is assigned a collision-resistant name,
+written with owner-only permissions, and removed before the response is sent.
+Cleanup also runs when validation or runtime execution fails.</p>
+<p>Remote callers also cannot assert <code>user_role</code>, <code>user_id</code>, or <code>user_scopes</code> in
+<code>inputs</code>. Those authorization fields are reserved for trusted server-side code.
+Use <code>callerResolver</code> to derive them from authenticated request metadata. An
+explicit resolver takes precedence over environment-based Bearer authentication:</p>
+<pre><code class="language-ts">const server = createApp({
+  callerResolver(request) {
+    const credential = request.headers.authorization;
+    if (credential !== `Bearer ${process.env.PIXIECORE_API_TOKEN}`) {
+      return undefined;
+    }
+    return {
+      role: 'operator',
+      userId: 'authenticated-subject',
+      scopes: ['blueprint:execute'],
+    };
+  },
+});</code></pre>
+<p>Throwing rejects the request with <code>401</code>; returning <code>undefined</code> explicitly keeps
+the request anonymous. Blueprint permission rejection after successful identity
+resolution returns <code>403</code>.</p>
+<p>A successful response has this shape:</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;data&quot;: {
+    &quot;greeting&quot;: &quot;Hello, World!&quot;
+  },
+  &quot;metadata&quot;: {
+    &quot;provider&quot;: &quot;openai&quot;,
+    &quot;model&quot;: &quot;gpt-4.1-mini&quot;,
+    &quot;duration_ms&quot;: 42.7
+  }
+}</code></pre>
+<h2 id="errors">Errors</h2>
+<p>All errors use one envelope:</p>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;error&quot;: {
+    &quot;type&quot;: &quot;input_type_error&quot;,
+    &quot;message&quot;: &quot;Input count must be an integer&quot;
+  }
+}</code></pre>
+<table>
+<thead>
+<tr>
+<th>HTTP status</th>
+<th>Error type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>400</td>
+<td><code>validation_error</code></td>
+<td>Malformed JSON, invalid request shape, or forbidden remote path input.</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>file_upload_error</code></td>
+<td>Invalid base64 or a decoded file over the configured limit.</td>
+</tr>
+<tr>
+<td>400</td>
+<td><code>blueprint_validation_error</code></td>
+<td>Invalid Blueprint YAML or fields.</td>
+</tr>
+<tr>
+<td>401</td>
+<td><code>unauthorized</code></td>
+<td>The server-side caller resolver rejected the credential.</td>
+</tr>
+<tr>
+<td>403</td>
+<td>permission error</td>
+<td>The authenticated caller is not allowed by the Blueprint.</td>
+</tr>
+<tr>
+<td>422</td>
+<td><code>input_validation_error</code></td>
+<td>Required input is missing or otherwise invalid.</td>
+</tr>
+<tr>
+<td>422</td>
+<td><code>input_type_error</code></td>
+<td>An input has the wrong type.</td>
+</tr>
+<tr>
+<td>502</td>
+<td><code>llm_api_error</code></td>
+<td>The configured provider failed.</td>
+</tr>
+<tr>
+<td>502</td>
+<td><code>schema_validation_error</code></td>
+<td>The provider output failed its schema contract.</td>
+</tr>
+<tr>
+<td>504</td>
+<td><code>max_retry_exceeded</code></td>
+<td>Output correction exhausted its retry budget.</td>
+</tr>
+<tr>
+<td>500</td>
+<td><code>internal_error</code></td>
+<td>An unexpected server error; internal details are not returned.</td>
+</tr>
+</tbody></table>
+<h2 id="server-configuration">Server configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th align="right">Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PIXIECORE_API_HOST</code></td>
+<td align="right"><code>127.0.0.1</code></td>
+<td>CLI listen address. Non-loopback values require a token.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_PORT</code></td>
+<td align="right"><code>8000</code></td>
+<td>CLI listen port.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_TOKEN</code></td>
+<td align="right">unset</td>
+<td>Bearer token. Required for a non-loopback CLI bind.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_CALLER_ROLE</code></td>
+<td align="right">unset</td>
+<td>Trusted caller role attached after valid Bearer authentication.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_CALLER_ID</code></td>
+<td align="right">unset</td>
+<td>Trusted caller ID attached after valid Bearer authentication.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_CALLER_SCOPES</code></td>
+<td align="right">unset</td>
+<td>Comma-separated trusted caller scopes.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_CORS_ORIGINS</code></td>
+<td align="right">unset</td>
+<td>Comma-separated allowed origins; unset disables CORS headers.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_MAX_FILE_SIZE</code></td>
+<td align="right"><code>20971520</code></td>
+<td>Maximum decoded bytes for each uploaded file.</td>
+</tr>
+<tr>
+<td><code>PIXIECORE_API_MAX_REQUEST_SIZE</code></td>
+<td align="right">derived</td>
+<td>Aggregate encoded request-body limit.</td>
+</tr>
+</tbody></table>
+<p>Caller identity variables without a token are rejected during server
+configuration, and an empty token is never treated as authentication.</p>
+<p>The aggregate limit is independent of the per-file limit and defaults high
+enough for eight maximum-size base64 files plus JSON overhead. A configured
+aggregate limit must still accommodate one maximum-size encoded file.</p>
+<h2 id="embedding-and-shutdown">Embedding and shutdown</h2>
+<p>The <code>@pixieworks/pixiecore/api</code> export exposes <code>createApp()</code> without starting a listener:</p>
+<pre><code class="language-ts">import { createApp } from '@pixieworks/pixiecore/api';
+
+const server = createApp({
+  corsOrigins: ['https://app.example.com'],
+  maxFileSize: 20 * 1024 * 1024,
+  remoteMessageRoles: ['user'],
+});
+
+server.listen(8000);
+
+// During application shutdown:
+await new Promise&lt;void&gt;((resolve, reject) =&gt; {
+  server.close(error =&gt; error ? reject(error) : resolve());
+});
+await server.closeResources();</code></pre>
+<p>Closing the HTTP server triggers idempotent cleanup of its shared runtime,
+provider resources, plugins, logger, and MCP children. Calling
+<code>closeResources()</code> explicitly lets an embedding application await that work.</p>
+</main></div>
+  
+</body>
+</html>

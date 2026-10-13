@@ -1,0 +1,90 @@
+name: Apply customer discount policy
+version: 1.0.0
+role: assistant
+temperature: 0
+
+input_placeholders:
+  - name: customer_tier
+    type: string
+    required: true
+    description: Customer tier used by the discount policy.
+
+  - name: purchase_amount
+    type: number
+    required: true
+    description: Purchase amount before applying the discount.
+
+input_schema:
+  type: object
+  additionalProperties: false
+  required:
+    - customer_tier
+    - purchase_amount
+  properties:
+    customer_tier:
+      type: string
+      minLength: 1
+      maxLength: 40
+      pattern: '\S'
+    purchase_amount:
+      type: number
+      minimum: 0
+      maximum: 1000000
+
+prompt: |
+  Apply exactly one customer discount policy to the supplied purchase.
+
+  Customer tier: {{ customer_tier }}
+  Purchase amount: {{ purchase_amount }}
+
+  Policy:
+  1. Evaluate whether customer_tier exactly equals "Gold".
+  2. Independently evaluate whether purchase_amount is strictly greater than 1000.
+  3. Set discount to 0.20 only when both comparisons are true.
+  4. Otherwise set discount to 0.
+  5. Calculate final_price as purchase_amount * (1 - discount).
+  6. When discount is 0, final_price must equal purchase_amount exactly.
+
+  Do not infer, normalize, or substitute either input.
+  The threshold comparison is strictly greater than 1000; a purchase_amount of exactly 1000 does not qualify.
+  Do not round final_price unless arithmetic requires an exact JSON number.
+
+  Before returning, verify the selected discount against the original inputs and verify final_price using that discount.
+  Return only JSON matching the output schema.
+
+output_schema:
+  type: object
+  additionalProperties: false
+  required:
+    - discount
+    - final_price
+  properties:
+    discount:
+      type: number
+      minimum: 0
+      maximum: 1
+    final_price:
+      type: number
+      minimum: 0
+
+examples:
+  - input:
+      customer_tier: Gold
+      purchase_amount: 1500
+    output:
+      discount: 0.20
+      final_price: 1200
+
+  - input:
+      customer_tier: Gold
+      purchase_amount: 1000
+    output:
+      discount: 0
+      final_price: 1000
+
+  - input:
+      customer_tier: Silver
+      purchase_amount: 1500
+    output:
+      discount: 0
+      final_price: 1500

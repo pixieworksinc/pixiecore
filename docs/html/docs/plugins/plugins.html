@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore Plugins, Roles, Decorators, and Permissions · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="./apisix.html">apisix</a></li><li><a href="./plugin-authoring.html">plugin authoring</a></li><li><a href="./plugin-layout.html">plugin layout</a></li><li><a href="./plugins.html">plugins</a></li><li><a href="./providers.html">providers</a></li><li><a href="./recipes.html">recipes</a></li><li><a href="./tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/plugins/plugins.md</code></p><h1 id="pixiecore-plugins-roles-decorators-and-permissions">PixieCore Plugins, Roles, Decorators, and Permissions</h1>
+<p>PixieCore plugins are trusted ES modules. They can add or replace agent roles,
+output decorators, tools, and providers without changing the runtime package.</p>
+<h2 id="built-in-components">Built-in components</h2>
+<p>Every <code>PluginManager</code> starts with these components before it loads user
+directories:</p>
+<ul>
+<li><code>DefaultAgentRole</code>, supporting Blueprint roles <code>assistant</code> and <code>default</code>.</li>
+<li><code>SchemaGuard</code> at priority 10, validating parsed output against JSON Schema.</li>
+<li><code>PermissionGuard</code> at priority 20, enforcing permissions before generation.</li>
+<li><code>SelfEvalDecorator</code> at priority 30, rejecting non-empty output <code>errors</code>.</li>
+<li>Provider factories named <code>openai</code>, <code>anthropic</code>, <code>azure_openai</code>,
+<code>azure_native</code>, <code>gemini_native</code>, <code>gemini_openai</code>, and <code>apisix</code>.</li>
+</ul>
+<p>Lower decorator priorities run first. Registration order is retained when two
+decorators have the same priority.</p>
+<h2 id="core-plugin-activation">Core plugin activation</h2>
+<p>PixieCore ships twenty-four locked plugin units: the mandatory <code>pixiecore.recipe</code>
+bootstrap plugin, fourteen ordinary top-level units (JIT, logging, validation,
+multimodal, tools, roles, permissions, self-evaluation, providers, the MCP
+client, runtime, API, CLI, and the MCP server), plus nine descendants below
+providers. The provider subtree includes OpenAI, Anthropic, Azure, Gemini,
+APISIX, and four independently managed APISIX capability plugins. Every public manager records them as
+enabled and locked; project policy cannot disable them or claim their reserved
+<code>pixiecore.*</code> IDs.</p>
+<p>Enabled does not mean activated. A public <code>PluginManager</code> first activates only
+<code>pixiecore.recipe</code>, resolves its Recipe service, then activates the standard
+Recipe roots needed to preserve constructor-visible roles, decorators, and
+provider factories. <code>PromptRuntime</code> additionally selects the runtime root,
+API construction selects the API root, and the CLI selects only its command
+root plus the API root for <code>serve</code> or the MCP server root for <code>mcp serve</code>.
+Dependencies activate first, each core activator runs at most once per manager,
+and shutdown remains reverse ordered.</p>
+<p>Core activators only register fresh contributions or scoped service values.
+They do not make provider requests, start MCP children or HTTP listeners,
+create log files, or execute CLI commands. The <code>service</code> and <code>command</code>
+component metadata is trusted-core-only; managed custom manifests accept
+<code>agent_role</code>, <code>decorator</code>, <code>tool</code>, <code>provider</code>, and <code>extension</code>. Managed custom
+dependencies on a core plugin activate the required core closure only after
+import-free policy validation and before the custom module is imported.</p>
+<p>The fixed Recipe plugin is owned by <code>src/plugins/recipe</code> alongside the other
+eighteen bundled manifests. Its non-disableable status comes from locked core
+policy, not from a special filesystem hierarchy. See <a href="./recipes.html">Recipes</a>.</p>
+<h2 id="managed-custom-plugins">Managed custom plugins</h2>
+<p>Managed custom plugins are opt-in. PixieCore inventories the project-local
+<code>plugins/</code> directory by default and imports only IDs selected by managed state:</p>
+<pre><code class="language-ts">const runtime = new PromptRuntime({
+  provider: 'company_provider',
+  pluginConfigPath: './pixiecore.plugins.yml',
+});</code></pre>
+<pre><code class="language-yaml"># pixiecore.plugins.yml
+schema: pixiecore.plugins/v1
+enabled:
+  - acme.converter
+disabled:
+  - acme.classifier</code></pre>
+<p>PixieCore resolves the state path in this order: an explicit
+<code>RuntimeOptions.pluginConfigPath</code>, <code>PIXIECORE_PLUGIN_CONFIG</code>, then
+<code>pixiecore.plugins.yml</code> in the current working directory. Relative state paths
+use the captured working directory; relative <code>roots</code> use the state file&#39;s
+parent directory. The state file&#39;s sibling <code>plugins/</code> directory is always the
+first root and additional <code>roots</code> extend it. Omission or <code>null</code> enables that
+automatic lookup. If no file is found, the default root is still inventoried
+with every candidate disabled. Passing <code>&#39;disabled&#39;</code> bypasses managed state
+lookup and discovery even when the environment variable or default file exists.
+PixieCore never creates or updates the state file.</p>
+<p>Third-party installations are normally directory symbolic links. PixieCore
+follows directory links, deduplicates canonical targets, and prevents link
+cycles from rediscovering a unit. Once a manifest is found, discovery treats
+that directory as one unit and descends only through its optional <code>plugins/</code>
+child; manifests below the unit&#39;s <code>src/</code> and <code>tests/</code> interiors are ignored.
+The child ID must begin with its parent ID followed by <code>.</code>; a mismatch is fatal
+even when the child is disabled and is reported before any module import.</p>
+<p>Applications that construct the manager directly can pass the same setting as
+its optional third argument:</p>
+<pre><code class="language-ts">const manager = new PluginManager(undefined, process.env, {
+  pluginConfigPath: './pixiecore.plugins.yml',
+});</code></pre>
+<p>New managed plugin source projects use the Drupal-style ownership layout:</p>
+<pre><code class="language-text">converter/
+├── converter.ts
+├── converter.yaml
+├── src/
+└── tests/</code></pre>
+<p><code>converter.ts</code> is compiled to <code>converter.js</code> before activation. Its canonical
+<code>converter.yaml</code> manifest is:</p>
+<pre><code class="language-yaml">schema: pixiecore.plugin/v1
+id: acme.converter
+name: Acme Converter
+version: '0.1.0'
+description: Adds the converter role
+entry: ./converter.js
+
+requires:
+  pixiecore.roles: '^0.1.0'
+optional_requires: {}
+conflicts: {}
+
+components:
+  - type: agent_role
+    export: ConverterRole
+    roles_supported: [converter]</code></pre>
+<p>The accepted top-level fields are exactly <code>schema</code>, <code>id</code>, <code>name</code>, <code>version</code>,
+<code>description</code>, <code>entry</code>, <code>requires</code>, <code>optional_requires</code>, <code>conflicts</code>, and
+<code>components</code>; fields that do not apply may be omitted where the schema allows.
+Managed IDs are lowercase ASCII namespaced identifiers such as
+<code>acme.converter</code>; <code>pixiecore.*</code> is reserved for the trusted core catalog.
+Versions follow SemVer 2.0 and dependency values are npm-compatible ranges.
+The canonical spellings are <code>entry</code> and <code>export</code>; paths must stay within the
+plugin&#39;s real root. Trust and policy fields such as <code>core</code>, <code>origin</code>, <code>locked</code>,
+<code>enabled</code>, and <code>disabled</code> do not belong in a plugin manifest.</p>
+<p>Required dependencies are selected transitively unless explicitly disabled.
+Optional dependencies are not auto-enabled, but participate in ordering when
+selected independently. Missing, disabled, or version-incompatible required
+dependencies, selected conflicts, and dependency cycles fail before any
+managed module is imported. Dependencies activate before dependents; unrelated
+plugins retain deterministic discovery order with ID as the final tie-breaker.</p>
+<p>Enabling a parent unit selects every descendant that is not explicitly
+disabled, with parents ordered before their selected children. An enabled
+parent may therefore retain a disabled child. Disabling a parent blocks its
+entire subtree: explicitly enabling a descendant is a configuration error, and
+a selected plugin requiring a descendant in that subtree fails as an
+explicitly-disabled dependency. These checks use the import-free inventory;
+status reporting does not import disabled child modules.</p>
+<p>All managed candidates receive import-free YAML, envelope, and identity
+validation. A malformed disabled candidate is reported as
+<code>invalid-disabled</code> without stopping startup. Duplicate IDs and attempts to
+claim the reserved namespace are fatal even for disabled candidates. An ID in
+both state lists and an unknown enabled ID are configuration errors; an unknown
+disabled ID is retained as a non-fatal stale-state diagnostic. Root directories
+are deduplicated by canonical real path. If a root is also supplied through
+legacy <code>pluginsDir</code>, including through a symlink alias, legacy loading takes
+precedence and the managed scan excludes that root.</p>
+<h2 id="plugin-authoring-sdk-and-manifest-schema">Plugin authoring SDK and manifest schema</h2>
+<p>For the end-to-end create, validate, test, install, integrity, signing, catalog,
+upgrade, and rollback workflow, use the
+<a href="./plugin-authoring.html">third-party plugin authoring guide</a>. Complete projects for
+all five public component kinds are in
+<a href="../../examples/plugin-authoring/index.html"><code>examples/plugin-authoring</code></a>.</p>
+<p>Trusted plugin modules should import authoring types from the type-only
+<code>@pixieworks/pixiecore/plugin</code> subpath. It exposes the supported role, decorator, tool,
+provider, message, Blueprint, runtime-option, logging, and legacy
+<code>PixieCorePlugin</code> contracts needed by the loaders. The existing root type
+exports remain available for compatibility, but new plugins should use the
+narrower subpath:</p>
+<pre><code class="language-ts">import type {
+  AgentRolePlugin,
+  OutputDecorator,
+  ProviderFactory,
+  PluginExtension,
+  RegisteredTool,
+  PixieCorePlugin,
+} from '@pixieworks/pixiecore/plugin';</code></pre>
+<p><code>@pixieworks/pixiecore/plugin</code> has no runtime values. Bootstrap <code>PluginActivator</code> contracts,
+scoped service registries and tokens, manager status/policy types, and core-only
+service and command components are deliberately excluded because managed and
+legacy custom loaders do not consume them.</p>
+<p>The managed custom manifest JSON Schema is packaged at
+<code>@pixieworks/pixiecore/plugin/schema.json</code> and maintained in</p>
+<!-- pixiecore-packed path="schemas/pixiecore.plugin-v1.schema.json" -->
+<p><a href="../../schemas/pixiecore.plugin-v1.schema.json"><code>schemas/pixiecore.plugin-v1.schema.json</code></a>.
+It is a Draft 2020-12 editor/validation schema for third-party manifests, not
+for trusted core manifests: custom manifests accept only these component
+shapes.</p>
+<table>
+<thead>
+<tr>
+<th>Component <code>type</code></th>
+<th>Required component fields</th>
+<th>Optional field</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>agent_role</code></td>
+<td><code>export</code>, non-empty <code>roles_supported</code></td>
+<td><code>module</code></td>
+</tr>
+<tr>
+<td><code>decorator</code></td>
+<td><code>export</code>, finite <code>priority</code></td>
+<td><code>module</code>, <code>stage</code> (<code>before</code>, <code>after</code>, or <code>both</code>)</td>
+</tr>
+<tr>
+<td><code>tool</code></td>
+<td><code>export</code>, <code>tool_name</code></td>
+<td><code>module</code></td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td><code>export</code>, <code>provider_name</code></td>
+<td><code>module</code></td>
+</tr>
+<tr>
+<td><code>extension</code></td>
+<td><code>export</code>, <code>extension_point</code></td>
+<td><code>module</code></td>
+</tr>
+</tbody></table>
+<p>The schema fixes the exact top-level and component field names, custom ID and
+SemVer syntax, and excludes the reserved <code>pixiecore.*</code> namespace plus core-only
+<code>service</code>/<code>command</code> components. Runtime validation additionally performs the
+checks JSON Schema cannot fully express: npm-compatible dependency ranges,
+canonical real-path containment and file existence, YAML alias/duplicate-key
+handling, dependency policy, and trust-origin assignment. Do not add a
+<code>$schema</code> field to the plugin YAML; associate the packaged schema in the editor
+instead because unknown manifest fields are rejected.</p>
+<p><code>components</code> is optional. When omitted, the entry module&#39;s default export is a
+<code>PixieCorePlugin</code> object or a synchronous/asynchronous zero-argument factory
+returning one. When <code>components</code> is present, agent-role, decorator, and tool
+exports may be objects, zero-argument classes, or synchronous factories.
+Provider exports may additionally be provider factories or classes receiving
+<code>RuntimeOptions</code>. Extension exports are synchronously created values registered
+in activation order under their namespaced <code>extension_point</code>; consumers obtain
+a frozen list through <code>PluginManager.getExtensions()</code>. Managed manifests use
+<code>export</code> only; the legacy <code>class</code> alias
+described below is not accepted by <code>pixiecore.plugin/v1</code>.</p>
+<p>The packaged
+<a href="../../examples/plugin-project/pixiecore.plugins.yml"><code>examples/plugin-project/pixiecore.plugins.yml</code></a>
+is a complete consumer-style project. Its
+<a href="../../examples/plugin-project/custom/plugins/roles/converter/converter.yaml"><code>converter</code></a>
+and
+<a href="../../examples/plugin-project/custom/plugins/roles/classifier/classifier.yaml"><code>classifier</code></a>
+roles use the named source layout, retain directly executable <code>// @ts-check</code>
+build artifacts, and import authoring types from <code>@pixieworks/pixiecore/plugin</code>. Their owned
+tests run in the default suite, while separate temporary fixtures prove
+existing managed <code>plugin.yml</code> compatibility.</p>
+<h2 id="legacy-discovery-and-precedence">Legacy discovery and precedence</h2>
+<p>Pass one directory or an ordered list:</p>
+<pre><code class="language-ts">const runtime = new PromptRuntime({
+  provider: 'company_provider',
+  pluginsDir: ['./plugins', './company-plugins'],
+});</code></pre>
+<p><code>PROMPT_RUNTIME_PLUGINS_DIR</code> provides the same legacy default and uses the operating
+system path delimiter (<code>:</code> on macOS/Linux and <code>;</code> on Windows). An explicit
+<code>pluginsDir</code> takes precedence. This legacy path recursively discovers
+<code>plugin.yml</code> and <code>plugin.yaml</code>, sorts entries deterministically, and loads
+directories in the given order. It remains enabled automatically and does not
+use managed activation state. Managed roots instead prefer <code>&lt;directory&gt;.yaml</code>
+and fall back to <code>plugin.yml</code> for compatibility.</p>
+<p>Built-ins load first. Later user registrations replace earlier agent-role,
+tool, and provider names. Decorators accumulate and remain priority sorted.
+Missing optional directories are ignored; malformed manifests and modules raise
+<code>PluginLoadError</code>.</p>
+<h2 id="legacy-direct-module-format">Legacy direct module format</h2>
+<p>The shortest manifest loads a default <code>PixieCorePlugin</code> export:</p>
+<pre><code class="language-yaml">name: Company plugin suite
+version: 0.1.0
+module: ./plugin.js</code></pre>
+<pre><code class="language-ts">import type { PixieCorePlugin } from '@pixieworks/pixiecore/plugin';
+
+const plugin: PixieCorePlugin = {
+  agentRoles: [analystRole],
+  decorators: [contentGuard],
+  tools: [lookupTool],
+  providers: [companyProviderFactory],
+  async close() {
+    // Release resources owned by the module.
+  },
+};
+
+export default plugin;</code></pre>
+<p>The default export may also be a synchronous or asynchronous zero-argument
+factory returning that object.</p>
+<h2 id="legacy-component-manifest-format">Legacy component manifest format</h2>
+<p>A component manifest maps named module exports. The four original component
+names remain supported and <code>extension</code> adds an owner-defined contribution:</p>
+<pre><code class="language-yaml">name: Company plugin suite
+version: 0.1.0
+module: ./plugin.js
+components:
+  - type: agent_role
+    export: AnalystRole
+    roles_supported: [analyst, reviewer]
+  - type: decorator
+    export: ContentGuard
+    priority: 15
+    stage: after
+  - type: tool
+    export: LookupTool
+    tool_name: lookup
+  - type: provider
+    export: CompanyProvider
+    provider_name: company_provider
+  - type: extension
+    export: CompanyGatewayPolicy
+    extension_point: acme.gateway.policy</code></pre>
+<p><code>class</code> is accepted as an alias for <code>export</code> in component entries. PixieCore
+always imports JavaScript ES modules; Python-qualified class paths are not
+loaded. A component may specify its own <code>module</code> instead of the root module.</p>
+<p>Agent-role, decorator, tool, and extension exports may be an object, a zero-argument class,
+or a synchronous factory. Provider exports may additionally be a provider
+factory or a class receiving <code>RuntimeOptions</code>. A created provider&#39;s <code>name</code> must
+match its registered <code>provider_name</code>.</p>
+<h2 id="read-only-status">Read-only status</h2>
+<p><code>manager.getPluginStatus()</code> returns a deeply frozen, passive snapshot of the
+inventory already observed by that manager. Reading it never starts discovery,
+loads a state file, or imports plugin code. The snapshot contains the resolved
+managed configuration path and managed roots, manager-wide diagnostics, and deterministic
+entries for core, managed-custom, and legacy origins. Each entry reports its
+identity, manifest location, dependencies, diagnostics, enabled/locked flags,
+activation flag, and lifecycle state, including <code>invalid-disabled</code> and failure
+states. Obtain a new snapshot after <code>load()</code> or <code>close()</code> to observe later
+lifecycle transitions; earlier snapshots do not mutate.</p>
+<h2 id="agent-roles">Agent roles</h2>
+<p>An agent role receives the rendered prompt, Blueprint, and validated inputs. It
+returns canonical messages and may supply model or temperature defaults:</p>
+<pre><code class="language-ts">import type { AgentRolePlugin } from '@pixieworks/pixiecore/plugin';
+
+export const analystRole: AgentRolePlugin = {
+  supportedRoles: ['analyst'],
+  apply(prompt) {
+    return {
+      model: 'analysis-model',
+      temperature: 0.2,
+      messages: [
+        { role: 'system', content: 'You are a careful analyst.' },
+        { role: 'user', content: prompt },
+      ],
+    };
+  },
+};</code></pre>
+<p>Blueprint <code>model</code> and <code>temperature</code> values override role defaults. Message
+history and examples are inserted before the role&#39;s final user message.</p>
+<h2 id="decorators">Decorators</h2>
+<p>Decorators receive a <code>DecoratorContext</code>. The default stage is <code>after</code>; use
+<code>before</code> for request guards or <code>both</code> for both points. Returning <code>void</code> leaves
+the current context unchanged. Returning a context can transform the output for
+the next decorator:</p>
+<pre><code class="language-ts">import type { OutputDecorator } from '@pixieworks/pixiecore/plugin';
+
+export const contentGuard: OutputDecorator = {
+  priority: 15,
+  stage: 'after',
+  validate(context) {
+    return { ...context, output: normalize(context.output) };
+  },
+};</code></pre>
+<p>Post-generation failures enter the normal correction/retry loop. Pre-generation
+failures stop before any provider request.</p>
+<h2 id="permissions">Permissions</h2>
+<p>Blueprint permissions use these fields:</p>
+<pre><code class="language-yaml">permissions:
+  allow_roles: [admin, editor]
+  deny_roles: [blocked]
+  allow_users: [alice@example.com]
+  deny_users: [suspended@example.com]
+  allow_scopes: [document:read, document:write]
+  deny_scopes: [system:admin]</code></pre>
+<p>Supply authorization context as <code>user_role</code>, <code>user_id</code>, and <code>user_scopes</code> in
+runtime inputs. Scope input may be an array, a <code>Set</code>, or a comma/space-delimited
+string. Deny lists take precedence, and every <code>allow_scopes</code> entry is required.
+When a Blueprint declares permissions, undeclared authorization context keys do
+not become strict input-validation errors.</p>
+<p>Permission failures use distinct <code>RolePermissionError</code>, <code>UserPermissionError</code>,
+and <code>ScopePermissionError</code> classes. Schema and self-evaluation failures use
+<code>SchemaValidationError</code> and <code>SelfEvaluationError</code>.</p>
+<h2 id="cleanup-and-trust-boundary">Cleanup and trust boundary</h2>
+<p><code>PromptRuntime.close()</code> closes MCP resources, plugin-owned providers, plugin
+components, and plugin modules once, including resources loaded before a later
+manifest fails. Cleanup continues across individual close failures and reports
+an aggregate error afterward.</p>
+<p>Plugin modules execute with the permissions of the Node.js process. Only load
+code from trusted locations.</p>
+</main></div>
+  
+</body>
+</html>

@@ -1,0 +1,9 @@
+rule_id,priority,rule_enabled,user_enabled,country_code,destination_level,amount_min,amount_max,currency,next_user
+route:domestic-standard,10,true,true,JP,C,0,5000,JPY,domestic-manager@example.test
+route:level-a-high,10,true,true,*,A,5000.01,*,USD,travel-director@example.test
+route:level-a-standard,20,true,true,*,A,0,5000,USD,supervisor-a@example.test
+route:foreign-default,50,true,true,*,B,0,*,*,global-supervisor@example.test
+route:disabled-vip,5,true,false,US,A,10000,*,USD,vp-approval@example.test
+route:uk-project-one,5,true,true,GB,A,0,1000,GBP,approver-one@example.test
+route:uk-project-two,5,true,true,GB,A,0,1000,GBP,approver-two@example.test
+route:retired,1,false,true,*,*,0,*,*,retired-approver@example.test

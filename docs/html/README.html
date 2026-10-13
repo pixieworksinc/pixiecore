@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore · PixieCore Documentation</title>
+  <link rel="stylesheet" href="assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href=".github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="./CHANGELOG.html">CHANGELOG</a></li><li><a href="./CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="./CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="./GOVERNANCE.html">GOVERNANCE</a></li><li><a href="./MAINTAINERS.html">MAINTAINERS</a></li><li><a href="./README.html">Repository</a></li><li><a href="./SECURITY.html">SECURITY</a></li><li><a href="./THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="./docs/index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="./docs/architecture/application-composition.html">application composition</a></li><li><a href="./docs/architecture/architecture.html">architecture</a></li><li><a href="./docs/architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="./docs/architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="./docs/architecture/class-diagrams.html">class diagrams</a></li><li><a href="./docs/architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="./docs/architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="./docs/blueprints/blueprint-library.html">blueprint library</a></li><li><a href="./docs/blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="./docs/blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="./docs/blueprints/blueprints.html">blueprints</a></li><li><a href="./docs/blueprints/evaluation.html">evaluation</a></li><li><a href="./docs/blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="./docs/decisions/0000-template.html">0000 template</a></li><li><a href="./docs/decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="./docs/decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="./docs/decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="./docs/decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="./docs/decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="./docs/decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="./docs/decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="./docs/decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="./docs/decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="./docs/decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="./docs/decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="./docs/decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="./docs/guides/configuration.html">configuration</a></li><li><a href="./docs/guides/getting-started.html">getting started</a></li><li><a href="./docs/guides/migration-guide.html">migration guide</a></li><li><a href="./docs/guides/node-compatibility.html">node compatibility</a></li><li><a href="./docs/guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="./docs/integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="./docs/plugins/apisix.html">apisix</a></li><li><a href="./docs/plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="./docs/plugins/plugin-layout.html">plugin layout</a></li><li><a href="./docs/plugins/plugins.html">plugins</a></li><li><a href="./docs/plugins/providers.html">providers</a></li><li><a href="./docs/plugins/recipes.html">recipes</a></li><li><a href="./docs/plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="./docs/project/0.2-development.html">0.2 development</a></li><li><a href="./docs/project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="./docs/project/public-contract-checklist.html">public contract checklist</a></li><li><a href="./docs/project/public-surface-audit.html">public surface audit</a></li><li><a href="./docs/project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="./docs/project/release-policy.html">release policy</a></li><li><a href="./docs/project/review-policy.html">review policy</a></li><li><a href="./docs/project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="./docs/rfcs/0000-template.html">0000 template</a></li><li><a href="./docs/rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="./docs/rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="./docs/rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="./docs/rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="./docs/rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="./docs/runtime/cache.html">cache</a></li><li><a href="./docs/runtime/data-policy.html">data policy</a></li><li><a href="./docs/runtime/human-review.html">human review</a></li><li><a href="./docs/runtime/jit.html">jit</a></li><li><a href="./docs/runtime/logging.html">logging</a></li><li><a href="./docs/runtime/mcp.html">mcp</a></li><li><a href="./docs/runtime/provider-fallback.html">provider fallback</a></li><li><a href="./docs/runtime/rag-metadata.html">rag metadata</a></li><li><a href="./docs/runtime/rest-api.html">rest api</a></li><li><a href="./docs/runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="./docs/specification/category-landscape.html">category landscape</a></li><li><a href="./docs/specification/pop-concepts.html">pop concepts</a></li><li><a href="./docs/specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="./docs/specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="./docs/specification/pop-governance.html">pop governance</a></li><li><a href="./docs/specification/pop-overview.html">pop overview</a></li><li><a href="./docs/specification/pop-principles.html">pop principles</a></li><li><a href="./docs/specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="./examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="./examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="./examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="./examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="./examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="./examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="./examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="./examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="./examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="./examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="./examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="./examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="./examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="./examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="./examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="./examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="./examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="./examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="./plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="index.html">Documentation</a> / <code>README.md</code></p><h1 id="pixiecore">PixieCore</h1>
+<p>PixieCore is an independent TypeScript runtime for Prompt-Oriented Programming
+(POP). Business logic is defined in a Blueprint and executed by an LLM,
+including deterministic comparisons, branching, calculations, and conversions.
+A Blueprint can contain several ordered reasoning Roles serving one declared
+business result.</p>
+<p>This is the <code>0.2.x</code> development branch, restoring the original POP direction.
+See <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-principles.html">POP principles</a>
+and the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/0.2-development.html">0.2 development plan</a>.
+No 0.2 package release or portable conformance approval is implied by this branch.</p>
+<p>PixieCore validates and executes one Blueprint per <code>execute()</code> or
+<code>executeYaml()</code> call. A Blueprint may include a complete business policy with
+Classifier, Converter, Verifier, and Orchestrator Roles inside its prompt.
+Both existing text prompts and structured ordered <code>Scenario</code> arrays are
+supported. The runtime serializes structured instructions and binds inputs;
+the LLM executes their logic.</p>
+<p>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/customer-discount/index.html">Customer discount example</a>
+uses one Blueprint to evaluate <code>Gold</code> and <code>purchase_amount &gt; 1000</code>, calculate
+<code>final_price</code>, and verify the result. Its 18-case dataset measures the semantic
+result separately from output-schema validity. There is no host-code discount
+calculation or business-policy Tool in its execution path.</p>
+<p>Host code provides runtime mechanics and integration, including transport,
+authorization enforcement, state, and explicit external side effects. Existing
+application-composition helpers remain available, but ordinary code is not a
+mandatory destination for deterministic business logic. Read
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-concepts.html">POP concepts</a>
+and the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/blueprint-granularity.html">Blueprint granularity guide</a>
+for the restored boundaries.</p>
+<p>The versioned <a href="https://github.com/pixieworksinc/pixiecore/blob/0.1.x/docs/specification/pop-core-specification-0.1.md">POP Core Specification 0.1</a>
+and its schemas are retained as historical compatibility artifacts. The
+proposed conceptual replacement is recorded in
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/rfcs/0004-prompt-first-business-logic.html">POP-RFC-0004</a>.
+Existing code-first reference applications and adjacent-pattern benchmarks
+remain available for comparison; they do not define POP&#39;s required granularity
+or demonstrate LLM execution of logic that they move into host code.</p>
+<p>The CLI can also scaffold a small single-operation Blueprint as a starting point:</p>
+<pre><code class="language-bash">npx --package @pixieworks/pixiecore pixiecore blueprint create ./blueprints/date-normalizer \
+  --operation=converter \
+  --name='Date normalizer'</code></pre>
+<p>New users should follow the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/getting-started.html">five-minute quickstart</a>,
+then the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/tutorial.html">30-minute Blueprint tutorial</a>. The tutorial leads
+directly into the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/architecture.html">architecture</a> and
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/migration-guide.html">migration</a> guides.</p>
+<p>PixieCore supports declarative YAML Blueprints, typed inputs, JSON Schema
+outputs, seven provider adapters, multimodal inputs, tool loops, MCP client/server
+support, ES-module plugins, and an HTTP API.</p>
+<blockquote>
+<p>[!NOTE]
+PixieCore 0.1 has completed its repository-owned contract and release audit.
+See the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/public-contract-checklist.html">public-contract checklist</a> for
+the verified PixieCore behavior and release gates.</p>
+</blockquote>
+<h2 id="install-and-run">Install and run</h2>
+<p>PixieCore requires Node.js 22.13 or newer.</p>
+<p>From a cloned PixieCore checkout:</p>
+<pre><code class="language-bash">npm ci
+npm run build
+export OPENAI_API_KEY=...
+node dist/core/kernel/cli/index.js execute examples/hello.yaml --inputs='{&quot;name&quot;:&quot;World&quot;}'</code></pre>
+<p>When PixieCore is installed as an application dependency, use your application&#39;s
+own Blueprint path. The package includes only <code>examples/hello.yaml</code> and
+<code>examples/analyze.yaml</code> as installation smoke Blueprints. The complete reference
+library, integration examples, benchmark evidence, and documentation remain in
+the <a href="https://github.com/pixieworksinc/pixiecore/tree/0.2.x">versioned repository</a>; they are
+not duplicated in every runtime installation.</p>
+<pre><code class="language-ts">import { PromptRuntime } from '@pixieworks/pixiecore';
+
+await using runtime = new PromptRuntime({ provider: 'openai' });
+const result = await runtime.execute('examples/hello.yaml', { name: 'World' });</code></pre>
+<p>Adapter names currently exist for <code>openai</code>, <code>anthropic</code>, <code>azure_openai</code>,
+<code>azure_native</code>, <code>gemini_native</code>, and <code>gemini_openai</code>. Configure them with the
+corresponding <code>*_API_KEY</code>, <code>*_MODEL</code>, endpoint, and deployment environment
+variables. Azure adapters also accept <code>AZURE_OPENAI_USE_AZURE_AD=true</code> or
+<code>AZURE_NATIVE_USE_AZURE_AD=true</code>; PixieCore then uses <code>DefaultAzureCredential</code>.</p>
+<p>Every built-in provider exposes <code>supportsVision()</code>, <code>supportsFileInput()</code>, and
+<code>getModelList()</code>. Anthropic Files API use is controlled by
+<code>ANTHROPIC_ENABLE_FILES_API</code> and defaults to enabled. Files uploaded by a
+provider instance are removed when that instance is closed.</p>
+<p>Runtime failures use exported error subclasses with stable <code>code</code> values. Every
+subclass derives from the canonical <code>PixieCoreError</code> base, so consumers can catch
+one base class while retaining specific errors such as
+<code>BlueprintValidationError</code>, <code>InputTypeError</code>, and <code>LLMAPIError</code>.</p>
+<h2 id="blueprint">Blueprint</h2>
+<p>A Blueprint should describe one independently testable input-to-output
+operation, not an entire business application. Roles such as Extractor,
+Classifier, Validator, and Converter are reusable behavioral families; every
+concrete Blueprint still declares its own narrow inputs, instructions, and
+output contract.</p>
+<p>Required fields are <code>name</code>, <code>version</code>, <code>role</code>, <code>prompt</code>, and <code>output_schema</code>.
+<code>input_placeholders</code> accepts either names or typed declarations (<code>string</code>,
+<code>integer</code>, <code>float</code>, <code>number</code>, <code>boolean</code>, <code>array</code>, <code>object</code>, <code>file</code>, <code>image</code>).
+Optional fields include <code>input_schema</code>, <code>examples</code>, <code>localization</code>,
+<code>permissions</code>, <code>model</code>, <code>temperature</code>, and <code>tools</code>. <code>input_schema</code> accepts a
+JSON Schema object or JSON string and rejects invalid business inputs before a
+provider call.</p>
+<p>Prompt input binding uses the language-neutral Mustache-style form
+<code>{{ name }}</code>. For typed Blueprints, PixieCore validates every referenced name
+against <code>input_placeholders</code>, preserves all instruction text outside the
+matching spans, and keeps <code>{name}</code> only as a 0.x migration syntax. The behavior
+is fixed by a packaged data-only conformance fixture; see
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/blueprints.html">Blueprints</a>.</p>
+<p>Applications that require final human approval can create immutable,
+schema-versioned handoff and receipt artifacts through <code>@pixieworks/pixiecore/review</code>.
+PixieCore links a receipt to the exact handoff with a deterministic digest;
+authentication, persistence, UI, and external side effects remain application
+responsibilities. See <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/human-review.html">Human-review handoff contracts</a>.</p>
+<p>Versioned data-only Blueprint collections can be distributed without plugin
+execution privileges. PixieCore verifies their schema, compatibility, complete
+SHA-256 inventory, Blueprint IDs, and contents before offline local install;
+active versions can be enabled, disabled, upgraded, and rolled back. See
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/blueprint-packages.html">Blueprint packages</a>.</p>
+<p>Retrieval plugins can exchange storage-neutral chunk metadata and create an
+explicitly scoped retrieval tool through <code>@pixieworks/pixiecore/rag</code>. Namespace, access,
+sensitivity, and authorization are fixed by the host; Blueprint loading never
+contacts the store. See <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/rag-metadata.html">Portable RAG metadata and retrieval</a>.</p>
+<h2 id="multimodal-input">Multimodal input</h2>
+<p>Pass <code>image_path</code> or <code>file_path</code> as one string or an array of strings. Values may
+be local paths or base64 data URLs; supported providers also accept HTTPS URLs.
+PixieCore attaches the normalized inputs to every user message before the first
+provider call and rejects unsupported capabilities or malformed arrays before
+making an HTTP request.</p>
+<p>The paths below are placeholders; replace them with attachments available to
+your application.</p>
+<pre><code class="language-ts">const result = await runtime.execute('examples/analyze.yaml', {
+  question: 'Compare the chart and report',
+  image_path: ['./chart.png', 'data:image/jpeg;base64,...'],
+  file_path: './report.pdf',
+});</code></pre>
+<p>OpenAI-compatible Chat Completions adapters accept images and PDF file parts.
+Anthropic supports image, PDF, and plain-text document paths, including its
+optional Files API and legacy PDF text fallback. Gemini Native sends small
+attachments inline and routes larger attachments through the Gemini Files API.
+The inline limit defaults to 20 MiB and can be changed with
+<code>GEMINI_INLINE_FILE_SIZE_LIMIT</code>.</p>
+<h2 id="tools-and-mcp">Tools and MCP</h2>
+<pre><code class="language-ts">runtime.registerTool({
+  name: 'lookup',
+  description: 'Look up a record',
+  parameters: { type: 'object', properties: { id: { type: 'string' } } },
+  execute: async ({ id }) =&gt; ({ id, found: true }),
+});</code></pre>
+<p>Tool calls retain provider-native call/result linkage across rounds. Runtime
+defaults accept <code>toolChoice</code>, <code>maxToolRounds</code>, and <code>usePseudoToolCalling</code>; each
+can be overridden for one <code>execute</code> or <code>executeYaml</code> call. Compatible environment
+defaults are <code>PROMPT_RUNTIME_TOOL_CHOICE</code>, <code>PROMPT_RUNTIME_MAX_TOOL_ROUNDS</code>, and
+<code>PROMPT_RUNTIME_USE_PSEUDO_TOOL_CALLING</code>.</p>
+<p>Pass <code>mcpConfigPath: &#39;mcp.json&#39;</code> for an MCP configuration containing an
+<code>mcpServers</code> object. Omit it (or pass <code>null</code>) for current-directory/package-root
+auto-discovery, or use <code>&#39;disabled&#39;</code> to disable MCP. PixieCore uses the official
+MCP TypeScript client, lazily lists every tool page, isolates broken servers,
+and closes all stdio children with the runtime. MCP tools are named
+<code>mcp.&lt;server&gt;.&lt;tool&gt;</code>. See <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/mcp.html">MCP</a> for config validation, merging,
+environment expansion, discovery precedence, and failure behavior.</p>
+<p>PixieCore can also expose Blueprint execution as a stdio MCP server:</p>
+<pre><code class="language-bash">npm run build
+node dist/core/kernel/cli/index.js mcp serve</code></pre>
+<p>The server publishes <code>execute</code> for Blueprint files and <code>execute_yaml</code> for
+inline YAML, returning the validated result as MCP structured content. The
+same server can be embedded with <code>createPixieCoreMcpServer()</code> or started with
+<code>servePixieCoreMcpStdio()</code> from <code>@pixieworks/pixiecore/mcp-server</code>. See the MCP guide for host
+configuration and the exact input contract.</p>
+<h2 id="blueprint-evaluation">Blueprint evaluation</h2>
+<p>Run a versioned evaluation dataset and emit its result artifact to stdout:</p>
+<pre><code class="language-bash">pixiecore blueprint eval evaluations/date-converter.yaml --seed=release-candidate-1</code></pre>
+<p>Add <code>--output=artifacts/date-converter.json</code> to persist it explicitly. Failed
+cases return exit status <code>1</code> and print a same-seed replay command. Dataset and
+result schemas, the seeded property corpus, and the SDK runner are exported
+from <code>@pixieworks/pixiecore/eval</code>; see the
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/evaluation.html">evaluation guide</a>.</p>
+<h2 id="inherited-opt-in-jit-extension">Inherited opt-in JIT extension</h2>
+<p>This compatibility extension is under review for 0.2. Compiled execution is
+distinct from the LLM-execution path and must be identified separately in
+accuracy evidence. It is not used by the Customer discount example.</p>
+<p>Narrow, repeatedly stable Blueprint operations can use the opt-in <code>@pixieworks/pixiecore/jit</code>
+path. PixieCore validates a closed JSON data program, measures it against both a
+versioned evaluation dataset and the ordinary model path, and creates a
+digest-bound promotion only after complete agreement. It never executes
+generated JavaScript, Wasm, shell commands, or module paths. See the
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/jit.html">JIT admission guide</a>
+for the safety boundary, public API, artifact schemas, and replay procedure.</p>
+<h2 id="reference-blueprint-units">Reference Blueprint units</h2>
+<p>Reference Blueprints are versioned as repository-owned self-contained units with policy
+documentation, fixtures, an evaluation dataset, expected results, and an
+offline contract test. Their stable IDs, versions, ownership, naming, and
+deprecation rules follow the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/blueprint-library.html">reference Blueprint library contract</a>.
+The repository also includes a dependency-free
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/catalog-site/index.html">searchable Blueprint catalog</a>.
+Current units are:</p>
+<ul>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/extractor/travel-document-fields/index.html">travel document field Extractor</a>
+reads one PDF or screenshot and returns requested values with page-level
+evidence without inferring absent or unreadable fields.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/classifier/travel-destination-level/index.html">travel destination Classifier</a>
+applies a caller-supplied policy to listed cities, aliases, domestic and
+foreign defaults, same-name ambiguity, and unknown locations.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/summarizer/travel-request-summary/index.html">travel request Summarizer</a>
+produces a length-bounded approval summary whose claims identify their
+source fields and whose missing or omitted facts remain explicit.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/validator/travel-request-form/index.html">travel request form Validator</a>
+reports required, type, format, range, and correlation failures for each
+field without replacing them with one aggregate result.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/verifier/travel-document-evidence/index.html">travel document evidence Verifier</a>
+distinguishes matches, mismatches, missing submissions, absent source
+fields, and unreadable evidence while preserving both values and page
+evidence.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/converter/date-normalizer/index.html">explicit Gregorian date Converter</a>
+converts <code>2026年2月4日</code> to <code>2026-02-04</code> without guessing era years,
+ambiguous month/day order, relative dates, or timezone projections.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/translator/travel-purpose-localizer/index.html">travel purpose Translator / Localizer</a>
+translates English and Japanese business text while retaining exact people,
+organizations, places, identifiers, amounts, and line breaks.</li>
+<li>The <a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/blueprints/router/travel-approval-routing/index.html">travel approval Router / Orchestrator</a>
+selects one next user from caller-supplied CSV priority rules while keeping
+no-match, same-priority ambiguity, and disabled-user results explicit.</li>
+</ul>
+<h2 id="plugins-roles-and-permissions">Plugins, roles, and permissions</h2>
+<p>Managed custom plugins are trusted ES modules selected through a versioned
+<code>pixiecore.plugins.yml</code> file. Pass its path as <code>pluginConfigPath</code>, use
+<code>PIXIECORE_PLUGIN_CONFIG</code>, or omit the option (or pass <code>null</code>) to look for the
+file in the current working directory. The project-local <code>plugins/</code> directory
+is always the default managed root, including when no state file exists, but
+its plugins remain disabled until selected. <code>&#39;disabled&#39;</code> bypasses discovery.
+The file may add managed roots and declares explicit <code>enabled</code>/<code>disabled</code> IDs.
+Policy, SemVer dependencies, conflicts, and cycles are resolved before selected
+code is imported, and disabled modules are never imported.</p>
+<p>Bundled PixieCore plugins live beside <code>src/core</code> under <code>src/plugins</code>. Third-party
+plugins are normally installed as directory symlinks below the project-local
+root <code>plugins/</code>. New TypeScript plugins use a Drupal-style source directory:
+<code>abc.ts</code>, <code>abc.yaml</code>, <code>src/</code>, and <code>tests/</code>. Managed discovery prefers the named
+YAML manifest and imports the compiled entry declared by it. Existing managed
+<code>plugin.yml</code> projects remain supported.</p>
+<p>A unit may contain child units only below its <code>plugins/</code> directory. Child IDs
+must begin with the parent ID plus <code>.</code>, enabling a parent selects every
+non-disabled descendant, and disabling a parent blocks its entire subtree
+before any module import. The same recursive unit shape is validated for
+bundled plugins by catalog generation and architecture checks.</p>
+<p>The mandatory <code>pixiecore.recipe</code> bootstrap plugin lives with every other bundled
+plugin at <code>src/plugins/recipe</code>. <code>PluginManager</code> activates it first, obtains the
+locked standard Recipe through its service, and applies that composition using
+the same catalog, dependency graph, registries, and lifecycle.</p>
+<p>The existing <code>pluginsDir</code> and platform-delimited
+<code>PROMPT_RUNTIME_PLUGINS_DIR</code> contract remains an automatically enabled legacy
+path. It recursively accepts <code>plugin.yml</code> or <code>plugin.yaml</code>, default module
+exports or named components, and preserves ordered override behavior. If a
+canonical-realpath root appears in both systems, the legacy path takes
+precedence.</p>
+<p>PixieCore always registers the <code>assistant</code>/<code>default</code> role, <code>SchemaGuard</code>,
+<code>PermissionGuard</code>, <code>SelfEvalDecorator</code>, and all seven built-in provider factories
+from its validated, checked-in core plugin catalog.
+All twenty-four locked plugin units (the mandatory Recipe plugin, fourteen
+ordinary top-level units, and nine provider-family descendants) are enabled and
+locked, while runtime, API, CLI, MCP,
+and tool services activate only when their requested dependency closure needs
+them; activation itself starts no provider call, child process, listener, or
+command.
+The APISIX provider owns four nested capability plugins and exposes a pure
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/plugins/apisix.html">APISIX configuration compiler</a>
+without making Admin API writes.
+Blueprint permissions support role and user allow/deny lists plus required or
+denied scopes. Permission rejection occurs before a provider request.</p>
+<p><code>PluginManager</code> also accepts an optional third <code>{ pluginConfigPath }</code> argument.
+<code>getPluginStatus()</code> returns a frozen passive snapshot of observed core,
+managed-custom, and legacy state without triggering discovery or imports.</p>
+<p>Plugin authors should import the supported type-only authoring surface from
+<code>@pixieworks/pixiecore/plugin</code>. Bootstrap activators, scoped service tokens, manager state,
+and core-only service/command components are intentionally excluded. The
+managed custom manifest schema is published as
+<code>@pixieworks/pixiecore/plugin/schema.json</code>; the repository also includes a complete
+<a href="https://github.com/pixieworksinc/pixiecore/blob/0.2.x/examples/plugin-project/pixiecore.plugins.yml">plugin project</a> with
+<a href="https://github.com/pixieworksinc/pixiecore/blob/0.2.x/examples/plugin-project/custom/plugins/roles/converter/converter.yaml">converter</a>
+and
+<a href="https://github.com/pixieworksinc/pixiecore/blob/0.2.x/examples/plugin-project/custom/plugins/roles/classifier/classifier.yaml">classifier</a>
+roles that can be activated directly.</p>
+<p>See <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/plugins/plugins.html">Plugins, roles, decorators, and permissions</a> for the
+manifest format, schema limits, and TypeScript interfaces. Plugin authors can
+follow the complete <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/plugins/plugin-authoring.html">third-party authoring guide</a> and
+the role, decorator, tool, and provider examples under
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/plugin-authoring/index.html"><code>examples/plugin-authoring</code></a>.</p>
+<h2 id="http-api">HTTP API</h2>
+<pre><code class="language-bash">npm run build
+PIXIECORE_API_PORT=8000 npm start
+curl http://localhost:8000/health</code></pre>
+<p><code>POST /execute</code> accepts <code>{ blueprint, inputs?, messages?, files? }</code>. Uploaded
+files are base64 decoded into an isolated temporary directory and removed after
+execution. Those temporary paths are delivered to the selected provider through
+the same multimodal pipeline as local <code>image_path</code> and <code>file_path</code> inputs.</p>
+<p>The CLI listens on <code>127.0.0.1</code> by default. Binding to a non-loopback address
+requires <code>PIXIECORE_API_TOKEN</code>; remote callers must send it as a Bearer token.
+PixieCore API configuration uses the <code>PIXIECORE_*</code> namespace exclusively.</p>
+<p>OpenAPI is available at <code>/openapi.json</code>, with Swagger UI at <code>/docs</code> and ReDoc at
+<code>/redoc</code>. Request validation distinguishes malformed requests, Blueprint errors,
+input validation/type errors, provider failures, schema failures, and retry
+exhaustion. Every request receives an <code>x-request-id</code>, and closing the server
+closes its shared runtime. See the <a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/rest-api.html">REST API guide</a>.</p>
+<h2 id="logging-and-audit">Logging and audit</h2>
+<p>PixieCore provides async-local trace IDs, credential and header sanitization,
+bounded payload logging, rotating text logs, and rotating JSONL audit events for
+execution, provider calls, validation, and tools. File logging is opt-in and raw
+payload logging is disabled by default. See the
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/logging.html">logging and audit guide</a>.</p>
+<h2 id="development-and-release-verification">Development and release verification</h2>
+<p>For repository development, use Node.js <code>^22.22.2 || &gt;=24.15.0</code> (the current
+Node 24 release is recommended). The installed runtime minimum remains
+<code>22.13.0</code>. Install with <code>npm ci --engine-strict</code>, then run the same quality
+checks used by CI. See <a href="./docs/guides/node-compatibility.html">Node compatibility</a>
+for the separate tooling and consumer boundaries:</p>
+<pre><code class="language-bash">npm run typecheck
+npm run check:node-engines
+npm run check:architecture
+npm run check:core-plugin-catalog
+npm run check:docs
+npm run test:fast
+npm test
+npm run test:repeat
+npm run test:profile
+npm run build
+npm run check:conformance
+npm run check:conformance:independent
+npm run test:coverage
+npm run check:licenses
+npm run verify:package
+npm audit --omit=dev --audit-level=high</code></pre>
+<p>Source coverage is required to remain at or above 90% for lines, branches, and
+functions. <code>check:architecture</code> rejects dependency cycles and
+boundary regressions, including external root-barrel re-exports, and enforces
+the completed <code>src/index.ts</code> plus <code>src/core/</code> source layout.
+<code>check:core-plugin-catalog</code> verifies that the generated catalog is byte-for-byte
+current with canonical core manifests, while checking declared activator exports
+and fresh synchronous factories.
+Each test command generates and prints one <code>TEST_SEED</code>; fixture values
+vary by run but a failure is reproducible with
+<code>TEST_SEED=&lt;printed-seed&gt; npm test</code>. Direct <code>node --test</code> invocations must set
+<code>TEST_SEED</code> explicitly.
+<code>npm run test:fast</code> provides the short kernel, Recipe, public-export, and
+cross-runtime contract loop. It deliberately excludes subprocess, loopback
+HTTP, PDF, and full integration coverage; <code>npm test</code> remains the authoritative
+offline suite and CI gate. The full suite compiles one current runtime for its
+process-level CLI checks, then runs eight non-overlapping responsibility shards.
+It starts the expected-longest work first while printing results in catalog
+order. Each shard has its own Node.js process, while compatible test files share
+module startup inside that shard. At most four shards run concurrently by
+default to avoid starving their CLI children; local experiments may set
+<code>PIXIECORE_TEST_SHARD_CONCURRENCY</code> to an integer from one through eight. A
+contract test prevents file omissions and duplicate ownership; the coverage
+command retains per-file isolation for one aggregate 90/90/90 report.
+<code>npm run test:repeat</code> is a local convenience command that may reuse verified
+TypeScript build metadata under ignored <code>.pixiecore/</code>. It checks generated output
+before reuse and falls back to a clean build when uncertain. Use <code>npm test</code> for
+CI, release evidence, or any clean-build verification. Set
+<code>PIXIECORE_TEST_RUNTIME_CACHE=clean</code> to make one repeat command rebuild cleanly.
+Every full-suite command measures value-free shard durations. When an estimate
+differs from the observed duration by at least 35%, <code>npm test</code> prints a warning
+that names the shard for review; timing alone never fails CI. <code>npm run test:profile</code> additionally records the same value-free per-shard metadata in
+ignored <code>.pixiecore/test-shard-profile.json</code>. Use profiles to recalibrate after a
+test-topology change, not as a cross-host benchmark or CI gate.
+<code>verify:package</code>
+builds the real npm tarball, installs it
+into an isolated temporary consumer, and checks the root, REST API, package
+metadata, strict TypeScript declarations, runtime, examples, live <code>/health</code> and
+<code>/execute</code> requests with shared-runtime shutdown, and the installed <code>pixiecore</code>
+CLI shim.
+The GitHub Actions workflow installs and runs documentation tooling on Node 24
+with strict engine checking, then runs the full suite and verifies the immutable
+installed candidate on Node 22.13.0 and the current Node 24 line. The default test suite and package
+runtime smoke do not contact a model provider; only dependency installation and
+<code>npm audit</code> require registry access.</p>
+<p>POP conformance is checked twice: once through PixieCore&#39;s installed runtime
+boundaries and once through a dependency-free Python validator. The second gate
+detects accidental coupling between the portable specification and the
+TypeScript implementation.</p>
+<p><code>check:licenses</code> verifies every locked production package has one of the
+explicitly reviewed license expressions and that
+<a href="./THIRD_PARTY_NOTICES.html"><code>THIRD_PARTY_NOTICES.md</code></a> matches the lockfile. A
+dependency or license change therefore requires an intentional notice update.</p>
+<h2 id="documentation">Documentation</h2>
+<ul>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/getting-started.html">Five-minute quickstart and learning path</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/tutorial.html">Thirty-minute Blueprint tutorial</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/architecture.html">Architecture guide</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/class-diagrams.html">Class diagrams</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/source-documentation.html">Source documentation and TypeDoc</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/migration-guide.html">Migration guide</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-concepts.html">POP concepts and canonical glossary</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/category-landscape.html">POP and adjacent application-pattern landscape</a></li>
+<li><a href="https://github.com/pixieworksinc/pixiecore/blob/0.1.x/docs/specification/pop-core-specification-0.1.md">POP Core Specification 0.1</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-schemas-0.1.html">POP 0.1 serialization schemas</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-conformance-0.1.html">POP Core 0.1 conformance fixtures</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-overview.html">POP one-page overview and five-minute demonstration</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/blueprint-granularity.html">Blueprint granularity guide</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/blueprints.html">Blueprints</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/blueprint-publishing.html">Publishing third-party Blueprint packages</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/evaluation.html">Blueprint evaluation datasets</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/architecture/monolithic-comparison.html">Monolithic/composed executable comparison</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/human-review.html">Human-review handoff contracts</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/rag-metadata.html">Portable RAG metadata and explicit retrieval</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/integrations/integrations.html">MCP, LangChain/LangGraph, and Drupal integrations</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/integrations/drupal/executable-specification/index.html">Clean-install Drupal Blueprint demo</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/blueprints/ocr-demo.html">Canonical OCR document-review demo</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/guides/configuration.html">Configuration</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/plugins/providers.html">Providers</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/plugins/tools.html">Tools</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/mcp.html">MCP</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/plugins/plugins.html">Plugins, roles, decorators, and permissions</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/rest-api.html">REST API</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/logging.html">Logging and audit</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/telemetry.html">Execution telemetry</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/jit.html">Evidence-admitted deterministic execution</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/adoption-dashboard.html">Monthly adoption dashboard</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/cache.html">Safe content and Blueprint execution cache</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/data-policy.html">Data retention policy boundary</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/runtime/provider-fallback.html">Explicit provider fallback</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/threat-model.html">Threat model and signed audit exports</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/public-contract-checklist.html">Public-contract checklist</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/review-policy.html">Change review and ownership policy</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/release-policy.html">Release and compatibility versioning</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/specification/pop-governance.html">POP specification governance and RFC process</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/GOVERNANCE.html">Project governance</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/CONTRIBUTING.html">Contributing, review targets, and release cadence</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/MAINTAINERS.html">Maintainers</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/CODE_OF_CONDUCT.html">Code of Conduct</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/decisions/index.html">Decision log</a></li>
+<li><a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/release-notes-0.1.0.html">PixieCore 0.1 release notes</a></li>
+</ul>
+<h2 id="contract-notes">Contract notes</h2>
+<p>The PixieCore contract is defined by this repository&#39;s documentation, package
+exports, schemas, examples, and automated tests. TypeScript APIs are
+asynchronous and use camelCase (<code>executeYaml</code>, <code>strictValidation</code>,
+<code>mcpConfigPath</code>), while Blueprint and environment field names remain
+snake_case. Verified contracts and intentional hardening decisions are listed in the
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/public-contract-checklist.html">public-contract checklist</a>; version and
+publication boundaries are defined by the
+<a href="https://pixieworksinc.github.io/pixiecore/docs/html/docs/project/release-policy.html">release policy</a>.</p>
+<p>Provider smoke tests are opt-in and never run during the default suite. Set
+<code>PIXIECORE_RUN_LIVE_TESTS=true</code> and a comma-separated
+<code>PIXIECORE_LIVE_PROVIDERS</code> value to run them with credentials already present in
+the environment, then run <code>npm run test:smoke</code>.</p>
+</main></div>
+  
+</body>
+</html>

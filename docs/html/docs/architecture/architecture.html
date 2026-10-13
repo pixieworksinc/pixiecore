@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore architecture guide · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="./application-composition.html">application composition</a></li><li><a href="./architecture.html">architecture</a></li><li><a href="./blueprint-granularity.html">blueprint granularity</a></li><li><a href="./class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="./class-diagrams.html">class diagrams</a></li><li><a href="./monolithic-comparison.html">monolithic comparison</a></li><li><a href="./source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/architecture/architecture.md</code></p><h1 id="pixiecore-architecture-guide">PixieCore architecture guide</h1>
+<p>PixieCore is a modular TypeScript library and runtime, not a microservice mesh.
+One process may expose CLI, REST, or MCP entry points. Applications compose
+small Blueprint calls and decide where those processes are deployed.</p>
+<p>PixieCore 0.1 is self-hosted and does not require an official control plane.
+The host owns deployment, identity, secrets, persistence, data residency,
+scaling, and monitoring. Any future hosted service must remain additive and
+preserve offline execution under
+<a href="../decisions/0005-hosted-control-plane.html">TC-ADR-0005</a>.</p>
+<p>For class-level ownership, composition, and collaboration views, see the
+<a href="./class-diagrams.html">PixieCore class diagrams</a>. The generated TypeDoc site also
+includes that document.</p>
+<h2 id="runtime-model">Runtime model</h2>
+<pre><code class="language-text">Application or inbound adapter
+  -&gt; PromptRuntime facade
+     -&gt; load and validate one Blueprint
+     -&gt; normalize and validate business inputs
+     -&gt; render one prompt through the selected Role
+     -&gt; enforce permissions and registered decorators
+     -&gt; call one Provider, with bounded Tool rounds when declared
+     -&gt; validate structured output and optional self-evaluation
+  -&gt; typed JSON result</code></pre>
+<p>Blueprint loading is offline. Retrieval, tools, persistence, approval, and
+other side effects occur only through boundaries explicitly configured by the
+host.</p>
+<p>Repeated preparation is runtime-scoped and bounded. A <code>PromptRuntime</code> retains
+at most 64 validated Blueprint sources and invalidates file entries when source
+metadata changes. The validation service independently retains at most 64
+compiled JSON Schema validators. Neither cache is process-global, validation
+failures are not retained, and Blueprint values are cloned between executions.</p>
+<h2 id="source-layout">Source layout</h2>
+<pre><code class="language-text">src/
+├── index.ts                 public root barrel
+├── core/
+│   ├── contracts/           stable types, ports, and errors
+│   │   ├── application/     application contracts and control policy
+│   │   ├── mcp/             MCP client and server contracts
+│   │   └── plugin/          plugin SDK, activation, state, and services
+│   ├── component/           small implementation-independent utilities
+│   ├── bootstrap/           discovery, policy, registries, lifecycle
+│   │   ├── blueprint/       Blueprint package state, verification, and IO
+│   │   └── plugin-manager/  plugin discovery, policy, Recipe, and lifecycle
+│   │       ├── dependency/  shared dependency ordering and resolution
+│   │       ├── managed/     managed plugin catalog, discovery, and loading
+│   │       ├── recipe/      Recipe planning and application
+│   │       └── registries/  contribution and service registries
+│   └── kernel/              public execution and composition layer
+│       ├── application/     mapping, graph, execution, control, and tracing
+│       ├── blueprint/       Blueprint package facade, CLI, and preparation cache
+│       ├── evaluation/      evaluation, comparison, benchmark, and scorecard
+│       ├── generated/       build-generated bundled plugin catalog
+│       ├── plugin/          public manager, catalog, and CLI
+│       └── telemetry/       execution telemetry and aggregation
+└── plugins/                 bundled runtime capabilities
+    ├── recipe/              mandatory locked composition plugin
+    ├── runtime/
+    ├── validation/
+    ├── roles/
+    ├── providers/
+    ├── tools/
+    ├── permissions/
+    ├── logging/
+    ├── mcp/
+    ├── api/
+    └── cli/</code></pre>
+<p><code>core</code> contains the shared host mechanism. Bundled plugins are peers below
+<code>src/plugins</code>, while project-local third-party plugins are discovered from the
+consumer&#39;s <code>plugins/</code> roots. The bootstrap plugin host validates dependencies,
+activation, contribution registration, and reverse-order cleanup without
+knowing any concrete plugin. The public <code>PluginManager</code> injects
+the generated bundled catalog, activates only <code>pixiecore.recipe</code>, and applies
+the locked standard Recipe provided by that plugin. Its canonical YAML is
+<code>src/plugins/recipe/recipes/pixiecore.recipe.yaml</code>. Managed custom plugins
+are explicitly enabled.
+See <a href="../plugins/recipes.html">Recipes</a>,
+<a href="../decisions/0006-standard-plugin-recipe.html">TC-ADR-0006</a>, and
+<a href="../decisions/0008-colocate-recipe-plugin.html">TC-ADR-0008</a>.</p>
+<h2 id="dependency-direction">Dependency direction</h2>
+<ul>
+<li>Contracts do not depend on kernel or plugins.</li>
+<li>Components depend only on contracts or smaller components.</li>
+<li>Bootstrap owns discovery and lifecycle, not application behavior.</li>
+<li>The mandatory Recipe plugin is a peer under <code>src/plugins</code>; its lock and
+bootstrap order are enforced by policy rather than physical placement.</li>
+<li>Kernel entry points compose contracts, components, bootstrap services, and
+direct plugin entry points. They never import plugin leaf implementation
+files.</li>
+<li>Plugins may use contracts and other declared plugin services, but do not
+import kernel composition roots.</li>
+<li><code>src/index.ts</code> re-exports public contracts, kernel entry points, and direct
+bundled plugin entries only.</li>
+</ul>
+<p>The architecture checker enforces these directions, source inventory, cycles,
+plugin ownership, repeated-prefix submodule ownership, and public barrel limits.
+Production implementation classes compose collaborators rather than inherit
+from concrete implementations. Error specialization and interface extension
+remain valid type relationships.
+Production source files that share a direct parent and repeat a semantic prefix
+must live below a directory named for that prefix. Tests retain subject prefixes
+because their category directories express test ownership rather than runtime
+module ownership.</p>
+<p>PixieCore also applies <a href="../decisions/0010-fractal-directory-ownership.html">fractal directory ownership</a>.
+A non-leaf directory primarily contains responsibility-named child directories;
+implementation files collect at the lowest cohesive leaf. Structural boundary
+files such as one facade, <code>index.ts</code>, or a plugin&#39;s identity entry and manifest
+may remain beside child directories. A non-leaf with three or more other
+implementation files must be decomposed before more peers are added. This rule
+must create meaningful ownership boundaries, not empty wrappers or arbitrary
+one-file directories.</p>
+<p>The current core applies that grammar directly:</p>
+<pre><code class="language-text">src/core/
+├── bootstrap/
+│   └── plugin-manager/
+│       ├── activation/
+│       ├── authoring/
+│       ├── catalog/
+│       ├── dependency/
+│       ├── managed/
+│       ├── model/
+│       ├── recipe/
+│       └── registries/
+├── contracts/
+│   └── &lt;contract&gt;/
+└── kernel/
+    └── &lt;public-capability&gt;/</code></pre>
+<p><code>contracts/index.ts</code> and <code>plugin-manager/manager.ts</code> are structural boundaries,
+not peer implementations. Plugin <code>src/</code> roots may likewise keep activator,
+service, factory, or index entries while implementation details live in named
+children. The architecture checker rejects a non-leaf that accumulates three
+or more other production implementation files.</p>
+<h2 id="application-boundary">Application boundary</h2>
+<p>PixieCore deliberately does not encode a general workflow language in 0.1.
+Ordinary host code owns:</p>
+<ul>
+<li>node order, branching, parallelism, and explicit field mapping;</li>
+<li>state, authorization context, budgets, cancellation, and retry ownership;</li>
+<li>databases, queues, user interfaces, notifications, and external updates;</li>
+<li>human approval and final side effects.</li>
+</ul>
+<p>PixieCore owns validation and execution of one Blueprint call. Public
+application helpers add schema preflight, edge checks, value-free traces,
+admission control, failure policy, and partial-result artifacts without hiding
+business mappings.</p>
+<p>Durable deferred and batch execution remains a host responsibility. PixieCore
+does not persist, lease, schedule, resume, or monitor jobs, and admission limits
+never create a hidden queue. A queue or workflow integration plugin requires a
+concrete operational system and must preserve this boundary. See
+<a href="../decisions/0003-deferred-execution-boundary.html">TC-ADR-0003</a>.</p>
+<h2 id="extension-boundaries">Extension boundaries</h2>
+<p>Choose the smallest extension that fits the need:</p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Boundary</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>One cognitive input-to-output operation</td>
+<td>Blueprint</td>
+</tr>
+<tr>
+<td>Deterministic callable capability</td>
+<td>Tool</td>
+</tr>
+<tr>
+<td>Message construction for a role name</td>
+<td>Role plugin</td>
+</tr>
+<tr>
+<td>Model transport</td>
+<td>Provider plugin</td>
+</tr>
+<tr>
+<td>Output checking or transformation stage</td>
+<td>Decorator plugin</td>
+</tr>
+<tr>
+<td>Application sequencing or side effects</td>
+<td>Host application</td>
+</tr>
+<tr>
+<td>Portable retrieval metadata and scoped search</td>
+<td><code>@pixieworks/pixiecore/rag</code> boundary plus explicit Tool</td>
+</tr>
+</tbody></table>
+<p>Plugins are trusted code with the Node.js process&#39;s privileges. Blueprint
+packages are data-only and do not receive executable plugin privileges.</p>
+<h2 id="lifecycle-and-failure-ownership">Lifecycle and failure ownership</h2>
+<p>Create long-lived resources at a composition root and close them once. A
+<code>PromptRuntime</code> owns resources it creates, including provider instances and MCP
+children. Plugin cleanup runs in reverse activation order and attempts every
+cleanup even after one fails.</p>
+<p>Retry ownership is explicit: runtime retries only bounded output correction;
+application retries only a declared node policy; host retries only outside the
+application invocation. Cancellation is never converted into a retryable
+failure.</p>
+<p>For detailed contracts, continue with <a href="../plugins/plugins.html">plugins</a>,
+<a href="./application-composition.html">application composition</a>, <a href="../plugins/tools.html">tools</a>,
+<a href="../plugins/providers.html">providers</a>, and the <a href="../project/threat-model.html">threat model</a>.</p>
+</main></div>
+  
+</body>
+</html>

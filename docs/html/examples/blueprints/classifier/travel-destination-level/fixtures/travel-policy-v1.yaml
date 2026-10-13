@@ -1,0 +1,40 @@
+version: 2026.1.0
+domestic_country_codes: [JP]
+domestic_default_level: C
+foreign_default_level: B
+locations:
+  - id: city:new-york-us
+    canonical_city: New York
+    country_code: US
+    level: A
+    aliases: [NY, NYC, New York City]
+  - id: city:san-francisco-us
+    canonical_city: San Francisco
+    country_code: US
+    level: A
+    aliases: [SF, San Fran]
+  - id: city:los-angeles-us
+    canonical_city: Los Angeles
+    country_code: US
+    level: A
+    aliases: [LA, L.A.]
+  - id: city:chicago-us
+    canonical_city: Chicago
+    country_code: US
+    level: A
+    aliases: [CHI]
+  - id: city:london-gb
+    canonical_city: London
+    country_code: GB
+    level: A
+    aliases: [London UK]
+  - id: city:paris-fr
+    canonical_city: Paris
+    country_code: FR
+    level: A
+    aliases: [Paris France]
+  - id: city:paris-us
+    canonical_city: Paris
+    country_code: US
+    level: B
+    aliases: [Paris Texas, Paris TX]

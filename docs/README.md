@@ -29,6 +29,14 @@ directory.
 | [`decisions/`](decisions/) | Accepted PixieCore architecture decision records |
 | [`rfcs/`](rfcs/) | Proposed POP specification changes |
 
+## Published HTML
+
+The Markdown files remain the source of truth. Run `npm run generate:html-docs`
+to refresh the browsable HTML in `docs/html/`, and `npm run check:html-docs` to
+verify that the generated files match the current sources. The published
+documentation is available at
+<https://pixieworksinc.github.io/pixiecore/docs/html/>.
+
 After source publication, public work is tracked in repository Issues. Private
 readiness, migration, and historical implementation records are not part of the
 public documentation tree.

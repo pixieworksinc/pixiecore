@@ -1,0 +1,386 @@
+{
+  "schema": "pop.conformance-suite/0.1",
+  "specification": "pop-core/0.1",
+  "validation": [
+    {
+      "id": "validation.blueprint.valid-minimal",
+      "artifact": "blueprint",
+      "document": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.date_converter",
+        "name": "Convert a written date",
+        "version": "1.0.0",
+        "role": "converter",
+        "instructions": "Convert the supplied date to ISO calendar form.",
+        "output_schema": {
+          "type": "object",
+          "required": ["date"],
+          "properties": { "date": { "type": "string" } }
+        }
+      },
+      "expected_valid": true
+    },
+    {
+      "id": "validation.blueprint.invalid-scalar-output",
+      "artifact": "blueprint",
+      "document": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.date_converter",
+        "name": "Convert a written date",
+        "version": "1.0.0",
+        "role": "converter",
+        "instructions": "Convert the supplied date to ISO calendar form.",
+        "output_schema": { "type": "string" }
+      },
+      "expected_valid": false
+    },
+    {
+      "id": "validation.dataset.valid-exact",
+      "artifact": "evaluation_dataset",
+      "document": {
+        "schema": "pop.evaluation-dataset/0.1",
+        "name": "example.date_converter.cases",
+        "version": "1.0.0",
+        "blueprint": { "id": "example.date_converter", "version": "1.0.0" },
+        "cases": [
+          {
+            "id": "written-date",
+            "inputs": { "date": "4 February 2026" },
+            "expected_output": { "date": "2026-02-04" },
+            "comparison": { "mode": "exact" }
+          }
+        ]
+      },
+      "expected_valid": true
+    },
+    {
+      "id": "validation.dataset.invalid-local-path",
+      "artifact": "evaluation_dataset",
+      "document": {
+        "schema": "pop.evaluation-dataset/0.1",
+        "name": "example.date_converter.cases",
+        "version": "1.0.0",
+        "blueprint": { "path": "date.yaml", "version": "1.0.0" },
+        "cases": [
+          {
+            "id": "written-date",
+            "inputs": { "date": "4 February 2026" },
+            "expected_output": { "date": "2026-02-04" },
+            "comparison": { "mode": "exact" }
+          }
+        ]
+      },
+      "expected_valid": false
+    },
+    {
+      "id": "validation.result.valid-separated-outcomes",
+      "artifact": "evaluation_result",
+      "document": {
+        "schema": "pop.evaluation-result/0.1",
+        "dataset": {
+          "name": "example.date_converter.cases",
+          "version": "1.0.0",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "blueprint": {
+          "id": "example.date_converter",
+          "version": "1.0.0",
+          "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "run": {
+          "id": "conformance-run",
+          "seed": "conformance-seed",
+          "started_at": "2026-02-04T00:00:00Z",
+          "completed_at": "2026-02-04T00:00:01Z",
+          "executor": "example.runtime/1.0.0"
+        },
+        "summary": {
+          "total": 1,
+          "schema_passed": 1,
+          "semantic_passed": 1,
+          "failed": 0,
+          "errors": 0
+        },
+        "cases": [
+          {
+            "id": "written-date",
+            "status": "passed",
+            "schema_valid": true,
+            "semantic_valid": true,
+            "duration_ms": 1
+          }
+        ]
+      },
+      "expected_valid": true
+    },
+    {
+      "id": "validation.result.invalid-value-leak",
+      "artifact": "evaluation_result",
+      "document": {
+        "schema": "pop.evaluation-result/0.1",
+        "dataset": {
+          "name": "example.date_converter.cases",
+          "version": "1.0.0",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "blueprint": {
+          "id": "example.date_converter",
+          "version": "1.0.0",
+          "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "run": {
+          "id": "conformance-run",
+          "started_at": "2026-02-04T00:00:00Z",
+          "completed_at": "2026-02-04T00:00:01Z",
+          "executor": "example.runtime/1.0.0"
+        },
+        "summary": {
+          "total": 1,
+          "schema_passed": 1,
+          "semantic_passed": 1,
+          "failed": 0,
+          "errors": 0
+        },
+        "cases": [
+          {
+            "id": "written-date",
+            "status": "passed",
+            "schema_valid": true,
+            "semantic_valid": true,
+            "duration_ms": 1,
+            "actual_output": { "date": "2026-02-04" }
+          }
+        ]
+      },
+      "expected_valid": false
+    },
+    {
+      "id": "validation.package.valid-data-only",
+      "artifact": "blueprint_package",
+      "document": {
+        "schema": "pop.blueprint-package/0.1",
+        "package": {
+          "name": "example.date_blueprints",
+          "namespace": "example.date",
+          "version": "1.0.0",
+          "license": "Apache-2.0"
+        },
+        "compatibility": { "pop": "^0.1.0" },
+        "blueprints": [
+          { "id": "example.date_converter", "version": "1.0.0", "path": "blueprints/date.json" }
+        ],
+        "files": {
+          "blueprints/date.json": "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        }
+      },
+      "expected_valid": true
+    },
+    {
+      "id": "validation.package.invalid-executable-entry",
+      "artifact": "blueprint_package",
+      "document": {
+        "schema": "pop.blueprint-package/0.1",
+        "package": {
+          "name": "example.date_blueprints",
+          "namespace": "example.date",
+          "version": "1.0.0",
+          "license": "Apache-2.0"
+        },
+        "compatibility": { "pop": "^0.1.0" },
+        "blueprints": [
+          { "id": "example.date_converter", "version": "1.0.0", "path": "blueprints/date.json" }
+        ],
+        "files": {
+          "blueprints/date.json": "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        },
+        "entry": "index.js"
+      },
+      "expected_valid": false
+    }
+  ],
+  "comparison": [
+    {
+      "id": "comparison.exact.equal",
+      "comparison": { "mode": "exact" },
+      "expected_output": { "date": "2026-02-04", "valid": true },
+      "actual_output": { "valid": true, "date": "2026-02-04" },
+      "expected_semantic_valid": true
+    },
+    {
+      "id": "comparison.exact.not-equal",
+      "comparison": { "mode": "exact" },
+      "expected_output": { "level": "A" },
+      "actual_output": { "level": "B" },
+      "expected_semantic_valid": false
+    },
+    {
+      "id": "comparison.fields.ignore-unselected",
+      "comparison": { "mode": "fields", "pointers": ["/level"] },
+      "expected_output": { "level": "A", "explanation": "expected wording" },
+      "actual_output": { "level": "A", "explanation": "different wording" },
+      "expected_semantic_valid": true
+    },
+    {
+      "id": "comparison.set.order-and-duplicates",
+      "comparison": { "mode": "set", "pointer": "/cities" },
+      "expected_output": { "cities": ["Paris", "London"] },
+      "actual_output": { "cities": ["London", "Paris", "Paris"] },
+      "expected_semantic_valid": true
+    },
+    {
+      "id": "comparison.numeric.within-absolute-tolerance",
+      "comparison": {
+        "mode": "numeric_tolerance",
+        "pointers": ["/amount"],
+        "absolute_tolerance": 0.01
+      },
+      "expected_output": { "amount": 10 },
+      "actual_output": { "amount": 10.009 },
+      "expected_semantic_valid": true
+    },
+    {
+      "id": "comparison.numeric.outside-relative-tolerance",
+      "comparison": {
+        "mode": "numeric_tolerance",
+        "pointers": ["/amount"],
+        "relative_tolerance": 0.01
+      },
+      "expected_output": { "amount": 100 },
+      "actual_output": { "amount": 102 },
+      "expected_semantic_valid": false
+    },
+    {
+      "id": "comparison.schema.valid-object",
+      "comparison": { "mode": "schema" },
+      "output_schema": {
+        "type": "object",
+        "required": ["level"],
+        "properties": { "level": { "enum": ["A", "B", "C"] } }
+      },
+      "expected_output": { "level": "A" },
+      "actual_output": { "level": "C" },
+      "expected_semantic_valid": true
+    },
+    {
+      "id": "comparison.schema.invalid-object",
+      "comparison": { "mode": "schema" },
+      "output_schema": {
+        "type": "object",
+        "required": ["level"],
+        "properties": { "level": { "enum": ["A", "B", "C"] } }
+      },
+      "expected_output": { "level": "A" },
+      "actual_output": { "level": "D" },
+      "expected_semantic_valid": false
+    }
+  ],
+  "runtime": [
+    {
+      "id": "runtime.success.structured-output",
+      "blueprint": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.date_converter",
+        "name": "Convert a written date",
+        "version": "1.0.0",
+        "role": "default",
+        "instructions": "Convert the supplied date to ISO calendar form.",
+        "input_schema": {
+          "type": "object",
+          "required": ["date"],
+          "properties": { "date": { "type": "string", "minLength": 1 } }
+        },
+        "output_schema": {
+          "type": "object",
+          "required": ["date"],
+          "properties": { "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" } }
+        }
+      },
+      "inputs": { "date": "4 February 2026" },
+      "generated_output": { "date": "2026-02-04" },
+      "expected": { "outcome": "success", "output": { "date": "2026-02-04" } }
+    },
+    {
+      "id": "runtime.error.invalid-input-before-generation",
+      "blueprint": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.date_converter",
+        "name": "Convert a written date",
+        "version": "1.0.0",
+        "role": "default",
+        "instructions": "Convert the supplied date to ISO calendar form.",
+        "input_schema": {
+          "type": "object",
+          "required": ["date"],
+          "properties": { "date": { "type": "string", "minLength": 1 } }
+        },
+        "output_schema": {
+          "type": "object",
+          "required": ["date"],
+          "properties": { "date": { "type": "string" } }
+        }
+      },
+      "inputs": { "date": "" },
+      "generated_output": null,
+      "expected": { "outcome": "validation_error", "stage": "input" }
+    },
+    {
+      "id": "runtime.error.invalid-generated-output",
+      "blueprint": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.date_converter",
+        "name": "Convert a written date",
+        "version": "1.0.0",
+        "role": "default",
+        "instructions": "Convert the supplied date to ISO calendar form.",
+        "output_schema": {
+          "type": "object",
+          "required": ["date"],
+          "properties": { "date": { "type": "string" } }
+        }
+      },
+      "inputs": { "date": "4 February 2026" },
+      "generated_output": { "normalized": "2026-02-04" },
+      "expected": { "outcome": "validation_error", "stage": "output" }
+    }
+  ],
+  "capability": [
+    {
+      "id": "capability.supported.required-tool",
+      "blueprint": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.lookup_router",
+        "name": "Select the next route",
+        "version": "1.0.0",
+        "role": "router",
+        "instructions": "Select one route from the supplied table.",
+        "requires": ["example.csv_lookup"],
+        "output_schema": {
+          "type": "object",
+          "required": ["route"],
+          "properties": { "route": { "type": "string" } }
+        }
+      },
+      "supported_capabilities": ["example.csv_lookup"],
+      "expected": { "supported": true }
+    },
+    {
+      "id": "capability.unsupported.required-tool",
+      "blueprint": {
+        "schema": "pop.blueprint/0.1",
+        "id": "example.lookup_router",
+        "name": "Select the next route",
+        "version": "1.0.0",
+        "role": "router",
+        "instructions": "Select one route from the supplied table.",
+        "requires": ["example.csv_lookup"],
+        "output_schema": {
+          "type": "object",
+          "required": ["route"],
+          "properties": { "route": { "type": "string" } }
+        }
+      },
+      "supported_capabilities": [],
+      "expected": { "supported": false, "missing_capability": "example.csv_lookup" }
+    }
+  ]
+}

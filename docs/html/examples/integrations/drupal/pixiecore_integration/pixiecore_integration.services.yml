@@ -1,0 +1,4 @@
+services:
+  pixiecore_integration.client:
+    class: Drupal\pixiecore_integration\PixieCoreClient
+    arguments: ['@http_client']

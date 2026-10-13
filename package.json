@@ -147,6 +147,8 @@
     "check:architecture": "node scripts/check-architecture.mjs",
     "check:blueprint-versions": "node scripts/check-blueprint-versions.mjs",
     "check:docs": "node scripts/check-docs.mjs",
+    "generate:html-docs": "node scripts/generate-html-docs.mjs --write",
+    "check:html-docs": "node scripts/generate-html-docs.mjs",
     "check:source-docs": "node scripts/check-source-file-documentation.mjs && eslint src/core src/plugins",
     "docs:api": "typedoc",
     "check:api-docs": "typedoc --emit none",
@@ -183,7 +185,7 @@
     "update:licenses": "node scripts/check-third-party-licenses.mjs --write",
     "verify:package": "npm run check:core-plugin-catalog && node --import tsx scripts/verify-package.mjs",
     "start": "node dist/core/kernel/cli/index.js serve",
-    "prepack": "npm run check:node-engines && npm run check:licenses && npm run check:core-plugin-catalog && npm run check:blueprint-catalog-site && npm run check:adoption-dashboard && npm run check:architecture && npm run check:blueprint-versions && npm run check:docs && npm run check:source-docs && npm run check:api-docs && npm run build"
+    "prepack": "npm run check:node-engines && npm run check:licenses && npm run check:core-plugin-catalog && npm run check:blueprint-catalog-site && npm run check:adoption-dashboard && npm run check:architecture && npm run check:blueprint-versions && npm run check:docs && npm run check:html-docs && npm run check:source-docs && npm run check:api-docs && npm run build"
   },
   "engines": {
     "node": ">=22.13.0"
@@ -224,6 +226,7 @@
     "eslint": "^10.9.1",
     "eslint-plugin-jsdoc": "^64.2.1",
     "mermaid": "^11.17.2",
+    "marked": "^16.4.2",
     "tsx": "^4.20.3",
     "typedoc": "^0.28.20",
     "typescript": "^5.9.2",

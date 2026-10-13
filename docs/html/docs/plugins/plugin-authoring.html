@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore third-party plugin authoring · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="./apisix.html">apisix</a></li><li><a href="./plugin-authoring.html">plugin authoring</a></li><li><a href="./plugin-layout.html">plugin layout</a></li><li><a href="./plugins.html">plugins</a></li><li><a href="./providers.html">providers</a></li><li><a href="./recipes.html">recipes</a></li><li><a href="./tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/plugins/plugin-authoring.md</code></p><h1 id="pixiecore-third-party-plugin-authoring">PixieCore third-party plugin authoring</h1>
+<p>This guide is the canonical workflow for creating, validating, testing,
+installing, and distributing a third-party PixieCore plugin. Managed plugins run
+as trusted Node.js code with the same process and filesystem permissions as the
+host. PixieCore does not sandbox them. Install and enable only code you trust.</p>
+<h2 id="create-a-project">Create a project</h2>
+<p>Choose one public component kind: <code>agent_role</code>, <code>decorator</code>, <code>tool</code>,
+<code>provider</code>, or <code>extension</code>. An extension contributes a typed value to a
+namespaced extension point owned by another plugin. Core-only <code>service</code> and
+<code>command</code> components are not available to third parties.</p>
+<pre><code class="language-bash">pixiecore plugin create ./weather-tool \
+  --id=acme.weather-tool \
+  --kind=tool
+pixiecore plugin validate ./weather-tool
+pixiecore plugin test ./weather-tool</code></pre>
+<p>An extension project also names its owner-defined point:</p>
+<pre><code class="language-bash">pixiecore plugin create ./company-apisix-policy \
+  --id=acme.company-apisix-policy \
+  --kind=extension \
+  --extension-point=pixiecore.providers.apisix.plugin</code></pre>
+<p>The generated source project is directly testable and has the required
+Drupal-style ownership layout:</p>
+<pre><code class="language-text">weather-tool/
+├── weather-tool.ts       # named TypeScript entry
+├── weather-tool.js       # executable ESM build artifact
+├── weather-tool.yaml     # pixiecore.plugin/v1 manifest
+├── package.json
+├── src/
+│   ├── index.ts
+│   └── index.js
+└── tests/
+    └── weather-tool.test.js</code></pre>
+<p>The directory name must be lowercase kebab-case. The plugin ID must be
+namespaced, its final segment must match the directory name when installed, and
+the <code>pixiecore.*</code> namespace is reserved. Authoring types come only from the
+public, type-only <code>@pixieworks/pixiecore/plugin</code> subpath. APISIX extension projects may also
+use the public <code>@pixieworks/pixiecore/apisix</code> contract. <code>plugin validate</code> rejects imports
+from private PixieCore subpaths.</p>
+<p>Complete source projects for the four execution-component kinds live under
+<a href="../../examples/plugin-authoring/index.html"><code>examples/plugin-authoring</code></a>.
+The recursively owned <a href="./apisix.html">APISIX plugin family</a> demonstrates the
+extension kind.</p>
+<h2 id="what-validate-and-test-guarantee">What validate and test guarantee</h2>
+<p><code>pixiecore plugin validate &lt;path&gt;</code> performs these checks in order:</p>
+<ol>
+<li>named <code>.ts</code> and <code>.yaml</code> entries plus <code>src/</code> and <code>tests/</code> exist;</li>
+<li>at least one <code>tests/**/*.test.*</code> file exists;</li>
+<li>production source does not import a private PixieCore subpath;</li>
+<li>the manifest passes the published <code>@pixieworks/pixiecore/plugin/schema.json</code> contract;</li>
+<li>IDs, SemVer ranges, dependencies, file containment, and component policy
+pass the runtime validator;</li>
+<li>the executable ES module imports and declares every configured export.</li>
+</ol>
+<p><code>pixiecore plugin test &lt;path&gt;</code> repeats validation, runs the plugin-owned Node
+tests, and activates the plugin through a temporary managed consumer. The
+temporary consumer and state file are removed even when activation fails. Both
+commands are offline and do not contact a package registry.</p>
+<h2 id="install-and-activation-state">Install and activation state</h2>
+<p>Install a local source or package directory by creating a project-local
+directory symlink. Pass <code>--enable</code> to update activation state in the same
+operation:</p>
+<pre><code class="language-bash">pixiecore plugin install ../weather-tool \
+  --config=./pixiecore.plugins.yml \
+  --enable
+
+pixiecore plugin disable acme.weather-tool --config=./pixiecore.plugins.yml
+pixiecore plugin enable acme.weather-tool --config=./pixiecore.plugins.yml</code></pre>
+<p><code>install</code> and <code>link</code> are aliases. They never replace a regular file, directory,
+or link to another source. State updates are written to a mode-0600 temporary
+file and atomically renamed. If <code>install --enable</code> cannot update state, a newly
+created link is rolled back. Reinstalling the same source is idempotent.</p>
+<p>Dependencies activate before dependants. A parent plugin may own child plugins
+only in its <code>plugins/</code> directory; child IDs must start with the parent ID plus
+<code>.</code>. Enabling a parent enables its non-disabled descendants. Disabling a parent
+blocks the entire subtree before import. Contribution-name collisions retain
+the documented PixieCore registration and override rules, while duplicate plugin
+IDs, dependency conflicts, and dependency cycles are fatal before activation.
+Each activator and registered closeable is cleaned up once in reverse ownership
+order.</p>
+<h2 id="package-contract">Package contract</h2>
+<p>Use a namespaced npm package such as <code>@acme/pixiecore-plugin-weather-tool</code> and
+SemVer for both package and manifest versions. Declare PixieCore as a peer:</p>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;module&quot;,
+  &quot;files&quot;: [&quot;weather-tool.js&quot;, &quot;weather-tool.yaml&quot;, &quot;src/**/*.js&quot;],
+  &quot;peerDependencies&quot;: { &quot;@pixieworks/pixiecore&quot;: &quot;^0.1.0&quot; },
+  &quot;devDependencies&quot;: { &quot;typescript&quot;: &quot;^5.9.2&quot; },
+  &quot;scripts&quot;: {
+    &quot;typecheck&quot;: &quot;tsc --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 --strict *.ts src/**/*.ts&quot;
+  }
+}</code></pre>
+<p>Compile the named TypeScript entry and its production sources to ESM. Include
+only the named JavaScript entry, manifest, production <code>src/</code>, license, and
+documentation in the published file allowlist. Keep tests and TypeScript source
+in the source repository; they are not part of the integrity inventory.</p>
+<h2 id="provenance-integrity-and-signatures">Provenance, integrity, and signatures</h2>
+<p>Create deterministic distribution metadata after the production build:</p>
+<pre><code class="language-bash">pixiecore plugin provenance ./weather-tool \
+  --pixiecore-range='^0.1.0' \
+  --source=https://github.com/acme/weather-tool.git \
+  --commit=0123456789abcdef
+pixiecore plugin verify ./weather-tool</code></pre>
+<p>This writes <code>pixiecore.plugin.json</code> using the
+<code>pixiecore.plugin-package/v1</code> schema. It binds plugin ID/version, manifest and
+entry paths, the supported PixieCore SemVer range, optional source/commit
+provenance, and a sorted SHA-256 inventory of production files. The schema is
+published at <code>@pixieworks/pixiecore/plugin/package-schema.json</code>. Verification rejects a
+missing, added, or changed production file and an incompatible PixieCore version.
+Symbolic links inside the distributed directory are rejected.</p>
+<p>For signed distribution, use an Ed25519 key whose private half remains outside
+the plugin directory:</p>
+<pre><code class="language-bash">pixiecore plugin sign ./weather-tool --private-key=./release-private.pem
+pixiecore plugin verify ./weather-tool \
+  --public-key=./release-public.pem \
+  --require-signature</code></pre>
+<p>The metadata records a SHA-256 public-key identifier. A valid signature proves
+that the metadata was signed by the supplied key; it does not establish that
+the key or plugin author is trustworthy. Key distribution and trust policy
+belong to the consumer or registry operator.</p>
+<h2 id="local-catalogs">Local catalogs</h2>
+<p>Build a deterministic offline catalog from already downloaded plugin
+directories:</p>
+<pre><code class="language-bash">pixiecore plugin catalog ./vendor-plugins &gt; pixiecore.plugin-catalog.json</code></pre>
+<p>The catalog verifies every discovered <code>pixiecore.plugin.json</code>, sorts entries by
+plugin ID, and rejects duplicate IDs. This is a local catalog format, not a
+hosted registry, dependency downloader, or automatic updater. ECO-04 does not
+grant network access or define a global trust authority.</p>
+<h2 id="upgrade-and-rollback">Upgrade and rollback</h2>
+<ol>
+<li>Build, validate, test, and verify the candidate in a new versioned directory.</li>
+<li>Stop new application work and close the current runtime.</li>
+<li>Atomically replace the installation symlink with one pointing to the
+candidate, leaving the old directory intact.</li>
+<li>Start PixieCore and run an installed-consumer smoke test.</li>
+<li>On failure, restore the previous symlink and restart.</li>
+<li>Remove the old directory only after the rollback window expires.</li>
+</ol>
+<p>Never edit a live installed directory in place: integrity metadata would no
+longer describe it, active imports cannot be unloaded safely, and rollback
+would be ambiguous.</p>
+<p>See also <a href="./plugins.html">plugin runtime behavior</a> and the
+<a href="./plugin-layout.html">recursive plugin layout</a>.</p>
+</main></div>
+  
+</body>
+</html>
