@@ -1,0 +1,42 @@
+schema: pixiecore.recipe/v1
+id: pixiecore.standard
+name: PixieCore Standard
+version: 0.1.0
+description: Installs PixieCore's locked foundation and activates its constructor-visible contributions.
+locked: true
+plugins:
+  - pixiecore.recipe
+  - pixiecore.jit
+  - pixiecore.logging
+  - pixiecore.mcp
+  - pixiecore.multimodal
+  - pixiecore.permissions
+  - pixiecore.providers
+  - pixiecore.providers.openai
+  - pixiecore.providers.anthropic
+  - pixiecore.providers.azure
+  - pixiecore.providers.gemini
+  - pixiecore.providers.apisix
+  - pixiecore.providers.apisix.ai-prompt-guard
+  - pixiecore.providers.apisix.ai-proxy-multi
+  - pixiecore.providers.apisix.ai-rag
+  - pixiecore.providers.apisix.ai-rate-limiting
+  - pixiecore.roles
+  - pixiecore.self-evaluation
+  - pixiecore.tools
+  - pixiecore.validation
+  - pixiecore.runtime
+  - pixiecore.api
+  - pixiecore.cli
+  - pixiecore.mcp-server
+activate:
+  - pixiecore.recipe
+  - pixiecore.permissions
+  - pixiecore.providers.openai
+  - pixiecore.providers.anthropic
+  - pixiecore.providers.azure
+  - pixiecore.providers.gemini
+  - pixiecore.providers.apisix
+  - pixiecore.roles
+  - pixiecore.self-evaluation
+  - pixiecore.validation

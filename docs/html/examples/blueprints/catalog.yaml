@@ -1,0 +1,93 @@
+schema: pixiecore.blueprint-library-catalog/v1
+version: 1.0.0
+owner: pixiecore-maintainers
+units:
+  - id: extractor/travel-document-fields
+    role_family: extractor
+    use_cases:
+      - OCR document field extraction
+      - PDF field extraction
+      - screenshot form autofill
+    path: extractor/travel-document-fields/travel-document-fields.yaml
+    version: 1.1.1
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: classifier/travel-destination-level
+    role_family: classifier
+    use_cases:
+      - travel destination policy classification
+      - city expense tier classification
+    path: classifier/travel-destination-level/travel-destination-level.yaml
+    version: 1.0.2
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: summarizer/travel-request-summary
+    role_family: summarizer
+    use_cases:
+      - travel request summarization
+      - approval brief preparation
+    path: summarizer/travel-request-summary/travel-request-summary.yaml
+    version: 1.0.2
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: validator/travel-request-form
+    role_family: validator
+    use_cases:
+      - web form field validation
+      - travel request policy validation
+    path: validator/travel-request-form/travel-request-form.yaml
+    version: 1.0.1
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: verifier/travel-document-evidence
+    role_family: verifier
+    use_cases:
+      - document evidence verification
+      - submitted field reconciliation
+    path: verifier/travel-document-evidence/travel-document-evidence.yaml
+    version: 1.0.1
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: converter/date-normalizer
+    role_family: converter
+    use_cases:
+      - natural language date normalization
+      - ISO date conversion
+    path: converter/date-normalizer/date-normalizer.yaml
+    version: 1.0.2
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: translator/travel-purpose-localizer
+    role_family: translator
+    use_cases:
+      - business text translation
+      - locale-aware travel purpose localization
+    path: translator/travel-purpose-localizer/travel-purpose-localizer.yaml
+    version: 1.0.1
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null
+  - id: router/travel-approval-routing
+    role_family: router
+    use_cases:
+      - CSV workflow routing
+      - travel approval assignee selection
+    path: router/travel-approval-routing/travel-approval-routing.yaml
+    version: 1.0.2
+    owner: pixiecore-maintainers
+    status: active
+    introduced_in: 0.1.0
+    replacement: null

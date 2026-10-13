@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PixieCore public-contract checklist · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="./0.2-development.html">0.2 development</a></li><li><a href="./adoption-dashboard.html">adoption dashboard</a></li><li><a href="./public-contract-checklist.html">public contract checklist</a></li><li><a href="./public-surface-audit.html">public surface audit</a></li><li><a href="./release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="./release-policy.html">release policy</a></li><li><a href="./review-policy.html">review policy</a></li><li><a href="./threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/project/public-contract-checklist.md</code></p><h1 id="pixiecore-public-contract-checklist">PixieCore public-contract checklist</h1>
+<p>Audit date: 2026-08-24</p>
+<p>This checklist records the repository-owned PixieCore contract. Its evidence is
+the public package surface, documentation, schemas, examples, and deterministic
+automated tests in this repository.</p>
+<h2 id="contract-coverage">Contract coverage</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Evidence</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Blueprint loading and validation</td>
+<td>Blueprint contract and runtime tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Blueprint version transitions and compatibility classification</td>
+<td>Git-base CI policy and architecture tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Typed inputs, input JSON Schema, and decoded prompt delivery outside placeholder spans</td>
+<td>Input, prompt-rendering, and built-in-role runtime contract tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Structured output and self-evaluation</td>
+<td>Validation and decorator tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Human-review handoff, receipt, and integrity linkage</td>
+<td>Review contract and published-schema tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Portable RAG metadata and explicit scoped indexing/retrieval boundary</td>
+<td>RAG contract, authorization, poisoned-store, tool-scope, and published-schema tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Blueprint evaluation runner, comparison, seeded property corpus, artifact, and replay</td>
+<td>Evaluation contract, schema, and CLI integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Evidence-admitted deterministic execution</td>
+<td>Closed data vocabulary, repeated dataset/model admission, value-free report, digest-bound promotion, opt-in fallback runtime, and three published schemas</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Reference Blueprint quality catalog with provider/model, dataset, score, and license evidence</td>
+<td>Catalog schema and cross-artifact contract tests</td>
+<td>Offline baseline covered; remote evidence blocked</td>
+</tr>
+<tr>
+<td>Code-first application composition and lifecycle boundary</td>
+<td>Five-node publication and nine-execution/eight-Role travel applications, with <code>@pixieworks/pixiecore/application</code> preflight, edge validation, explicit failure/retry ownership, partial results, and value-free versioned traces</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Atomic reference Blueprint units, fixtures, semantic datasets, and offline contracts</td>
+<td>Travel-document Extractor, destination Classifier, travel-request Summarizer, form Validator, evidence Verifier, date-normalizer Converter, protected-term Translator / Localizer, CSV Router / Orchestrator, and public evaluation runner tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Provider protocols and multimodal input</td>
+<td>Provider contract and HTTP-mocked integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Standard and pseudo tool calls</td>
+<td>Tool contract and multi-round integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Plugin discovery, activation, and cleanup</td>
+<td>Plugin architecture, contract, and integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>MCP discovery, transport, recovery, and cleanup</td>
+<td>MCP contract and integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>REST API, uploads, authentication, and CORS</td>
+<td>API contract and integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Logging, sanitization, audit, and rotation</td>
+<td>Logging contract tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Security support, private disclosure, release signing, and provenance policy</td>
+<td>Security policy, threat model, and release gates</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Tenant-safe content and version-pinned Blueprint execution caching</td>
+<td>Cache contract, default-sensitive bypass, installed-package smoke, and record-schema tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>CLI execution, service lifecycle, and MCP stdio</td>
+<td>CLI architecture and integration tests</td>
+<td>Covered</td>
+</tr>
+<tr>
+<td>Package exports, declarations, schemas, conformance fixtures, and two smoke Blueprints</td>
+<td>Packed-artifact verification with an unpacked-size and file-count budget</td>
+<td>Covered</td>
+</tr>
+</tbody></table>
+<p>No default PixieCore test uses paid provider credentials. Live provider calls
+require both <code>PIXIECORE_RUN_LIVE_TESTS=true</code> and an explicit
+<code>PIXIECORE_LIVE_PROVIDERS</code> list.</p>
+<h2 id="public-documentation-inventory">Public documentation inventory</h2>
+<table>
+<thead>
+<tr>
+<th>PixieCore material</th>
+<th>Contract responsibility</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>README.md</code></td>
+<td>Installation, first execution, public entry points, and documentation index</td>
+</tr>
+<tr>
+<td><code>docs/guides/getting-started.md</code></td>
+<td>Five-minute offline quickstart and canonical learning path</td>
+</tr>
+<tr>
+<td><code>docs/guides/tutorial.md</code></td>
+<td>Thirty-minute Blueprint authoring, testing, and composition workflow</td>
+</tr>
+<tr>
+<td><code>docs/architecture/architecture.md</code></td>
+<td>Runtime flow, source layers, extension, lifecycle, and ownership boundaries</td>
+</tr>
+<tr>
+<td><code>docs/guides/migration-guide.md</code></td>
+<td>Incremental migration and rollback from common existing designs</td>
+</tr>
+<tr>
+<td><code>docs/specification/pop-concepts.md</code></td>
+<td>POP terminology, responsibility boundaries, and current composition scope</td>
+</tr>
+<tr>
+<td><code>docs/specification/pop-overview.md</code></td>
+<td>Thirty-second explanation, one-page model, and demonstration narrative</td>
+</tr>
+<tr>
+<td><code>docs/architecture/application-composition.md</code></td>
+<td>Code-first composition, mapping, cancellation, failure, retry, and lifecycle ownership</td>
+</tr>
+<tr>
+<td><code>docs/architecture/blueprint-granularity.md</code></td>
+<td>Blueprint boundaries, examples, anti-patterns, and review checklist</td>
+</tr>
+<tr>
+<td><code>docs/blueprints/blueprint-library.md</code></td>
+<td>Reference-library directory, stable IDs, SemVer, ownership, and deprecation</td>
+</tr>
+<tr>
+<td><code>docs/blueprints/blueprints.md</code></td>
+<td>Blueprint fields, input schemas, localization, permissions, and execution order</td>
+</tr>
+<tr>
+<td><code>docs/blueprints/evaluation.md</code></td>
+<td>Versioned dataset/result formats, semantic comparisons, runner, and replay</td>
+</tr>
+<tr>
+<td><code>docs/runtime/jit.md</code></td>
+<td>Closed deterministic-program boundary, admission, promotion, replay, fallback, and artifact schemas</td>
+</tr>
+<tr>
+<td><code>docs/runtime/human-review.md</code></td>
+<td>Human-review handoff, receipt, integrity, and host boundaries</td>
+</tr>
+<tr>
+<td><code>docs/integrations/integrations.md</code></td>
+<td>MCP, LangChain/LangGraph, and Drupal integration boundaries and examples</td>
+</tr>
+<tr>
+<td><code>docs/runtime/rag-metadata.md</code></td>
+<td>Portable RAG metadata fields, policy labels, and retrieval boundary</td>
+</tr>
+<tr>
+<td><code>docs/guides/configuration.md</code></td>
+<td>Configuration sources, validation, and precedence</td>
+</tr>
+<tr>
+<td><code>docs/runtime/logging.md</code></td>
+<td>Logging variables, sanitization, audit records, and rotation</td>
+</tr>
+<tr>
+<td><code>docs/runtime/mcp.md</code></td>
+<td>MCP discovery, configuration, merge order, recovery, and cleanup</td>
+</tr>
+<tr>
+<td><code>docs/plugins/plugins.md</code></td>
+<td>Plugin discovery, component kinds, activation, and lifecycle</td>
+</tr>
+<tr>
+<td><code>docs/plugins/providers.md</code></td>
+<td>Provider authentication, schemas, tools, files, models, and errors</td>
+</tr>
+<tr>
+<td><code>docs/runtime/rest-api.md</code></td>
+<td>Endpoints, authentication, uploads, limits, errors, and CORS</td>
+</tr>
+<tr>
+<td><code>docs/project/review-policy.md</code></td>
+<td>Blueprint, plugin, and POP specification review and ownership evidence</td>
+</tr>
+<tr>
+<td><code>docs/plugins/tools.md</code></td>
+<td>Tool registration, selection, execution rounds, and name mapping</td>
+</tr>
+<tr>
+<td><code>examples/</code></td>
+<td>Repository-owned, type-checked usage examples; only <code>hello.yaml</code> and <code>analyze.yaml</code> are runtime-package smoke fixtures</td>
+</tr>
+</tbody></table>
+<h2 id="intentional-typescript-design-decisions">Intentional TypeScript design decisions</h2>
+<ul>
+<li>Runtime APIs are asynchronous and use camelCase, including <code>executeYaml</code>,
+<code>strictValidation</code>, and <code>mcpConfigPath</code>.</li>
+<li>Exported failures share the <code>PixieCoreError</code> base and stable code strings.</li>
+<li><code>await using</code> and <code>Symbol.asyncDispose</code> provide deterministic async cleanup.</li>
+<li>Plugins are trusted ES modules with explicit manifests and package exports.</li>
+<li>REST upload fields, filenames, base64 content, and aggregate request limits are
+validated before runtime execution.</li>
+<li>Performance distributions and live provider latency are not stable functional
+contracts because they depend on runtime, network, and service state.</li>
+</ul>
+<h2 id="release-gate">Release gate</h2>
+<p>The release worktree must pass:</p>
+<pre><code class="language-bash">npm test
+npm run test:contract
+npm run test:integration
+npm run test:coverage
+npm run typecheck
+npm run build
+npm run check:conformance
+npm run check:conformance:independent
+npm run check:architecture
+npm run check:blueprint-versions
+npm run check:docs
+npm run check:licenses
+npm run verify:package
+npm audit --omit=dev --audit-level=high</code></pre>
+<p>Coverage is limited to <code>src/**/*.ts</code> and enforces the configured line,
+function, and branch floors. Package verification creates and installs the
+actual tarball in an isolated consumer, then checks exports, declarations,
+schemas, conformance fixtures, the two smoke Blueprints, runtime behavior, HTTP
+behavior, CLI execution, notices, managed-plugin policy, and the package
+footprint budget. Full examples, benchmark evidence, and public documentation
+remain versioned repository assets instead of being duplicated into every
+runtime installation.</p>
+</main></div>
+  
+</body>
+</html>

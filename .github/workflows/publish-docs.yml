@@ -1,0 +1,65 @@
+name: Publish documentation
+
+on:
+  pull_request:
+    branches: [0.2.x]
+    paths:
+      - '.github/workflows/publish-docs.yml'
+      - '**/*.md'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/generate-html-docs.mjs'
+  push:
+    branches: [0.2.x]
+    paths:
+      - '.github/workflows/publish-docs.yml'
+      - '**/*.md'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'scripts/generate-html-docs.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+      - run: npm ci
+      - run: npm run check:html-docs
+
+  publish:
+    if: github.event_name == 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+      - run: npm ci
+      - run: npm run generate:html-docs
+      - name: Assemble the Pages artifact
+        run: |
+          mkdir -p _site/docs
+          cp -R docs/html _site/docs/html
+          printf '%s\n' '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=docs/html/index.html"><title>PixieCore Documentation</title></head><body><a href="docs/html/index.html">PixieCore Documentation</a></body></html>' > _site/index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

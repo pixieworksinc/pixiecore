@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>POP-RFC-0001: Instruction text delivery · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="./0000-template.html">0000 template</a></li><li><a href="./0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="./0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="./0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="./0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="./index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/rfcs/0001-instruction-text-delivery.md</code></p><h1 id="pop-rfc-0001-instruction-text-delivery">POP-RFC-0001: Instruction text delivery</h1>
+<ul>
+<li>Status: draft</li>
+<li>Authors: naoi</li>
+<li>Change class: compatible normative</li>
+<li>Created: 2026-08-25</li>
+<li>Proposed review start: not started</li>
+<li>Decision date: not decided</li>
+<li>Discussion: not opened</li>
+<li>Affected artifacts: proposed POP Core 0.2 optional capability and conformance suite; POP Core 0.1 and its schemas and suite remain unchanged</li>
+<li>Conflicts and recusals: none disclosed</li>
+<li>Supersedes: none</li>
+<li>Superseded by: none</li>
+</ul>
+<p>This draft has no normative effect. The capitalized requirements below describe
+the contract that would apply only if this RFC is accepted and published in a
+new POP minor line.</p>
+<h2 id="summary">Summary</h2>
+<p>Define an optional <code>pop.runtime.instruction-text-preservation</code> capability for
+runtimes that preserve decoded instruction text while resolving declared
+inputs. Add a language-neutral black-box fixture that observes effective
+instructions, Role, and cognitive-execution count without prescribing provider
+messages or a runtime-specific placeholder dialect.</p>
+<h2 id="motivation-and-scope">Motivation and scope</h2>
+<p>Artifact-schema validation proves that two runtimes accept the same abstract
+Blueprint. It does not prove that they deliver the same instructions. A runtime
+can trim text, collapse blank lines, alter indentation, reorder lines, silently
+substitute a Role, or split one Blueprint into multiple cognitive requests and
+still pass the POP Core 0.1 structural cases.</p>
+<p>This proposal covers the boundary after a serialization adapter has decoded a
+Blueprint into the POP abstract data model and before the selected cognitive
+mechanism executes. It includes declared input resolution, effective Role, and
+the number of cognitive executions started for one Blueprint invocation.</p>
+<p>It does not:</p>
+<ul>
+<li>require Gherkin or assign semantics to <code>Given</code>, <code>When</code>, or <code>Then</code>;</li>
+<li>standardize a placeholder spelling in YAML, JSON, or a host runtime;</li>
+<li>require a provider-specific <code>system</code> or <code>user</code> message layout;</li>
+<li>prohibit explicit, declared localization or custom Role behavior;</li>
+<li>define output quality, model determinism, retries, or Tool rounds; or</li>
+<li>change POP Core 0.1 or its existing conformance results.</li>
+</ul>
+<h2 id="specification">Specification</h2>
+<p>The proposed capability identifier is
+<code>pop.runtime.instruction-text-preservation</code>.</p>
+<p>A runtime claiming this capability MUST expose a conformance adapter that
+accepts:</p>
+<ol>
+<li>one valid abstract Blueprint;</li>
+<li>normalized business inputs;</li>
+<li>adapter-declared input-binding metadata; and</li>
+<li>a capture cognitive executor that performs no remote call.</li>
+</ol>
+<p>The adapter-declared binding metadata identifies the input references in the
+runtime&#39;s native serialization. This metadata is test-harness input, not a new
+portable Blueprint placeholder syntax.</p>
+<p>For one captured invocation, the adapter MUST return:</p>
+<ul>
+<li>the effective instruction string presented to the Role boundary;</li>
+<li>the effective Role identifier; and</li>
+<li>the number of cognitive executions started.</li>
+</ul>
+<p>The effective instruction string MUST equal the serialization-decoded
+instruction string after only the declared input-reference spans have been
+replaced with their resolved values. Every other Unicode scalar value, line
+break, blank line, indentation character, repeated space, and line order MUST
+remain unchanged.</p>
+<p>A missing required input MUST fail before cognitive execution. A runtime MUST
+NOT report this capability if an undeclared normalization changes the effective
+instruction string. The runtime MUST report an unsupported Role and MUST NOT
+silently substitute another Role, as already required by POP Core 0.1.</p>
+<p>The capture executor MUST record one cognitive execution for one successful
+atomic Blueprint invocation. Output-correction retries and Tool rounds remain
+separate metadata and are outside the fixture&#39;s initial success path.</p>
+<p>Custom Role behavior is allowed only when the Role is explicitly named by the
+Blueprint. A conformance report MUST identify that Role. The generic
+preservation fixture uses a Role whose adapter contract forwards the effective
+instruction string without transforming it.</p>
+<h3 id="proposed-black-box-fixture">Proposed black-box fixture</h3>
+<p>The future conformance-suite schema would encode the following logical case.
+The illustrative JSON is not an accepted schema or fixture identifier:</p>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;runtime.instruction-text-preservation&quot;,
+  &quot;capability&quot;: &quot;pop.runtime.instruction-text-preservation&quot;,
+  &quot;decoded_instructions&quot;: &quot;Feature: Preserve text\n\n    Scenario: Keep indentation\n      Given first  value\n\n\n      When resolving &lt;binding:value&gt;\n      Then keep trailing spaces  &quot;,
+  &quot;normalized_inputs&quot;: {
+    &quot;value&quot;: &quot;fixture-value&quot;
+  },
+  &quot;bindings&quot;: [
+    {
+      &quot;token&quot;: &quot;&lt;binding:value&gt;&quot;,
+      &quot;input&quot;: &quot;value&quot;
+    }
+  ],
+  &quot;expected&quot;: {
+    &quot;effective_instructions&quot;: &quot;Feature: Preserve text\n\n    Scenario: Keep indentation\n      Given first  value\n\n\n      When resolving fixture-value\n      Then keep trailing spaces  &quot;,
+    &quot;role&quot;: &quot;example.capture_role&quot;,
+    &quot;cognitive_execution_count&quot;: 1
+  }
+}</code></pre>
+<p>Before publication, the placeholder-like <code>token</code> above MUST be represented as
+an explicit string span or another dialect-neutral binding structure in the
+suite schema. It MUST NOT become a required authoring syntax. Each runtime
+adapter maps that abstract binding to its native artifact and reports the
+mapping used.</p>
+<p>Negative cases MUST detect trimming, blank-line collapse, reindentation,
+line-order changes, substitution outside declared spans, silent Role fallback,
+and more than one cognitive execution on the success path.</p>
+<h2 id="compatibility-and-migration">Compatibility and migration</h2>
+<p>This is proposed as a compatible normative change because the capability is
+optional and would be published only in a new POP minor line. Existing POP Core
+0.1 artifacts, profiles, suite results, and claims remain valid and unchanged.</p>
+<p>A runtime would migrate by adding the capture adapter, reporting the capability
+only after its fixture passes, and documenting any explicit custom Role
+transformation. Removing the capability restores the prior claim surface and is
+the rollback path. No existing POP identifier would be overwritten.</p>
+<h2 id="security-privacy-cost-and-interoperability">Security, privacy, cost, and interoperability</h2>
+<p>The fixture uses synthetic local values and a no-network capture executor, so
+it adds no provider cost. Conformance reports MUST NOT include production
+instructions, credentials, or business inputs. Implementations SHOULD expose
+only fixture-derived instruction text in portable reports.</p>
+<p>Exact delivery improves interoperability by making silent normalization and
+Role substitution observable. It can also preserve malicious whitespace or
+instruction content, but this proposal does not bypass admission, trust,
+authorization, or content policy. Those checks occur before the captured
+cognitive boundary and must remain explicit.</p>
+<h2 id="conformance-and-independent-evidence">Conformance and independent evidence</h2>
+<p>Current evidence is intentionally insufficient for acceptance:</p>
+<ul>
+<li>PixieCore has focused rendering and built-in Role runtime tests for the
+proposed behavior.</li>
+<li>No accepted language-neutral fixture schema exists yet.</li>
+<li>No independent runtime adapter result has been recorded against the same
+dialect-neutral fixture.</li>
+<li>The required negative cases have not been published in a versioned suite.</li>
+</ul>
+<p>Before this RFC can move beyond <code>draft</code>, the proposal needs a concrete suite
+schema, exact future artifact identifiers, a PixieCore adapter result, and at
+least one independent implementation result.</p>
+<h2 id="alternatives">Alternatives</h2>
+<ol>
+<li>Require byte-for-byte preservation of source YAML or JSON. Rejected because
+serialization decoding legitimately changes source bytes while preserving
+the abstract string.</li>
+<li>Standardize <code>{name}</code> or another placeholder spelling in this RFC. Rejected
+because delivery preservation and binding syntax need separate review. A
+portable <code>{{ name }}</code> binding is proposed separately in POP-RFC-0002.</li>
+<li>Compare provider-native message arrays. Rejected because valid runtimes can
+use local code, humans, or different provider protocols.</li>
+<li>Leave this to implementation regression tests. Rejected as a portable goal
+because independent runtimes could continue claiming the same profile while
+delivering materially different instructions.</li>
+</ol>
+<h2 id="review-record">Review record</h2>
+<ul>
+<li>2026-08-25: initial draft; public discussion and review have not started.</li>
+</ul>
+<h2 id="final-call">Final call</h2>
+<ul>
+<li>Eligible maintainers: not determined</li>
+<li>Recused maintainers: none disclosed</li>
+<li>Votes: none</li>
+<li>Quorum result: not evaluated</li>
+<li>Approval result: not decided</li>
+<li>Unresolved objections: dialect-neutral binding representation and independent evidence remain open</li>
+</ul>
+</main></div>
+  
+</body>
+</html>

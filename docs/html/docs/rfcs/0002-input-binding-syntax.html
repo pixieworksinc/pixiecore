@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>POP-RFC-0002: Portable input binding syntax · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="./0000-template.html">0000 template</a></li><li><a href="./0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="./0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="./0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="./0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="./index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/rfcs/0002-input-binding-syntax.md</code></p><h1 id="pop-rfc-0002-portable-input-binding-syntax">POP-RFC-0002: Portable input binding syntax</h1>
+<ul>
+<li>Status: draft</li>
+<li>Authors: naoi</li>
+<li>Change class: compatible normative</li>
+<li>Created: 2026-08-26</li>
+<li>Proposed review start: not started</li>
+<li>Decision date: not decided</li>
+<li>Discussion: not opened</li>
+<li>Affected artifacts: proposed POP Core 0.2 optional input-binding capability and conformance suite; POP Core 0.1 remains unchanged</li>
+<li>Conflicts and recusals: none disclosed</li>
+<li>Supersedes: none</li>
+<li>Superseded by: none</li>
+</ul>
+<p>This draft has no normative effect. The capitalized requirements below describe
+the contract that would apply only if this RFC is accepted and published in a
+new POP minor line.</p>
+<h2 id="summary">Summary</h2>
+<p>Define <code>{{ name }}</code> as the portable serialized input-binding form for runtimes
+that claim a proposed <code>pop.runtime.mustache-input-binding</code> capability. Define a
+small identifier grammar, value serialization, declaration validation, and a
+language-neutral data fixture. This is variable interpolation inspired by
+Mustache, not a requirement to implement the complete Mustache language.</p>
+<h2 id="motivation-and-scope">Motivation and scope</h2>
+<p>Two runtimes can accept the same Blueprint shape while recognizing different
+input references. Both can preserve instruction text correctly and still send
+an unresolved token to the cognitive executor. Structural JSON Schema and
+byte-preservation tests cannot detect that semantic mismatch.</p>
+<p>The syntax must be implementable without TypeScript in Go, Rust, Java, Python,
+and other host languages. A data-only fixture therefore defines observable
+input and output strings rather than importing a reference implementation.</p>
+<p>This proposal covers:</p>
+<ul>
+<li>serialized input-reference delimiters;</li>
+<li>portable input-name grammar;</li>
+<li>declaration validation;</li>
+<li>scalar, object, array, and null rendering; and</li>
+<li>preservation outside recognized reference spans.</li>
+</ul>
+<p>It does not require Gherkin, full Mustache templates, HTML escaping, nested
+property lookup, provider messages, a specific programming language, or a
+specific serialization format.</p>
+<h2 id="specification">Specification</h2>
+<p>The proposed capability identifier is <code>pop.runtime.mustache-input-binding</code>.</p>
+<p>A runtime claiming this capability MUST recognize a reference written as two
+opening braces, optional ASCII space or tab characters, one portable input name,
+optional ASCII space or tab characters, and two closing braces. The canonical
+authoring form is <code>{{ name }}</code>. A reference cannot span a line boundary.</p>
+<p>A portable input name MUST match <code>[A-Za-z_][A-Za-z0-9_]*</code>. Implementations MAY
+accept additional names or delimiter forms as explicitly documented local
+extensions, but MUST NOT emit them as portable artifacts or require them from
+another conforming runtime.</p>
+<p>Every recognized reference MUST name an input declared by the Blueprint.
+Undeclared references MUST fail validation before any cognitive execution.
+Duplicate input declarations MUST fail validation.</p>
+<p>For a resolved value:</p>
+<ul>
+<li>a string MUST be inserted without surrounding quotes;</li>
+<li>a number or boolean MUST use its JSON lexical representation;</li>
+<li>an array or object MUST use compact JSON serialization;</li>
+<li><code>null</code>, or a declared optional input with no value, MUST become the empty
+string; and</li>
+<li>no executable template expression or property traversal is permitted.</li>
+</ul>
+<p>All text outside recognized reference spans MUST remain unchanged as defined by
+POP-RFC-0001 if that RFC is also accepted. Text that resembles a JSON object but
+does not match the reference grammar MUST remain literal text.</p>
+<p>Triple braces, sections, comments, delimiter-changing tags, partials, lambdas,
+and HTML escaping are outside this capability. An implementation MAY provide
+them under a separately named extension, but portable fixtures do not use them.</p>
+<h2 id="compatibility-and-migration">Compatibility and migration</h2>
+<p>This proposal is compatible for POP Core because it introduces an optional
+capability only in a future minor line. POP Core 0.1 artifacts and conformance
+claims remain unchanged.</p>
+<p>PixieCore 0.x accepts <code>{name}</code> as a documented migration extension and accepts
+flat dotted or hyphenated names for existing Blueprints. Its scaffold and
+packaged examples emit only <code>{{ name }}</code> with portable names. A future removal
+of either extension requires PixieCore&#39;s normal deprecation and version policy.
+The provisional extension-aware identifiers are
+<code>pixiecore.input-binding.single-brace/v1</code> and
+<code>pixiecore.input-binding.flat-dotted-name/v1</code>. POP-RFC-0003 defines how such
+identifiers remain visible without becoming portable Core requirements.</p>
+<p>Other runtimes can migrate by accepting <code>{{ name }}</code> while retaining their old
+syntax for local artifacts. A source-rewrite step is not required for existing
+artifacts unless the runtime chooses to emit the portable capability claim.</p>
+<h2 id="security-privacy-cost-and-interoperability">Security, privacy, cost, and interoperability</h2>
+<p>Declaration validation prevents unnoticed unresolved tokens and catches input
+name mistakes before a provider call. Variable interpolation is not an
+authorization or injection boundary. Applications still own input trust,
+content policy, permissions, and provider data handling.</p>
+<p>The fixture contains synthetic values, makes no network request, and has no
+provider cost. Reports MUST NOT include production instructions, credentials,
+or business inputs.</p>
+<p>The restricted portable grammar avoids dependencies on one host language&#39;s
+identifier, regular-expression, template-engine, or property-access rules.
+Local extensions must remain distinguishable from portable claims.</p>
+<h2 id="conformance-and-independent-evidence">Conformance and independent evidence</h2>
+<p>PixieCore publishes a provisional data-only suite and JSON Schema at:</p>
+<ul>
+<li><code>@pixieworks/pixiecore/instruction-template/conformance-suite.json</code></li>
+<li><code>@pixieworks/pixiecore/instruction-template/conformance-schema.json</code></li>
+<li><code>@pixieworks/pixiecore/instruction-template/conformance-report-schema.json</code></li>
+<li><code>@pixieworks/pixiecore/instruction-template/cross-runtime-comparison-schema.json</code></li>
+</ul>
+<p>The suite contains canonical spaced and compact references, scalar and JSON
+values, null handling, surrounding-text preservation, declaration checks, JSON
+literal rejection, and explicitly non-portable compatibility cases.</p>
+<p>This draft does not yet constrain object-member order. Portable exact-string
+cases therefore use single-member objects. A later revision must either adopt a
+canonical JSON order or define a value-level comparison before using
+multi-member objects as exact cross-runtime evidence.</p>
+<h3 id="provisional-black-box-adapter-protocol">Provisional black-box adapter protocol</h3>
+<p>The provisional adapter protocol identifier is
+<code>pixiecore.instruction-template-adapter/1</code>. It is PixieCore project evidence and
+does not become a POP requirement while this RFC remains a draft.</p>
+<p>An adapter command is invoked as:</p>
+<pre><code class="language-text">&lt;adapter command&gt; --suite &lt;suite.json&gt;</code></pre>
+<p>It MUST read the named JSON suite without rewriting it, MUST execute without
+network access, and MUST write exactly one JSON report to standard output.
+Diagnostics MAY be written to standard error. Exit status <code>0</code> means every
+portable case passed, <code>1</code> means a valid report contains at least one failed
+portable case, and <code>2</code> means the adapter could not read, validate, or execute
+the suite. Extension failures are reported separately and do not invalidate a
+portable capability claim.</p>
+<p>Each render-case result records the rendered instruction, declared Blueprint
+role, effective provider-message role, and provider request count. Each
+validation-case result records whether the Blueprint was accepted, the
+undeclared input names, any stable error code, and provider request count.
+Rejected declaration cases MUST make zero provider requests. A report separates
+portable cases from explicitly documented implementation extensions.</p>
+<p>PixieCore&#39;s adapter is shipped at
+<code>conformance/adapters/pixiecore-instruction-template.mjs</code>. It executes cases
+through <code>PromptRuntime</code> with a capture provider rather than calling the renderer
+as a test helper. Its result conforms to
+<code>pixiecore.instruction-template-conformance-report/v1</code>.</p>
+<p>The packaged runner at
+<code>conformance/runners/compare-instruction-template-reports.mjs</code> validates two
+independently produced reports and compares each case&#39;s expected and observed
+rendering, Blueprint role, effective message role, provider request count, and
+pre-provider validation result. Portable cases determine compatibility;
+implementation extensions remain visible in a separate summary.</p>
+<p>PixieCore contract tests generate a fresh local independent-runtime fixture
+and compare it on every run. The initial public snapshot does not distribute an
+external runtime report. A future independently maintained implementation may
+publish a value-free report through the POP governance process without
+weakening the portable claim.</p>
+<p>Before this RFC can move beyond <code>draft</code>, the fixture identifiers must be moved
+to a proposed POP version and an independent implementation report must be
+reviewed through the POP governance process. PixieCore-only tests remain
+implementation evidence.</p>
+<h2 id="alternatives">Alternatives</h2>
+<ol>
+<li>Keep placeholder spelling implementation-defined. Rejected for this proposal
+because schema-compatible artifacts can then fail only at execution time.</li>
+<li>Standardize <code>{name}</code>. Rejected because single braces collide more easily
+with JSON, prose, and host-language formatting.</li>
+<li>Require a complete Mustache engine. Rejected because sections, escaping,
+partials, and lambdas add behavior that POP input binding does not need.</li>
+<li>Use a TypeScript reference package as the conformance oracle. Rejected
+because POP runtimes are not required to use TypeScript or JavaScript.</li>
+</ol>
+<h2 id="review-record">Review record</h2>
+<ul>
+<li>2026-08-26: initial draft and provisional PixieCore data fixture; public
+discussion and review have not started.</li>
+<li>2026-08-26: defined the provisional black-box command/report protocol and
+added a real-runtime PixieCore adapter; independent evidence remains open.</li>
+<li>2026-08-31: compared a second runtime through the same data-only suite; all
+seven portable cases passed and one PixieCore-only dotted-name extension
+differed as expected.</li>
+<li>2026-09-01: assigned stable PixieCore extension identifiers to the
+single-brace and flat-dotted-name compatibility cases.</li>
+</ul>
+<h2 id="final-call">Final call</h2>
+<ul>
+<li>Eligible maintainers: not determined</li>
+<li>Recused maintainers: none disclosed</li>
+<li>Votes: none</li>
+<li>Quorum result: not evaluated</li>
+<li>Approval result: not decided</li>
+<li>Unresolved objections: governance review and final POP fixture identifiers remain open</li>
+</ul>
+</main></div>
+  
+</body>
+</html>

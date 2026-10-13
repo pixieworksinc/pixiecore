@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>POP-RFC-0004: Restore prompt-first business logic · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="../architecture/application-composition.html">application composition</a></li><li><a href="../architecture/architecture.html">architecture</a></li><li><a href="../architecture/blueprint-granularity.html">blueprint granularity</a></li><li><a href="../architecture/class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="../architecture/class-diagrams.html">class diagrams</a></li><li><a href="../architecture/monolithic-comparison.html">monolithic comparison</a></li><li><a href="../architecture/source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="./0000-template.html">0000 template</a></li><li><a href="./0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="./0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="./0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="./0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="./index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/rfcs/0004-prompt-first-business-logic.md</code></p><h1 id="pop-rfc-0004-restore-prompt-first-business-logic">POP-RFC-0004: Restore prompt-first business logic</h1>
+<ul>
+<li>Status: draft</li>
+<li>Authors: Codex, implementing project-owner direction from @naoi</li>
+<li>Change class: incompatible normative</li>
+<li>Created: 2026-10-04</li>
+<li>Proposed review start: not started</li>
+<li>Decision date: not decided</li>
+<li>Discussion: <a href="https://github.com/pixieworksinc/pixiecore/tree/0.2.x">https://github.com/pixieworksinc/pixiecore/tree/0.2.x</a></li>
+<li>Affected artifacts: POP abstract model, Blueprint granularity, Role semantics;
+future portable specification and schemas</li>
+<li>Conflicts and recusals: no independent approval or community consensus claimed</li>
+<li>Supersedes: none; proposes replacement of the POP 0.1 conceptual restrictions</li>
+<li>Superseded by: none</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<p>Define POP as direct LLM execution of prompt-defined business behavior, including
+deterministic policies, and allow several reasoning Roles inside one Blueprint.
+Do not require authors to partition logic into deterministic code and cognitive
+functions.</p>
+<h2 id="motivation-and-scope">Motivation and scope</h2>
+<p>The supplied original specifications and presentations, together with the
+owner&#39;s explicit clarification, establish the direction recorded in
+<a href="../specification/pop-principles.html">POP principles</a>. The later one-cognitive-verb
+restriction and ordinary-code recommendation changed the intended research
+question. This proposal restores the original scope while preserving structural
+validation, evaluation, transport, and capability controls.</p>
+<h2 id="specification">Specification</h2>
+<p>Proposed requirements for a future portable profile:</p>
+<ul>
+<li>A Blueprint MAY declare a deterministic business specification.</li>
+<li>A Blueprint MAY decompose that specification into ordered reasoning Roles.</li>
+<li>A runtime claiming the LLM-execution profile MUST deliver that business logic
+to the model and MUST NOT silently replace it with host-code policy execution.</li>
+<li>Runtime parsing, binding, structural validation, and explicit external
+capabilities MAY use ordinary code.</li>
+<li>A quality claim MUST distinguish structural validity from semantic accuracy
+and identify the evidence used.</li>
+</ul>
+<p>The experimental PixieCore representation uses a structured Scenario object
+that is serialized to instruction text. It does not establish a portable
+serialization identifier or claim that array order guarantees model compliance.</p>
+<h2 id="compatibility-and-migration">Compatibility and migration</h2>
+<p>Text Blueprints and registered Role plugin contracts remain supported. The
+experimental validator returns normalized text in <code>Blueprint.prompt</code>, including
+for structured source input. The current PixieCore schema alias points to a new
+v2 asset; v1 remains separately exported and unchanged.</p>
+<p>POP 0.1 identifiers, conformance claims, and independently validated fixtures
+remain unchanged. This RFC does not amend them in place or claim completed
+quorum. A future accepted incompatible portable specification needs its own
+version, schemas, migration rules, and independent validation under existing
+governance. A <code>0.2.x</code> runtime branch does not imply a portable POP 0.2 release.</p>
+<p>Rollback restores the prior runtime and schema alias. A structured Blueprint
+can be migrated to 0.1 by serializing its prompt as YAML text; the business
+instructions stay in the prompt rather than being rewritten as TypeScript.</p>
+<h2 id="security-privacy-cost-and-interoperability">Security, privacy, cost, and interoperability</h2>
+<p>Scenario Roles grant no plugin or tool access. Existing authorization,
+tool allowlists, and output-schema validation still apply. No additional
+external side effects or logging fields are introduced. Business instructions
+and supplied inputs are visible to the selected model provider as before.</p>
+<p>Model execution can cost more and be less reliable than ordinary arithmetic.
+Repeated evaluation must measure those costs and failure rates. This proposal
+preserves POP&#39;s experiment rather than making an unmeasured reliability claim.</p>
+<h2 id="conformance-and-independent-evidence">Conformance and independent evidence</h2>
+<ul>
+<li>PixieCore v2 JSON Schema and runtime-validator positive/negative tests.</li>
+<li>Provider-capture tests for Role order, input binding, and a single invocation.</li>
+<li>A schema-valid wrong discount is returned unchanged by the runtime and
+rejected by semantic evaluation, proving there is no hidden host correction.</li>
+<li>An 18-case synthetic discount dataset covers Boolean boundaries and arithmetic.</li>
+<li>Real-model accuracy and independent portable-profile validation remain pending.</li>
+</ul>
+<h2 id="alternatives">Alternatives</h2>
+<p>Keeping only atomic cognitive operations would preserve the conceptual drift.
+Rewriting deterministic logic as Tools would remove the requested LLM
+accuracy challenge. Removing all runtime code would also remove the mechanics
+needed to load Blueprints, call providers, and measure results.</p>
+<h2 id="review-record">Review record</h2>
+<p>Initial implementation is confined to the owner-requested <code>0.2.x</code> development
+branch. Formal portable review has not started.</p>
+<h2 id="final-call">Final call</h2>
+<p>Not held. No votes, quorum, approval, or independent review are claimed.</p>
+</main></div>
+  
+</body>
+</html>

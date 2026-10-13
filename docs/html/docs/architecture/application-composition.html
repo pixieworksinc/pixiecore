@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Application composition · PixieCore Documentation</title>
+  <link rel="stylesheet" href="../../assets/docs.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="../../index.html">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
+  <div class="layout"><aside class="sidebar"><a class="home-link" href="../../index.html">Documentation home</a><details class="doc-list"><summary>Browse all documentation</summary><section><h2>.github</h2><ul><li><a href="../../.github/pull_request_template.html">pull_request_template</a></li></ul></section><section><h2>Repository</h2><ul><li><a href="../../CHANGELOG.html">CHANGELOG</a></li><li><a href="../../CODE_OF_CONDUCT.html">CODE_OF_CONDUCT</a></li><li><a href="../../CONTRIBUTING.html">CONTRIBUTING</a></li><li><a href="../../GOVERNANCE.html">GOVERNANCE</a></li><li><a href="../../MAINTAINERS.html">MAINTAINERS</a></li><li><a href="../../README.html">Repository</a></li><li><a href="../../SECURITY.html">SECURITY</a></li><li><a href="../../THIRD_PARTY_NOTICES.html">THIRD_PARTY_NOTICES</a></li></ul></section><section><h2>docs</h2><ul><li><a href="../index.html">docs</a></li></ul></section><section><h2>docs / architecture</h2><ul><li><a href="./application-composition.html">application composition</a></li><li><a href="./architecture.html">architecture</a></li><li><a href="./blueprint-granularity.html">blueprint granularity</a></li><li><a href="./class-diagram-blueprint-application.html">class diagram blueprint application</a></li><li><a href="./class-diagrams.html">class diagrams</a></li><li><a href="./monolithic-comparison.html">monolithic comparison</a></li><li><a href="./source-documentation.html">source documentation</a></li></ul></section><section><h2>docs / blueprints</h2><ul><li><a href="../blueprints/blueprint-library.html">blueprint library</a></li><li><a href="../blueprints/blueprint-packages.html">blueprint packages</a></li><li><a href="../blueprints/blueprint-publishing.html">blueprint publishing</a></li><li><a href="../blueprints/blueprints.html">blueprints</a></li><li><a href="../blueprints/evaluation.html">evaluation</a></li><li><a href="../blueprints/ocr-demo.html">ocr demo</a></li></ul></section><section><h2>docs / decisions</h2><ul><li><a href="../decisions/0000-template.html">0000 template</a></li><li><a href="../decisions/0001-project-governance.html">0001 project governance</a></li><li><a href="../decisions/0002-pop-governance.html">0002 pop governance</a></li><li><a href="../decisions/0003-deferred-execution-boundary.html">0003 deferred execution boundary</a></li><li><a href="../decisions/0004-hosted-blueprint-registry.html">0004 hosted blueprint registry</a></li><li><a href="../decisions/0005-hosted-control-plane.html">0005 hosted control plane</a></li><li><a href="../decisions/0006-standard-plugin-recipe.html">0006 standard plugin recipe</a></li><li><a href="../decisions/0007-remove-preset-layer.html">0007 remove preset layer</a></li><li><a href="../decisions/0008-colocate-recipe-plugin.html">0008 colocate recipe plugin</a></li><li><a href="../decisions/0009-group-repeated-source-prefixes.html">0009 group repeated source prefixes</a></li><li><a href="../decisions/0010-fractal-directory-ownership.html">0010 fractal directory ownership</a></li><li><a href="../decisions/0011-prompt-first-0.2-development.html">0011 prompt first 0.2 development</a></li><li><a href="../decisions/index.html">docs / decisions</a></li></ul></section><section><h2>docs / guides</h2><ul><li><a href="../guides/configuration.html">configuration</a></li><li><a href="../guides/getting-started.html">getting started</a></li><li><a href="../guides/migration-guide.html">migration guide</a></li><li><a href="../guides/node-compatibility.html">node compatibility</a></li><li><a href="../guides/tutorial.html">tutorial</a></li></ul></section><section><h2>docs / integrations</h2><ul><li><a href="../integrations/integrations.html">integrations</a></li></ul></section><section><h2>docs / plugins</h2><ul><li><a href="../plugins/apisix.html">apisix</a></li><li><a href="../plugins/plugin-authoring.html">plugin authoring</a></li><li><a href="../plugins/plugin-layout.html">plugin layout</a></li><li><a href="../plugins/plugins.html">plugins</a></li><li><a href="../plugins/providers.html">providers</a></li><li><a href="../plugins/recipes.html">recipes</a></li><li><a href="../plugins/tools.html">tools</a></li></ul></section><section><h2>docs / project</h2><ul><li><a href="../project/0.2-development.html">0.2 development</a></li><li><a href="../project/adoption-dashboard.html">adoption dashboard</a></li><li><a href="../project/public-contract-checklist.html">public contract checklist</a></li><li><a href="../project/public-surface-audit.html">public surface audit</a></li><li><a href="../project/release-notes-0.1.0.html">release notes 0.1.0</a></li><li><a href="../project/release-policy.html">release policy</a></li><li><a href="../project/review-policy.html">review policy</a></li><li><a href="../project/threat-model.html">threat model</a></li></ul></section><section><h2>docs / rfcs</h2><ul><li><a href="../rfcs/0000-template.html">0000 template</a></li><li><a href="../rfcs/0001-instruction-text-delivery.html">0001 instruction text delivery</a></li><li><a href="../rfcs/0002-input-binding-syntax.html">0002 input binding syntax</a></li><li><a href="../rfcs/0003-extension-aware-instruction-representations.html">0003 extension aware instruction representations</a></li><li><a href="../rfcs/0004-prompt-first-business-logic.html">0004 prompt first business logic</a></li><li><a href="../rfcs/index.html">docs / rfcs</a></li></ul></section><section><h2>docs / runtime</h2><ul><li><a href="../runtime/cache.html">cache</a></li><li><a href="../runtime/data-policy.html">data policy</a></li><li><a href="../runtime/human-review.html">human review</a></li><li><a href="../runtime/jit.html">jit</a></li><li><a href="../runtime/logging.html">logging</a></li><li><a href="../runtime/mcp.html">mcp</a></li><li><a href="../runtime/provider-fallback.html">provider fallback</a></li><li><a href="../runtime/rag-metadata.html">rag metadata</a></li><li><a href="../runtime/rest-api.html">rest api</a></li><li><a href="../runtime/telemetry.html">telemetry</a></li></ul></section><section><h2>docs / specification</h2><ul><li><a href="../specification/category-landscape.html">category landscape</a></li><li><a href="../specification/pop-concepts.html">pop concepts</a></li><li><a href="../specification/pop-conformance-0.1.html">pop conformance 0.1</a></li><li><a href="../specification/pop-core-specification-0.1.html">pop core specification 0.1</a></li><li><a href="../specification/pop-governance.html">pop governance</a></li><li><a href="../specification/pop-overview.html">pop overview</a></li><li><a href="../specification/pop-principles.html">pop principles</a></li><li><a href="../specification/pop-schemas-0.1.html">pop schemas 0.1</a></li></ul></section><section><h2>examples / application-composition</h2><ul><li><a href="../../examples/application-composition/index.html">examples / application-composition</a></li></ul></section><section><h2>examples / benchmarks</h2><ul><li><a href="../../examples/benchmarks/index.html">examples / benchmarks</a></li></ul></section><section><h2>examples / blueprints / catalog-site</h2><ul><li><a href="../../examples/blueprints/catalog-site/index.html">examples / blueprints / catalog-site</a></li></ul></section><section><h2>examples / blueprints / classifier / travel-destination-level</h2><ul><li><a href="../../examples/blueprints/classifier/travel-destination-level/index.html">examples / blueprints / classifier / travel-destination-level</a></li></ul></section><section><h2>examples / blueprints / converter / date-normalizer</h2><ul><li><a href="../../examples/blueprints/converter/date-normalizer/index.html">examples / blueprints / converter / date-normalizer</a></li></ul></section><section><h2>examples / blueprints / extractor / travel-document-fields</h2><ul><li><a href="../../examples/blueprints/extractor/travel-document-fields/index.html">examples / blueprints / extractor / travel-document-fields</a></li></ul></section><section><h2>examples / blueprints / router / travel-approval-routing</h2><ul><li><a href="../../examples/blueprints/router/travel-approval-routing/index.html">examples / blueprints / router / travel-approval-routing</a></li></ul></section><section><h2>examples / blueprints / summarizer / travel-request-summary</h2><ul><li><a href="../../examples/blueprints/summarizer/travel-request-summary/index.html">examples / blueprints / summarizer / travel-request-summary</a></li></ul></section><section><h2>examples / blueprints / translator / travel-purpose-localizer</h2><ul><li><a href="../../examples/blueprints/translator/travel-purpose-localizer/index.html">examples / blueprints / translator / travel-purpose-localizer</a></li></ul></section><section><h2>examples / blueprints / validator / travel-request-form</h2><ul><li><a href="../../examples/blueprints/validator/travel-request-form/index.html">examples / blueprints / validator / travel-request-form</a></li></ul></section><section><h2>examples / blueprints / verifier / travel-document-evidence</h2><ul><li><a href="../../examples/blueprints/verifier/travel-document-evidence/index.html">examples / blueprints / verifier / travel-document-evidence</a></li></ul></section><section><h2>examples / comparison / publication-brief</h2><ul><li><a href="../../examples/comparison/publication-brief/index.html">examples / comparison / publication-brief</a></li></ul></section><section><h2>examples / customer-discount</h2><ul><li><a href="../../examples/customer-discount/index.html">examples / customer-discount</a></li></ul></section><section><h2>examples / demos / ocr-document-review</h2><ul><li><a href="../../examples/demos/ocr-document-review/index.html">examples / demos / ocr-document-review</a></li></ul></section><section><h2>examples / integrations</h2><ul><li><a href="../../examples/integrations/index.html">examples / integrations</a></li></ul></section><section><h2>examples / integrations / drupal / executable-specification</h2><ul><li><a href="../../examples/integrations/drupal/executable-specification/index.html">examples / integrations / drupal / executable-specification</a></li></ul></section><section><h2>examples / integrations / drupal / pixiecore_specification</h2><ul><li><a href="../../examples/integrations/drupal/pixiecore_specification/index.html">examples / integrations / drupal / pixiecore_specification</a></li></ul></section><section><h2>examples / plugin-authoring</h2><ul><li><a href="../../examples/plugin-authoring/index.html">examples / plugin-authoring</a></li></ul></section><section><h2>plugins</h2><ul><li><a href="../../plugins/index.html">plugins</a></li></ul></section></details></aside><main class="document"><p class="breadcrumb"><a href="../../index.html">Documentation</a> / <code>docs/architecture/application-composition.md</code></p><h1 id="application-composition">Application composition</h1>
+<p>The <code>0.2.x</code> direction permits multiple reasoning Roles and deterministic
+business policy inside one Blueprint. See
+<a href="../specification/pop-principles.html">POP principles</a> and the
+<a href="../../examples/customer-discount/index.html">Customer discount example</a>.
+The host-composition facilities below remain compatible integration tools;
+their inherited 0.1 decisions do not constrain the restored POP model.</p>
+<p>The inherited 0.1 reference applications execute one small Blueprint at a time and compose those
+calls in ordinary TypeScript and keep orchestration, state, I/O, authorization,
+and side effects outside prompt text.</p>
+<p>The packaged
+<a href="../../examples/application-composition/publication-brief.ts"><code>publication-brief.ts</code></a>
+reference application demonstrates the PixieCore 0.1 composition boundary. It
+imports only <code>PromptRuntime</code> and <code>RuntimeOptions</code> from the public <code>@pixieworks/pixiecore</code>
+entry point; it does not depend on bootstrap, plugin-manager, or other internal
+modules.</p>
+<h2 id="five-node-reference-application">Five-node reference application</h2>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Blueprint operation</th>
+<th>Explicit input source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>extract-brief</code></td>
+<td>Extract title, audience, and source facts</td>
+<td>Application input <code>sourceText</code></td>
+</tr>
+<tr>
+<td><code>classify-brief</code></td>
+<td>Classify the extracted brief</td>
+<td>Extraction output</td>
+</tr>
+<tr>
+<td><code>summarize-brief</code></td>
+<td>Summarize facts without adding claims</td>
+<td>Extraction and classification outputs</td>
+</tr>
+<tr>
+<td><code>validate-brief</code></td>
+<td>Check the summary against source facts</td>
+<td>Extraction and summary outputs</td>
+</tr>
+<tr>
+<td><code>localize-brief</code></td>
+<td>Localize locale-dependent wording</td>
+<td>Summary output and application input <code>locale</code></td>
+</tr>
+</tbody></table>
+<p>Every mapping is a named TypeScript function. There is no automatic field-name
+matching, JSONPath evaluator, implicit coercion, or workflow YAML. Each
+Blueprint remains directly executable and has a standalone evaluation dataset
+under <code>examples/application-composition/evaluations/</code>.</p>
+<p>Inspect the graph and every node&#39;s resolved input/output schema without loading
+application code, starting a runtime, or contacting a provider:</p>
+<pre><code class="language-bash">pixiecore application inspect \
+  ./examples/application-composition/publication-brief.graph.yaml
+pixiecore application inspect \
+  ./examples/application-composition/publication-brief.graph.yaml \
+  --format=mermaid</code></pre>
+<p>The default JSON form retains the complete schemas for tools and diagnostics.
+The Mermaid form shows node IDs, roles, versions, schema field names, and
+edges. The <code>.graph.yaml</code> file is inspection-only metadata: it documents
+Blueprint paths, version pins, and <code>depends_on</code> edges, but cannot execute
+mappings, branching, retries, side effects, or application code.</p>
+<pre><code class="language-ts">import { composePublicationBrief } from
+  './examples/application-composition/publication-brief.js';
+
+const result = await composePublicationBrief({
+  sourceText: 'Release Orion adds a typed publication export.',
+  locale: 'en-US',
+});</code></pre>
+<h2 id="eight-role-travel-approval-application">Eight-Role travel approval application</h2>
+<p>The packaged
+<a href="../../examples/application-composition/travel-approval.ts"><code>travel-approval.ts</code></a>
+application composes every reference Role family:</p>
+<table>
+<thead>
+<tr>
+<th align="right">Order</th>
+<th>Node</th>
+<th>Reference operation</th>
+<th>Mapping owned by host code</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">1</td>
+<td><code>extract-document</code></td>
+<td>Extract eight travel fields and page evidence</td>
+<td>Attachment and requested field list</td>
+</tr>
+<tr>
+<td align="right">2</td>
+<td><code>normalize-start-date</code></td>
+<td>Convert one start date</td>
+<td>Submitted start-date text</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td><code>normalize-end-date</code></td>
+<td>Convert one end date</td>
+<td>Submitted end-date text</td>
+</tr>
+<tr>
+<td align="right">4</td>
+<td><code>classify-destination</code></td>
+<td>Classify one city under supplied policy</td>
+<td>Submitted city/country and policy</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td><code>validate-form</code></td>
+<td>Validate normalized web-form fields</td>
+<td>Converted dates plus submitted facts and rules</td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td><code>verify-evidence</code></td>
+<td>Compare six submitted and extracted values</td>
+<td>Extractor evidence renamed to verifier fields</td>
+</tr>
+<tr>
+<td align="right">7</td>
+<td><code>summarize-request</code></td>
+<td>Produce a factual approval summary</td>
+<td>Normalized facts plus validation/verification notes</td>
+</tr>
+<tr>
+<td align="right">8</td>
+<td><code>localize-summary</code></td>
+<td>Translate while preserving selected terms</td>
+<td>Summary, target locale, policy, and present protected terms</td>
+</tr>
+<tr>
+<td align="right">9</td>
+<td><code>route-approval</code></td>
+<td>Recommend the next user from CSV</td>
+<td>Classified level, request cost, and versioned table</td>
+</tr>
+</tbody></table>
+<p>Nine calls represent eight Role families because the Converter contract accepts
+one date. The application reuses it rather than enlarging the Blueprint into a
+multi-field workflow operation.</p>
+<p>The composer stops on an invalid or ambiguous date, a non-routable destination,
+an unreadable extraction that lacks verifier page evidence, an unparseable
+amount, or an insufficient summary. Schema failures and provider failures keep
+the exact node ID and original cause. Business statuses from validation,
+verification, localization, and routing remain typed results for the caller;
+the example does not approve, notify, or persist anything.</p>
+<h2 id="additional-production-shaped-examples">Additional production-shaped examples</h2>
+<p>Two additional five-node applications test whether the same composition shape
+holds outside publication and travel:</p>
+<ul>
+<li><a href="../../examples/application-composition/customer-inquiry.ts"><code>customer-inquiry.ts</code></a>
+extracts, classifies, summarizes, validates, and recommends a policy route;</li>
+<li><a href="../../examples/application-composition/invoice-review.ts"><code>invoice-review.ts</code></a>
+extracts, classifies, validates, verifies against a ledger record, and
+summarizes evidence for human review.</li>
+</ul>
+<p>Both keep their five Blueprint definitions and five standalone datasets in a
+dedicated sibling directory.</p>
+<h2 id="ownership-and-failure-behavior">Ownership and failure behavior</h2>
+<ul>
+<li>All packaged applications preload their node definitions with
+<code>createApplicationSchemaBoundary()</code> from <code>@pixieworks/pixiecore/application</code>. Preflight
+rejects duplicate node IDs, missing Blueprints, and version drift. Each edge
+then validates upstream output schemas and normalized mapped inputs before
+the target provider call.</li>
+<li><code>ApplicationMappingError</code> identifies the target node, source node IDs,
+mapping stage, and input field names without retaining mapped values.</li>
+<li><code>traceApplication()</code> and <code>ApplicationTraceRecorder</code> correlate every node ID,
+Blueprint version, duration, result, provider/model call count, and normalized
+token usage under one trace ID. The versioned trace artifact intentionally
+excludes raw application inputs and Blueprint outputs; its JSON Schema is
+published as <code>@pixieworks/pixiecore/application/trace-schema.json</code>.</li>
+<li><a href="../runtime/telemetry.html"><code>@pixieworks/pixiecore/telemetry</code></a> adds a shared Blueprint/node summary for
+explicit attempts, owner-specific retries, value-free failures, provider
+usage, caller-sourced pricing, and per-currency cost without changing the
+existing application trace v1 contract.</li>
+<li>The application creates one shared <code>PromptRuntime</code> and closes it exactly once.</li>
+<li>The application owns node order, explicit mappings, fail-fast behavior, and
+the application <code>AbortSignal</code>.</li>
+<li><code>ApplicationExecutionController</code> provides one in-process admission boundary
+for an application budget, absolute deadline, parent or explicit
+cancellation, rolling start-rate limit, and maximum concurrency. Every
+admitted task receives the same derived <code>AbortSignal</code>; rejected work never
+starts and never consumes budget.</li>
+<li>Budget units are application-defined and are consumed when work is admitted,
+including work that later fails or is cancelled. Rate and concurrency limits
+reject immediately with typed, value-free errors; PixieCore does not create a
+hidden queue. Distributed quotas, fair scheduling, and cross-process locking
+remain host responsibilities.</li>
+<li><code>executeApplicationNode()</code> makes each node&#39;s failure mode and retry owner
+explicit. <code>fail-fast</code> rethrows the original failure. <code>recoverable</code> returns a
+typed failure outcome so independent downstream work can continue.</li>
+<li>Retry ownership is exactly one of <code>runtime</code>, <code>application</code>, or <code>host</code>.
+Runtime-owned retries remain the bounded output-correction retries inside
+<code>PromptRuntime</code>. Application-owned retries require an explicit maximum and a
+<code>shouldRetry</code> predicate. Host-owned retries are performed outside PixieCore;
+the helper invokes the node only once.</li>
+<li>Cancellation is never converted into a recoverable failure and is never
+retried. The original abort reason propagates immediately.</li>
+<li><code>createApplicationPartialResult()</code> creates a frozen, JSON-only artifact from
+completed outputs and value-free failure records. In-memory error causes are
+intentionally excluded. Its schema is published as
+<code>@pixieworks/pixiecore/application/partial-result-schema.json</code>.</li>
+<li>The same signal is passed to every active <code>PromptRuntime.execute()</code> call, and
+an aborted application starts no later node.</li>
+<li><code>PromptRuntime</code> owns Blueprint/input/output validation, provider interaction,
+tool rounds, and bounded output-correction retries. The application does not
+repeat those retries.</li>
+<li><code>ApplicationNodeError</code> provides the shared value-free node failure contract.
+Each application-specific subclass identifies the failed node, Blueprint
+path/version, input field names, and a correction suggestion while preserving
+the original error as its <code>cause</code>. A host with a real replay entry point may
+also supply that command; code-first examples do not invent one. The error
+deliberately does not capture input values or partial outputs.</li>
+<li>No notification, approval, persistence, or other external side effect is
+hidden in a Blueprint.</li>
+</ul>
+<h2 id="app-006-decision-keep-composition-code-first-in-01">APP-006 decision: keep composition code-first in 0.1</h2>
+<p>Four applications now provide enough evidence to close the initial format
+decision. They share a small execution protocol but not a stable workflow
+grammar:</p>
+<table>
+<thead>
+<tr>
+<th>Evidence</th>
+<th>Publication</th>
+<th>Travel</th>
+<th>Inquiry</th>
+<th>Invoice</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Shared runtime and schema preflight</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Linear-only graph</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Reused Blueprint at multiple nodes</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Domain stop before a later node</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Host-supplied policy/table</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Parallel-safe independent branches</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</tbody></table>
+<p>The repeated protocol is already public as <code>createApplicationSchemaBoundary()</code>,
+<code>traceApplication()</code>, and <code>executeApplicationNode()</code>. The remaining repetition
+is explicit business mapping, branching, and typed domain checks. Encoding
+those differences now would require general <code>if</code>, join, mapping-expression,
+retry, and side-effect semantics without evidence that one declarative grammar
+would stay small or language-neutral.</p>
+<p>Therefore PixieCore 0.1 does <strong>not</strong> add an <code>Application</code> DSL or workflow schema.
+Applications remain ordinary host-language code using public PixieCore
+primitives. Reconsideration requires at least three external production
+applications to demonstrate the same missing construct, with a concrete
+portability or authoring benefit that cannot be met by a narrow helper.</p>
+<p>For the same publication task expressed as one intentionally large Blueprint,
+see the <a href="./monolithic-comparison.html">monolithic/composed executable comparison</a>.</p>
+</main></div>
+  
+</body>
+</html>

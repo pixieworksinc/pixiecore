@@ -1,0 +1,19 @@
+version: 2026.1.0
+required_fields:
+  - employee_id
+  - purpose
+  - start_date
+  - end_date
+  - destination_country_code
+  - estimated_cost
+  - currency
+employee_id_pattern: '^EMP-\d{6}$'
+purpose_min_length: 10
+date_format: yyyy-mm-dd
+country_code_pattern: '^[A-Z]{2}$'
+estimated_cost_min: 0
+estimated_cost_max: 50000
+allowed_currencies: [USD, JPY, EUR, GBP]
+domestic_country_code: JP
+domestic_currency: JPY
+correlation_rules: [date_order, domestic_currency]
