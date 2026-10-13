@@ -78,9 +78,10 @@ function githubMarkdownTarget(href) {
     return null;
   }
   if (url.hostname !== 'github.com') return null;
-  const match = url.pathname.match(/^\/pixieworksinc\/pixiecore\/(?:blob|tree)\/[^/]+\/(.+)$/);
+  const match = url.pathname.match(/^\/pixieworksinc\/pixiecore\/(?:blob|tree)\/([^/]+)\/(.+)$/);
   if (!match) return null;
-  return { pathname: decodeURIComponent(match[1]), suffix: `${url.search}${url.hash}` };
+  if (match[1] !== '0.2.x') return null;
+  return { pathname: decodeURIComponent(match[2]), suffix: `${url.search}${url.hash}` };
 }
 
 async function resolveMarkdownTarget(pathname) {
@@ -397,7 +398,7 @@ async function validateGeneratedReferences(root) {
       }
       const parsed = new URL(target, pathToFileURL(file));
       if (parsed.protocol !== 'file:') continue;
-      const localTarget = resolve(decodeURIComponent(parsed.pathname));
+      const localTarget = resolve(fileURLToPath(parsed));
       await verifyLocalTarget(file, localTarget, parsed.hash, errors);
     }
   }
