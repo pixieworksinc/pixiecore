@@ -89,7 +89,8 @@ need a flag-day rewrite or one giant replacement YAML.
 
 ## Completion checklist
 
-- Each Blueprint has one verb and one accountable owner.
+- Each Blueprint has a coherent business result, an explicit decision boundary,
+  and an accountable owner.
 - Input and output schemas reject malformed values before downstream use.
 - Unit datasets cover ordinary, boundary, ambiguous, unsupported, and failure
   cases relevant to the accepted domain.
