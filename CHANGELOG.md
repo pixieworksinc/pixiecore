@@ -5,7 +5,7 @@ semantic versioning.
 
 ## Unreleased
 
-Changes below are not part of a published npm package.
+Changes below are not part of the published `0.1.0` artifact.
 
 ### 0.2 development
 
