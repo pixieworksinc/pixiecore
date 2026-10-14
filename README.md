@@ -9,8 +9,8 @@ business result.
 This is the `0.2.x` development line, restoring the original POP direction.
 See [POP principles](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/specification/pop-principles.md)
 and the [0.2 development plan](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/project/0.2-development.md).
-**Recommended starting point for new projects: PixieCore 0.2.x.** This is the
-latest development line. It is available from the `0.2.x` source branch; a 0.2
+**PixieCore 0.2.x is the latest version line and recommended starting point for new projects.**
+It is available from the `0.2.x` source branch; a 0.2
 package release is not published on npm yet. The latest published npm package
 is 0.1.1.
 Portable conformance approval is not implied by this line.

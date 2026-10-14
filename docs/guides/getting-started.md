@@ -5,8 +5,9 @@ credentials or network calls after installation, then leads to one independently
 tested Blueprint and an ordinary TypeScript application.
 
 The commands below install the latest published npm package, currently 0.1.1.
-For new projects, the recommended line is 0.2.x from the `0.2.x` source branch;
-that line is not yet published on npm. The `0.2.x` branch includes its own
+PixieCore 0.2.x is the latest version line and recommended for new projects; it
+is available from the `0.2.x` source branch, but is not yet published on npm.
+The `0.2.x` branch includes its own
 [source installation steps](../../README.md#install-and-run).
 
 ## Five-minute quickstart

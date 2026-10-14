@@ -6,8 +6,8 @@ directory.
 
 ## Start here
 
-- **Recommended starting point for new projects: PixieCore 0.2.x**, the latest
-  development line, available from the `0.2.x` source branch. No 0.2 npm
+- **PixieCore 0.2.x is the latest version line and recommended starting point for new projects**,
+  available from the `0.2.x` source branch. No 0.2 npm
   release is published yet; the latest published package is 0.1.1.
 - [POP principles for 0.2 development](specification/pop-principles.md)
 - [0.2 development plan](project/0.2-development.md)
