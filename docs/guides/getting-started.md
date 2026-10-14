@@ -10,7 +10,36 @@ is available from the `0.2.x` source branch, but is not yet published on npm.
 The `0.2.x` branch includes its own
 [source installation steps](../../README.md#install-and-run).
 
-## Five-minute quickstart
+## Five-minute quickstart for the recommended 0.2.x line
+
+Prerequisites are Node.js `^22.22.2` or `>=24.15.0` and npm for source builds. Build the source branch,
+install that local package in a new project, and run the same offline Blueprint
+loop:
+
+```bash
+git clone --branch 0.2.x https://github.com/pixieworksinc/pixiecore.git
+(cd pixiecore && npm ci && npm run build)
+mkdir pixiecore-quickstart
+cd pixiecore-quickstart
+npm init -y
+npm install ../pixiecore
+./node_modules/.bin/pixiecore blueprint create ./blueprints/expense-category \
+  --operation=classifier \
+  --name='Expense category'
+./node_modules/.bin/pixiecore blueprint validate \
+  ./blueprints/expense-category/expense-category.yaml
+./node_modules/.bin/pixiecore blueprint test ./blueprints/expense-category
+./node_modules/.bin/pixiecore blueprint inspect \
+  ./blueprints/expense-category/expense-category.yaml
+./node_modules/.bin/pixiecore blueprint play \
+  ./blueprints/expense-category/evaluations/expense-category.yaml \
+  --case=canonical-example
+```
+
+The local package comes from the built `0.2.x` checkout; it does not depend
+on the unpublished npm package line.
+
+## Five-minute quickstart with the latest published package (0.1.1)
 
 Prerequisites are Node.js 22.13.0 or later and npm.
 
