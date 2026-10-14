@@ -6,8 +6,11 @@ directory.
 
 ## Start here
 
+- **PixieCore 0.2.x is the latest version line and recommended starting point for new projects**,
+  available from the `0.2.x` source branch. No 0.2 npm
+  release is published yet; the latest published package is 0.1.1.
 - [POP principles for 0.2 development](specification/pop-principles.md)
-- [0.2 development and migration](project/0.2-development.md)
+- [0.2 development plan](project/0.2-development.md)
 - [LLM Customer discount example](../examples/customer-discount/README.md)
 - [Five-minute quickstart](guides/getting-started.md)
 - [Blueprint tutorial](guides/tutorial.md)
@@ -20,7 +23,7 @@ directory.
 |---|---|
 | [`architecture/`](architecture/) | Runtime design, composition boundaries, class diagrams, and source documentation |
 | [`blueprints/`](blueprints/) | Blueprint contracts, libraries, packages, publishing, evaluation, and demos |
-| [`guides/`](guides/) | Getting started, tutorial, migration, and configuration guidance |
+| [`guides/`](guides/) | Getting started, tutorial, application adoption, and configuration guidance |
 | [`plugins/`](plugins/) | Plugin lifecycle, authoring, layout, Recipes, Providers, and Tools |
 | [`runtime/`](runtime/) | Runtime APIs, MCP, logging, telemetry, policy, review, caching, RAG, and JIT |
 | [`integrations/`](integrations/) | Integration patterns and repository-owned examples |

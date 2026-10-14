@@ -6,7 +6,7 @@ import { marked } from 'marked';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUTPUT = join(ROOT, 'docs/html');
-const IGNORED = new Set(['.git', 'node_modules', 'dist', 'build', 'coverage', '.pixiecore']);
+const IGNORED = new Set(['.git', '.github', 'node_modules', 'dist', 'build', 'coverage', '.pixiecore']);
 const PAGES_BASE = 'https://pixieworksinc.github.io/pixiecore/docs/html/';
 
 const escapeHtml = value => String(value)
