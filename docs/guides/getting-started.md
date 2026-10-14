@@ -4,6 +4,11 @@ This is the shortest supported learning path. It starts without provider
 credentials or network calls after installation, then leads to one independently
 tested Blueprint and an ordinary TypeScript application.
 
+The commands below install the latest published npm package, currently 0.1.1.
+For new projects, the recommended line is 0.2.x from the `0.2.x` source branch;
+that line is not yet published on npm. The `0.2.x` branch includes its own
+[source installation steps](../../README.md#install-and-run).
+
 ## Five-minute quickstart
 
 Prerequisites are Node.js 22.13.0 or later and npm.

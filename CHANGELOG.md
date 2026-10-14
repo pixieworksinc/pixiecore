@@ -5,7 +5,7 @@ semantic versioning.
 
 ## Unreleased
 
-Changes below are not part of the published `0.1.0` artifact.
+Changes below are not part of a published npm package.
 
 ### 0.2 development
 
@@ -17,7 +17,7 @@ Changes below are not part of the published `0.1.0` artifact.
   the unchanged v1 schema at `blueprint/v1-schema.json`.
 - Add a Customer discount example, 18 semantic evaluation cases, and offline
   delivery/error-detection tests. No real-model accuracy claim is made.
-- Record POP-RFC-0004 and the 0.2 migration plan; retain published POP 0.1
+- Record POP-RFC-0004 and the 0.2 development plan; retain published POP 0.1
   identifiers and conformance fixtures without claiming a new portable profile.
 
 ### Changed

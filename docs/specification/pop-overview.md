@@ -55,5 +55,5 @@ is proposed in [POP-RFC-0004](../rfcs/0004-prompt-first-business-logic.md).
 
 See [POP concepts](pop-concepts.md),
 [Blueprint granularity](../architecture/blueprint-granularity.md), and the
-[0.2 development plan](../project/0.2-development.md) for migration and remaining
-work.
+[0.2 development plan](../project/0.2-development.md) for the current direction
+and remaining work.

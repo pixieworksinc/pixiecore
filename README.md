@@ -6,10 +6,14 @@ including deterministic comparisons, branching, calculations, and conversions.
 A Blueprint can contain several ordered reasoning Roles serving one declared
 business result.
 
-This is the `0.2.x` development branch, restoring the original POP direction.
+This is the `0.2.x` development line, restoring the original POP direction.
 See [POP principles](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/specification/pop-principles.md)
 and the [0.2 development plan](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/project/0.2-development.md).
-No 0.2 package release or portable conformance approval is implied by this branch.
+**Recommended starting point for new projects: PixieCore 0.2.x.** This is the
+latest development line. It is available from the `0.2.x` source branch; a 0.2
+package release is not published on npm yet. The latest published npm package
+is 0.1.1.
+Portable conformance approval is not implied by this line.
 
 PixieCore validates and executes one Blueprint per `execute()` or
 `executeYaml()` call. A Blueprint may include a complete business policy with
@@ -40,6 +44,10 @@ Existing code-first reference applications and adjacent-pattern benchmarks
 remain available for comparison; they do not define POP's required granularity
 or demonstrate LLM execution of logic that they move into host code.
 
+The command below scaffolds a Blueprint with the latest published npm package
+(0.1.1). For the recommended 0.2.x development line, use the source checkout
+steps in [Install and run](#install-and-run) below.
+
 The CLI can also scaffold a small single-operation Blueprint as a starting point:
 
 
@@ -51,8 +59,7 @@ npx --package @pixieworks/pixiecore pixiecore blueprint create ./blueprints/date
 
 New users should follow the [five-minute quickstart](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/guides/getting-started.md),
 then the [30-minute Blueprint tutorial](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/guides/tutorial.md). The tutorial leads
-directly into the [architecture](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/architecture/architecture.md) and
-[migration](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/guides/migration-guide.md) guides.
+directly into the [architecture](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/architecture/architecture.md) guide.
 
 PixieCore supports declarative YAML Blueprints, typed inputs, JSON Schema
 outputs, seven provider adapters, multimodal inputs, tool loops, MCP client/server
@@ -468,7 +475,7 @@ dependency or license change therefore requires an intentional notice update.
 - [Architecture guide](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/architecture/architecture.md)
 - [Class diagrams](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/architecture/class-diagrams.md)
 - [Source documentation and TypeDoc](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/architecture/source-documentation.md)
-- [Migration guide](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/guides/migration-guide.md)
+- [Application adoption guide](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/guides/migration-guide.md)
 - [POP concepts and canonical glossary](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/specification/pop-concepts.md)
 - [POP and adjacent application-pattern landscape](https://github.com/pixieworksinc/pixiecore/blob/0.2.x/docs/specification/category-landscape.md)
 - [POP Core Specification 0.1](https://github.com/pixieworksinc/pixiecore/blob/0.1.x/docs/specification/pop-core-specification-0.1.md)
