@@ -1,40 +1,46 @@
-# Migration guide
+# Application adoption guide
 
-Migrate one observable operation at a time. Keep the existing application as
-the orchestrator until a Blueprint has a declared contract, offline tests,
-versioned evaluation evidence, and a rollback path.
+Adopt PixieCore around a coherent business result and its contract. A Blueprint
+may use several reasoning Roles and deterministic instructions when they
+contribute to that result. The 0.2.x model does not require one Blueprint or
+model call per cognitive verb. Keep application orchestration, authorization,
+and external side effects in the host unless an explicit tool contract says
+otherwise.
 
 ## 1. Inventory the current boundary
 
-For each prompt or model call, record:
+For each workflow boundary you are considering, record:
 
-- the one business verb it should perform;
+- the business result and decision boundary it should own;
 - caller-owned inputs and their current validation;
 - structured output consumed downstream;
 - model/provider configuration and tool access;
 - authorization, persistence, retries, and side effects around the call;
 - representative successes, boundaries, ambiguities, and failures.
 
-If one call contains several independent verbs, list them separately before
-writing YAML. Extraction, classification, validation, translation, and routing
-are different Blueprint candidates.
+Use this inventory to choose a Blueprint boundary. Related extraction,
+classification, validation, calculation, and verification can stay together
+when they support one declared result. Split them only when separate ownership,
+reuse, deployment, evaluation, or measured execution behavior justifies it.
 
 ## 2. Choose a migration shape
 
 | Existing design | First PixieCore step | Preserve outside the Blueprint |
 |---|---|---|
-| One large prompt | Extract one verb with one input/output schema | Existing order, state, and remaining prompt steps |
+| One large prompt | Define a coherent result, its input/output contract, and the Roles needed to produce it | Application state, authorization, and external side effects |
 | Direct provider SDK wrapper | Put its prompt contract in one Blueprint and inject the existing provider during tests | Transport rollout and credentials |
 | Agent graph | Replace one node body with a Blueprint call | Graph edges, branching, state, and scheduler |
 | Workflow engine task | Make the worker execute one Blueprint | Queue, lease, retries, idempotency, and notifications |
-| Deterministic function | Usually keep it as code or expose it as a Tool | Deterministic validation and calculation |
+| Deterministic policy or calculation | Include it in the Blueprint when it contributes to the declared result; use explicit tools for external capabilities | Runtime mechanics, authorization, and external side effects |
 
-Do not migrate deterministic arithmetic, database updates, or access-control
-decisions into a prompt merely to make the application look uniform.
+The Blueprint can state deterministic policy and expected outcomes. Runtime
+mechanics, database updates, and access-control enforcement remain in the host
+application or an explicitly authorized tool.
 
 ## 3. Establish the contract before behavior
 
-Create a unit with `pixiecore blueprint create`. Replace the scaffold with:
+Create a Blueprint with `pixiecore blueprint create`. Replace the scaffold
+with:
 
 1. typed placeholders and an `input_schema` for business inputs;
 2. one narrow prompt with explicit unsupported and ambiguity behavior;
@@ -74,10 +80,11 @@ version gate requires every semantic content change to advance the Blueprint
 version and conservatively requires a major bump for declared contract or
 stable-path changes.
 
-## 6. Split the next operation
+## 6. Evolve the boundary from evidence
 
-Repeat the process only where a second operation is independently meaningful.
-An application becomes a collection of Blueprint calls over time. It does not
+Split a Blueprint only when another result needs independent ownership,
+deployment, reuse, context, or evaluation, or when measurements justify a
+separate call. An application can use one or several Blueprints over time. It does not
 need a flag-day rewrite or one giant replacement YAML.
 
 ## Completion checklist
