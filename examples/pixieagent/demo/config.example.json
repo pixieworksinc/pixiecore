@@ -1,0 +1,13 @@
+{
+  "enabled": false,
+  "model": "gpt-6-luna",
+  "maxCostUsd": 1,
+  "maxRequests": 30,
+  "runtimeRoot": "/app",
+  "stateDirectory": "/state",
+  "credentialFile": "/run/trial/credential",
+  "accessCodeFile": "/run/trial/access-code",
+  "origin": "http://localhost:8080",
+  "port": 3098,
+  "expiresAt": "2000-01-01T00:00:00Z"
+}

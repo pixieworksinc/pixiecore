@@ -113,6 +113,14 @@ subclass derives from the canonical `PixieCoreError` base, so consumers can catc
 one base class while retaining specific errors such as
 `BlueprintValidationError`, `InputTypeError`, and `LLMAPIError`.
 
+## Minimal agent example
+
+[PixieAgent](examples/pixieagent/README.md) chooses a bounded action, classifies
+one of six synthetic Issues using PixieCore, and checks the result before
+stopping. It includes offline tests, an explicitly bounded historical model
+evaluation, and [containerized browser demos](examples/pixieagent/demo/README.md).
+The default browser demo replays fixtures without model requests.
+
 ## Blueprint
 
 A Blueprint should describe one independently testable input-to-output

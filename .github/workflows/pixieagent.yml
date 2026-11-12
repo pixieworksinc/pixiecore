@@ -1,0 +1,81 @@
+name: PixieAgent example
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pixieagent-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  offline:
+    name: PixieAgent Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.13.0', '24']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --fund=false
+      - run: npm run build
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
+      - run: sh examples/pixieagent/demo/test-offline.sh
+      - name: Check standalone demo JavaScript syntax
+        run: find examples/pixieagent/demo -name '*.mjs' -exec node --check {} \;
+  containers:
+    name: PixieAgent containers (no provider network)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build and verify default replay
+        run: |
+          docker compose -f examples/pixieagent/demo/compose.yaml up --build -d
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:8080/pixieagent/ > /tmp/replay.html; then break; fi
+            sleep 1
+          done
+          grep -q '保存済みの模擬実行' /tmp/replay.html
+          test "$(curl --silent -o /dev/null -w '%{http_code}' http://localhost:8080/pixieagent/live/)" = 404
+          test "$(curl --silent -o /dev/null -w '%{http_code}' http://localhost:8080/pixieagent/live/api/status)" = 404
+          curl --fail --silent http://localhost:8080/pixieagent/app.js | cmp - examples/pixieagent/demo/replay/public/app.js
+      - name: Build locked live runtime
+        run: docker build -f examples/pixieagent/demo/Dockerfile --target live -t pixieagent-live-test .
+      - name: Verify packaged runtime with network disabled
+        run: |
+          docker run --rm --network none --read-only --tmpfs /tmp:size=32m,mode=1777 --cap-drop ALL --security-opt no-new-privileges pixieagent-live-test --import ./examples/pixieagent/tests/deny-network.mjs examples/pixieagent/demo/container-test.mjs
+          docker run --rm --network none --read-only --tmpfs /tmp:size=32m,mode=1777 --cap-drop ALL --security-opt no-new-privileges pixieagent-live-test --test examples/pixieagent/demo/container-http.test.mjs
+      - name: Verify live proxy configuration and disabled startup
+        run: |
+          mkdir -p /tmp/pixieagent-secrets
+          cp examples/pixieagent/demo/config.example.json /tmp/pixieagent-secrets/config.json
+          export PIXIEAGENT_SECRETS_DIRECTORY=/tmp/pixieagent-secrets
+          docker compose -f examples/pixieagent/demo/compose.yaml -f examples/pixieagent/demo/compose.live.yaml config --quiet
+          docker compose -f examples/pixieagent/demo/compose.yaml -f examples/pixieagent/demo/compose.live.yaml up --build -d
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:8080/pixieagent/live/ > /tmp/live.html; then break; fi
+            sleep 1
+          done
+          grep -q 'LIVE API TRIAL' /tmp/live.html
+          sleep 2
+          container=$(docker compose -f examples/pixieagent/demo/compose.yaml -f examples/pixieagent/demo/compose.live.yaml ps -aq api)
+          test "$(docker inspect --format '{{.State.Status}}' "$container")" = exited
+          test "$(docker inspect --format '{{.State.ExitCode}}' "$container")" != 0
+      - name: Stop disposable CI deployment
+        if: always()
+        run: |
+          PIXIEAGENT_SECRETS_DIRECTORY=/tmp/pixieagent-secrets docker compose -f examples/pixieagent/demo/compose.yaml -f examples/pixieagent/demo/compose.live.yaml down --volumes

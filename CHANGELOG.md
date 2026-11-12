@@ -9,6 +9,9 @@ Changes below are not part of the published `0.1.0` artifact.
 
 ### 0.2 development
 
+- Add the bounded PixieAgent source example, existing offline evaluation and
+  tests, historical accepted-result summary, and reproducible browser demos.
+
 - Restore prompt-first POP terminology: deterministic business logic and
   several reasoning Roles may live in one LLM-executed Blueprint.
 - Accept structured `prompt.Scenario` arrays, validate their shape and input
