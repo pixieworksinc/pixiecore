@@ -255,7 +255,7 @@ async function renderMarkdown(sourcePath, stage, allDocs) {
 <body>
   <header class="site-header"><a class="brand" href="${escapeHtml(home)}">PixieCore <span>Documentation</span></a><a class="repo" href="https://github.com/pixieworksinc/pixiecore">GitHub repository</a></header>
   <div class="layout"><aside class="sidebar"><a class="home-link" href="${escapeHtml(home)}">Documentation home</a>${index}</aside><main class="document"><p class="breadcrumb"><a href="${escapeHtml(home)}">Documentation</a> / <code>${escapeHtml(displayPath(sourcePath))}</code></p>${body}</main></div>
-  ${mermaidScript}
+${mermaidScript}
 </body>
 </html>
 `;
