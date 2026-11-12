@@ -32,6 +32,9 @@ jobs:
           node-version: ${{ matrix.node }}
           package-manager-cache: false
       - run: sh examples/pixieagent/demo/test-offline.sh
+      - name: Audit the publishable source tree
+        if: matrix.node == '24'
+        run: npm run prepare:public-snapshot -- --output="$RUNNER_TEMP/pixieagent-public-source" --report="$RUNNER_TEMP/pixieagent-public-audit.json"
       - name: Check standalone demo JavaScript syntax
         run: find examples/pixieagent/demo -name '*.mjs' -exec node --check {} \;
   containers:

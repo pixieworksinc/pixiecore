@@ -33,6 +33,9 @@ Changes below are not part of the published `0.1.0` artifact.
 
 ### Fixed
 
+- Refresh production dependency locks within the existing declared ranges to
+  restore the production audit gate for the PixieAgent example delivery.
+
 - Detect fine-grained GitHub tokens and reject environment-file variants in
   public source snapshots without exposing matched credential values.
 - Recheck the approved tag object around GitHub Release writes and final
