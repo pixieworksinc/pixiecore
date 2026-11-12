@@ -97,12 +97,7 @@ provider instance are removed when that instance is closed.</p>
 subclass derives from the canonical <code>PixieCoreError</code> base, so consumers can catch
 one base class while retaining specific errors such as
 <code>BlueprintValidationError</code>, <code>InputTypeError</code>, and <code>LLMAPIError</code>.</p>
-<h2 id="minimal-agent-example">Minimal agent example</h2>
-<p><a href="./examples/pixieagent/index.html">PixieAgent</a> chooses a bounded action, classifies
-one of six synthetic Issues using PixieCore, and checks the result before
-stopping. It includes offline tests, an explicitly bounded historical model
-evaluation, and <a href="./examples/pixieagent/demo/index.html">containerized browser demos</a>.
-The default browser demo replays fixtures without model requests.</p>
+<p><a href="https://pixieworksinc.github.io/pixiecore/docs/html/examples/pixieagent/index.html">PixieAgent</a>: bounded agent, offline tests and containerized demos.</p>
 <h2 id="blueprint">Blueprint</h2>
 <p>A Blueprint should describe one independently testable input-to-output
 operation, not an entire business application. Roles such as Extractor,
