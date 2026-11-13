@@ -98,6 +98,9 @@ def verify_replay():
     anon = client()
     assert request(anon, "/")[0] == 200
     assert "PixieAgent" in request(anon, "/")[1]
+    with anon.open(BASE + "/pixieagent/", timeout=10) as response:
+        assert "connect-src 'none'" in response.headers["Content-Security-Policy"]
+        assert response.headers["X-Content-Type-Options"] == "nosniff"
     for path in ["/pixieagent/", "/pixieagent/app.js", "/pixieagent/style.css", "/pixieagent/data.js"]:
         assert request(anon, path)[0] == 200
     for path in ["/pixieagent/live/", "/sites/default/settings.php", "/sites/default/files/test.php", "/vendor/autoload.php", "/.env"]:
