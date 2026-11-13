@@ -79,8 +79,9 @@ const EXPECTED_BIN_NAMES = ['pixiecore'];
 const PACKAGE_FOOTPRINT_BUDGET = Object.freeze({
   maxFileCount: 527,
   // Includes the v2 Scenario schema, its serializer, and public authoring types
-  // while retaining the legacy v1 schema. Measured 0.2 footprint: 1,224,931 bytes.
-  maxUnpackedBytes: 1_226_000,
+  // while retaining the legacy v1 schema. Development-tool metadata adds 132
+  // bytes to package.json; the 527-file footprint is 1,226,105 unpacked bytes.
+  maxUnpackedBytes: 1_227_000,
 });
 const EXPECTED_API_EXPORT = Object.freeze({
   types: './dist/core/kernel/api/index.d.ts',

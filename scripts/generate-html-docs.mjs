@@ -241,7 +241,7 @@ async function renderMarkdown(sourcePath, stage, allDocs) {
   const home = relative(dirname(destination), 'index.html').split(sep).join('/');
   const index = navigation(allDocs, destination);
   const mermaidScript = body.includes('class="mermaid"')
-    ? `<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad:true,theme:'dark'});</script>`
+    ? `<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad:true,theme:'dark'});</script>`
     : '';
   const html = `<!doctype html>
 <html lang="en">
