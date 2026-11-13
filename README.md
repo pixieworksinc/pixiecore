@@ -48,9 +48,6 @@ The command below scaffolds a Blueprint with the latest published npm package
 (0.1.1). For the recommended 0.2.x development line, use the source checkout
 steps in [Install and run](#install-and-run) below.
 
-The CLI can also scaffold a small single-operation Blueprint as a starting point:
-
-
 ```bash
 npx --package @pixieworks/pixiecore pixiecore blueprint create ./blueprints/date-normalizer \
   --operation=converter \
