@@ -1,5 +1,8 @@
 # Reproducible PixieAgent browser demos
 
+For a combined offline PixieCore editor and this replay, see the
+[rebuildable demo deployment](../../demo/README.md).
+
 The default site replays six saved **fixture** results. The optional live site
 uses the same bounded PixieAgent/PixieCore harness with a provider. Both retain
 the original six-card layout, three execution steps and result panel. Replay

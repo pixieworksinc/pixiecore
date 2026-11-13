@@ -1,0 +1,32 @@
+name: pixie-demos
+services:
+  demo:
+    image: ${DEMO_IMAGE:-pixiecore-demos:local}
+    build:
+      context: ../..
+      dockerfile: examples/demo/Dockerfile
+    ports:
+      - "127.0.0.1:${DEMO_PORT:-8088}:8080"
+    environment:
+      DEMO_HOSTS: ${DEMO_HOSTS:-localhost,127.0.0.1}
+      DEMO_USER: ${DEMO_USER:-demo}
+    volumes:
+      - demo-state:/state
+      - ${DEMO_PASSWORD_FILE:?Set an absolute path to the demo password file}:/run/secrets/demo_password:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=96m,mode=1777
+      - /run:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 96
+    mem_limit: 512m
+    memswap_limit: 768m
+    stop_grace_period: 30s
+    restart: unless-stopped
+    networks: [offline]
+volumes:
+  demo-state:
+networks:
+  offline:
+    internal: true

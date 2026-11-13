@@ -1,0 +1,8 @@
+site/vendor/
+site/web/
+site/drush/
+site/.editorconfig
+site/.gitattributes
+site/.gitignore
+assets/node_modules/
+__pycache__/

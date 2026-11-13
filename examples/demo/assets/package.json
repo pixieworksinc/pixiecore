@@ -1,0 +1,8 @@
+{
+  "name": "pixiecore-demo-editor-assets",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "codemirror": "5.65.21"
+  }
+}
