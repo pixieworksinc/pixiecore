@@ -33,6 +33,9 @@ Changes below are not part of the published `0.1.0` artifact.
 
 ### Fixed
 
+- Adopt minimatch 11 in the development toolchain and preserve TypeDoc API
+  documentation generation with the upstream traversal compatibility fix.
+
 - Refresh vulnerable production dependency locks within their existing ranges.
 
 - Detect fine-grained GitHub tokens and reject environment-file variants in

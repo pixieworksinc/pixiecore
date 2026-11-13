@@ -48,6 +48,22 @@ reviewed 0.2 candidate. Branch creation alone does not publish an npm release.</
 <p>The package version stays at its inherited development value until release
 preparation; neither a tag nor a published artifact is created by this milestone.</p>
 <h2 id="initial-validation">Initial validation</h2>
+<h3 id="development-dependency-compatibility">Development dependency compatibility</h3>
+<p>The development toolchain uses a <code>minimatch: ^11</code> npm override; the lockfile
+records the tested version. TypeDoc 0.28.20 still calls the removed <code>matchOne</code>
+API. <code>npm run docs:api</code> and <code>npm run check:api-docs</code> therefore apply the two
+traversal changes from <a href="https://github.com/TypeStrong/typedoc/pull/3151">TypeDoc PR #3151</a>
+to the installed TypeDoc file before invoking its CLI. Use these npm commands
+instead of invoking <code>typedoc</code> directly after a fresh install.</p>
+<p>This is a temporary, development-only compatibility fix. There is no install
+hook, new patching dependency or change to the published PixieCore runtime.
+Preparation is repeatable and rejects unrecognized legacy source before writing;
+API documentation checks also verify nested and negated glob traversal against
+the previous TypeDoc behavior. A future TypeDoc implementation without the old
+call needs no patch. Once a release contains the upstream fix, remove the
+compatibility runner and restore the direct CLI commands after verification.
+Retain the npm override until the other development tools support minimatch 11.</p>
+<h3 id="historical-baseline">Historical baseline</h3>
 <p>Verified on Node.js 24.19.0 on October 4, 2026:</p>
 <ul>
 <li><code>npm run test:coverage</code>: 932 tests, 931 passed, zero failed, one optional

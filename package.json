@@ -150,8 +150,8 @@
     "generate:html-docs": "node scripts/generate-html-docs.mjs --write",
     "check:html-docs": "node scripts/generate-html-docs.mjs",
     "check:source-docs": "node scripts/check-source-file-documentation.mjs && eslint src/core src/plugins",
-    "docs:api": "typedoc",
-    "check:api-docs": "typedoc --emit none",
+    "docs:api": "node scripts/run-typedoc.mjs",
+    "check:api-docs": "node --test scripts/typedoc-minimatch.test.mjs && node scripts/run-typedoc.mjs --emit none",
     "check:quality-gates": "node scripts/check-reference-quality-gates.mjs",
     "benchmark:reference": "node --import tsx examples/benchmarks/reference-blueprint.ts",
     "benchmark:runtime-preparation": "node --import tsx scripts/benchmark-runtime-preparation.mjs",
@@ -232,5 +232,8 @@
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.68.0"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "overrides": {
+    "minimatch": "^11"
+  }
 }
