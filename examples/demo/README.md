@@ -1,6 +1,6 @@
 # Rebuildable PixieCore and PixieAgent demos
 
-One isolated container runs the existing Drupal Blueprint editor, its loopback
+An isolated application container runs the existing Drupal Blueprint editor, its loopback
 PixieCore fixture runtime, and the existing six-card PixieAgent replay. It makes
 no model-provider requests. It contains no API key, production database, live
 trial ledger, or prebuilt maintainer runtime.
@@ -18,8 +18,10 @@ trial ledger, or prebuilt maintainer runtime.
 Install Docker with Compose v2. Run from the repository root on the `0.2.x`
 branch or a reviewed commit. The Dockerfile uses official Node 24 and Drupal 11
 images, the repository npm lock, and the demo's Composer/editor-asset locks.
-The build needs Internet access; the running service has an internal Docker
-network and no external access. Keep Docker/host security updates current.
+The build needs Internet access. The application has only an internal Docker
+network and no external access. A small nginx gateway publishes the loopback
+port and forwards only HTTP to the application; it contains no application code
+or provider credentials. Keep Docker/host security updates current.
 
 Create a private operator directory outside this checkout. The container runs as
 UID 82 (`www-data`); the containing directory protects the readable secret file
@@ -81,7 +83,8 @@ Before importing, compare uncompressed image size plus transfer/extraction
 headroom with free disk space and the host's backup reserve. Do not use Docker
 prune or delete other applications to bypass the capacity gate. A compressed
 image can be streamed to `docker load` without leaving an archive on the server.
-After loading, set `DEMO_IMAGE` to the verified local image tag/ID and use
+After loading, set `DEMO_IMAGE` and `DEMO_WEB_IMAGE` to the verified application/gateway image
+tags or IDs and use
 `docker compose -f examples/demo/compose.yaml up --no-build -d`.
 
 Keep the application port bound to loopback. Put your existing HTTPS reverse

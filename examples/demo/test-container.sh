@@ -6,7 +6,7 @@ export COMPOSE_PROJECT_NAME=pixie-demos-ci
 compose() { docker compose -p "$COMPOSE_PROJECT_NAME" -f examples/demo/compose.yaml "$@"; }
 wait_ready() {
   for attempt in $(seq 1 120); do
-    if curl --fail --silent http://127.0.0.1:8088/user/login > /dev/null; then return 0; fi
+    if curl --max-time 2 --fail --silent http://127.0.0.1:8088/user/login > /dev/null; then return 0; fi
     container=$(compose ps -aq demo)
     if [ -n "$container" ] && [ "$(docker inspect --format '{{.RestartCount}}' "$container")" -gt 0 ]; then
       compose logs
@@ -19,7 +19,7 @@ wait_ready() {
 }
 cleanup() { compose down --volumes; }
 trap cleanup EXIT
-compose up --no-build -d
+compose up --no-build -d --wait --wait-timeout 180
 wait_ready
 python3 examples/demo/smoke.py
 container=$(compose ps -q demo)
@@ -29,13 +29,13 @@ docker exec "$container" node -e "fetch('http://198.51.100.1', {signal:AbortSign
 # Inspect SQLite without publishing its contents. Recreating may change session/cache rows.
 before=$(compose exec -T demo vendor/bin/drush sql:query 'SELECT count(*) FROM pixiecore_spec_run;')
 compose down
-compose up --no-build -d
+compose up --no-build -d --wait --wait-timeout 180
 wait_ready
 python3 examples/demo/smoke.py --restored
 after=$(compose exec -T demo vendor/bin/drush sql:query 'SELECT count(*) FROM pixiecore_spec_run;')
 test "$before" = "$after"
 # A new state volume must also bootstrap without a prebuilt database.
 compose down --volumes
-compose up --no-build -d
+compose up --no-build -d --wait --wait-timeout 180
 wait_ready
 python3 examples/demo/smoke.py

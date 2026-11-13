@@ -5,8 +5,7 @@ services:
     build:
       context: ../..
       dockerfile: examples/demo/Dockerfile
-    ports:
-      - "127.0.0.1:${DEMO_PORT:-8088}:8080"
+      target: demo
     environment:
       DEMO_HOSTS: ${DEMO_HOSTS:-localhost,127.0.0.1}
       DEMO_USER: ${DEMO_USER:-demo}
@@ -25,8 +24,29 @@ services:
     stop_grace_period: 30s
     restart: unless-stopped
     networks: [offline]
+  web:
+    image: ${DEMO_WEB_IMAGE:-pixiecore-demos-web:local}
+    build:
+      context: ../..
+      dockerfile: examples/demo/Dockerfile
+      target: web
+    ports:
+      - "127.0.0.1:${DEMO_PORT:-8088}:8080"
+    depends_on:
+      demo:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 32
+    mem_limit: 32m
+    restart: unless-stopped
+    networks: [edge, offline]
 volumes:
   demo-state:
 networks:
+  edge:
   offline:
     internal: true

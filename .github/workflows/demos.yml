@@ -17,9 +17,11 @@ jobs:
         with:
           persist-credentials: false
       - name: Build from locked public source
-        run: docker build -f examples/demo/Dockerfile -t pixiecore-demos:local .
+        run: |
+          docker build -f examples/demo/Dockerfile --target demo -t pixiecore-demos:local .
+          docker build -f examples/demo/Dockerfile --target web -t pixiecore-demos-web:local .
       - name: Measure built image
-        run: docker image inspect pixiecore-demos:local --format '{{.Id}} {{.Size}}'
+        run: docker image inspect pixiecore-demos:local pixiecore-demos-web:local --format '{{.Id}} {{.Size}}'
       - name: Test isolated bootstrap and recreation
         run: |
           export DEMO_PASSWORD_FILE="$RUNNER_TEMP/demo-password"
@@ -30,8 +32,8 @@ jobs:
       - name: Record tested image size and export
         if: github.event_name == 'push'
         run: |
-          docker image inspect pixiecore-demos:local --format '{{.Id}} {{.Size}}' > image-metadata.txt
-          docker save pixiecore-demos:local | gzip -1 > pixiecore-demos.tar.gz
+          docker image inspect pixiecore-demos:local pixiecore-demos-web:local --format '{{.Id}} {{.Size}}' > image-metadata.txt
+          docker save pixiecore-demos:local pixiecore-demos-web:local | gzip -1 > pixiecore-demos.tar.gz
           sha256sum pixiecore-demos.tar.gz > pixiecore-demos.tar.gz.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: github.event_name == 'push'
