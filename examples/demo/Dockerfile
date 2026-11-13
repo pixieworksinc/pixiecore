@@ -25,7 +25,7 @@ COPY examples/demo/settings.php web/sites/default/settings.php
 RUN mkdir -p /state/files && rm -rf web/sites/default/files \
     && ln -s /state/files web/sites/default/files
 
-FROM drupal:11.4.12-php8.4-fpm-alpine3.23 AS demo
+FROM drupal:11.4.12-php8.4-fpm-alpine3.23 AS assembled
 RUN apk add --no-cache nginx bash tini libstdc++ util-linux \
     && rm -rf /opt/drupal && mkdir -p /state /demo/public \
     && chown www-data:www-data /state
@@ -44,8 +44,14 @@ COPY examples/demo/php-fpm.conf /usr/local/etc/php-fpm.d/zz-demo.conf
 COPY examples/demo/start.sh examples/demo/bootstrap.php examples/demo/runtime.mjs /demo/
 COPY LICENSE THIRD_PARTY_NOTICES.md /demo/
 RUN chmod 755 /demo/start.sh && chmod 644 /opt/drupal/web/sites/default/settings.php
+# Flatten the assembled official-image filesystem so the superseded Drupal tree
+# is not retained as a second copy in the exported image layers.
+FROM scratch AS demo
+COPY --from=assembled / /
 WORKDIR /opt/drupal
-ENV NODE_ENV=production HOME=/tmp DEMO_HOSTS=localhost,127.0.0.1 DEMO_USER=demo
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/drupal/vendor/bin \
+    PHP_INI_DIR=/usr/local/etc/php \
+    NODE_ENV=production HOME=/tmp DEMO_HOSTS=localhost,127.0.0.1 DEMO_USER=demo
 USER www-data
 EXPOSE 8080
 HEALTHCHECK --interval=15s --timeout=5s --start-period=180s --retries=3 \

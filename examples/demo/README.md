@@ -18,6 +18,8 @@ trial ledger, or prebuilt maintainer runtime.
 Install Docker with Compose v2. Run from the repository root on the `0.2.x`
 branch or a reviewed commit. The Dockerfile uses official Node 24 and Drupal 11
 images, the repository npm lock, and the demo's Composer/editor-asset locks.
+The final application image copies the assembled official-image filesystem into
+a single layer, avoiding a second obsolete Drupal tree in the export.
 The build needs Internet access. The application has only an internal Docker
 network and no external access. A small nginx gateway publishes the loopback
 port and forwards only HTTP to the application; it contains no application code
