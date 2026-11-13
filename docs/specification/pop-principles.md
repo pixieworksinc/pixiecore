@@ -1,9 +1,9 @@
 # Prompt-Oriented Programming principles
 
-This is the working direction for the PixieCore `0.2.x` development branch.
-It restores the original POP model at the project owner's request. It is not a
-published portable conformance profile. The versioned POP 0.1 specification,
-schemas, and fixtures remain archived under their existing identifiers.
+This document describes the working direction for the PixieCore `0.2.x`
+development branch. It is not a published portable conformance profile. The
+versioned POP 0.1 specification, schemas, and fixtures remain archived under
+their existing identifiers.
 
 ## Business logic is prompt-first
 
@@ -68,19 +68,7 @@ keeps the policy and arithmetic in the prompt. Its offline tests verify runtime
 delivery and the evaluator's ability to detect wrong answers. They make no
 model-accuracy claim.
 
-## Source direction and provenance
-
-The supplied June 9, 2025 POP specifications describe direct Blueprint
-execution by a probabilistic runtime. The supplied November 17, 2025 DrupalCon
-Nara presentation and June 27, 2026 DrupalCamp Tokyo presentation provide the
-original project context. The Tokyo deck shows ordered Roles inside one
-Blueprint (slide 50) and proposes expressing conventional `if` behavior in
-prompts (slide 10).
-
-The owner explicitly confirmed on October 4, 2026 that deterministic business
-logic should remain LLM-executed and that Role decomposition can remain inside
-a Blueprint. This document records that direction without redistributing the
-supplied PDFs or copying their implementation code.
+## Related proposals
 
 The proposed portable-model change is tracked in
 [POP-RFC-0004](../rfcs/0004-prompt-first-business-logic.md). The branch migration
