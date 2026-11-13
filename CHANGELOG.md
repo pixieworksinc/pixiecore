@@ -33,7 +33,8 @@ Changes below are not part of the published `0.1.0` artifact.
 
 ### Fixed
 
-- Adopt minimatch 11 in the development toolchain and preserve TypeDoc API
+- Resolve development-toolchain security advisories with minimatch 11, Mermaid
+  12 and updated DOMPurify, KaTeX and markdown-it locks. Preserve TypeDoc API
   documentation generation with the upstream traversal compatibility fix.
 
 - Refresh vulnerable production dependency locks within their existing ranges.

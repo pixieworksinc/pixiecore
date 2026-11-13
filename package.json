@@ -225,7 +225,7 @@
     "semver": "7.8.5",
     "eslint": "^10.9.1",
     "eslint-plugin-jsdoc": "^64.2.1",
-    "mermaid": "^11.17.2",
+    "mermaid": "^12",
     "marked": "^16.4.2",
     "tsx": "^4.20.3",
     "typedoc": "^0.28.20",

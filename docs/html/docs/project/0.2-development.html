@@ -63,6 +63,11 @@ the previous TypeDoc behavior. A future TypeDoc implementation without the old
 call needs no patch. Once a release contains the upstream fix, remove the
 compatibility runner and restore the direct CLI commands after verification.
 Retain the npm override until the other development tools support minimatch 11.</p>
+<p>Documentation tooling uses Mermaid 12, with repaired DOMPurify and KaTeX
+dependencies, and TypeDoc&#39;s compatible markdown-it 14 dependency is refreshed
+in the lockfile. These packages remain development-only. Verify both the full
+dependency audit and <code>npm audit --omit=dev</code> when refreshing the lockfile;
+the published runtime dependency entries are unchanged by this update.</p>
 <h3 id="historical-baseline">Historical baseline</h3>
 <p>Verified on Node.js 24.19.0 on October 4, 2026:</p>
 <ul>
