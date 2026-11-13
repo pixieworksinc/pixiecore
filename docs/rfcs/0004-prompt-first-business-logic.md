@@ -1,7 +1,7 @@
 # POP-RFC-0004: Restore prompt-first business logic
 
 - Status: draft
-- Authors: Codex, implementing project-owner direction from @naoi
+- Authors: Codex
 - Change class: incompatible normative
 - Created: 2026-10-04
 - Proposed review start: not started
@@ -22,12 +22,12 @@ functions.
 
 ## Motivation and scope
 
-The supplied original specifications and presentations, together with the
-owner's explicit clarification, establish the direction recorded in
-[POP principles](../specification/pop-principles.md). The later one-cognitive-verb
-restriction and ordinary-code recommendation changed the intended research
-question. This proposal restores the original scope while preserving structural
-validation, evaluation, transport, and capability controls.
+POP evaluates direct LLM execution of Blueprint-defined business behavior, as
+described in [POP principles](../specification/pop-principles.md). Restricting
+each Blueprint to one cognitive verb or moving business policies into ordinary
+code changes the behavior being evaluated. This proposal retains prompt-first
+execution while preserving structural validation, evaluation, transport, and
+capability controls.
 
 ## Specification
 
@@ -92,8 +92,8 @@ needed to load Blueprints, call providers, and measure results.
 
 ## Review record
 
-Initial implementation is confined to the owner-requested `0.2.x` development
-branch. Formal portable review has not started.
+Initial implementation is confined to the `0.2.x` development branch. Formal
+portable review has not started.
 
 ## Final call
 
