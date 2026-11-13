@@ -1,0 +1,39 @@
+# PixieAgent bounded example notes
+
+This example composes public PixieCore runtime calls in host code. It does not
+change the one-Blueprint execution model, register tools, or write Issue data.
+The definition, planner and classifier remain pinned at their existing versions.
+README.md is the reproduction entry point; demo/README.md covers containers.
+
+Classification is an explicit synthetic-corpus convention: a stated security
+boundary violation, unintended data access/loss or service unavailability is
+high; an identified functional, testing or dependency defect is medium;
+cosmetic-only defects with correct behavior are low. Insufficient impact detail
+uses provisional low and asks for clarification. Nonempty prose passing the
+mechanical scorer does not prove that this meaning is present.
+
+The six fixture responses are independent scripted data, not model answers.
+The accepted-model-run.md evaluation record describes a separate historical
+model run. Publication and CI never execute it again.
+
+live.ts and suite-live.ts are existing CLI preparation/approval wrappers.
+Preparation does not read credentials or contact a provider. Execution requires
+an exact source/runtime-bound plan, an explicit host approval assertion and a
+single-use claim before credentials are read. A failed, expired or changed plan
+cannot be reused; no retry, diagnostic call or implicit resume is permitted.
+The suite is capped at six cases, 30 requests and 540 seconds overall, with
+five requests and 90 seconds per case, 512 output tokens, 16 KiB request JSON,
+30-second requests and no retries. CLI approvals do not activate the web demo.
+
+The web demo preserves these per-case transport limits and a single durable
+USD 1 ledger across its six once-only cases. Valid provider usage replaces each
+conservative reservation with usage accounting; missing/invalid usage retains
+the reservation and stops the trial. Errors, incomplete/refused completions,
+classification mismatches, cancellation, exhaustion or expiry stop execution.
+A retained process lock requires operator investigation, not automatic reset.
+Accounting uses the existing pinned model/rate assumptions, not independently
+verified billing or an account-wide spending limit. Recheck those assumptions
+before separately approving any future live activation.
+
+No private execution plans, receipts, approval artifacts, credentials or
+production configurations are distributed with this example.

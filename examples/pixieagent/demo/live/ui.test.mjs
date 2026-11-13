@@ -1,0 +1,20 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const file=n=>readFileSync(new URL('public/'+n,import.meta.url),'utf8');
+function setup(completed=false){
+ class Element{children=[];attributes={};dataset={};handlers={};hidden=false;value='';append(...a){this.children.push(...a);}setAttribute(k,v){this.attributes[k]=v;}addEventListener(k,v){this.handlers[k]=v;}querySelector(s){return this.children.find(c=>c.selector===s);}}
+ const ids=Object.fromEntries(['choices','sample-title','input','result','state','play','category','severity','reason','caution','json','step-0','step-1','step-2','login','unlock','code','message','budget'].map(id=>[id,new Element()]));
+ for(const [id,selector] of [['result','details'],['step-0','.check'],['step-1','.check'],['step-2','.check']]){const child=new Element();child.selector=selector;ids[id].append(child);}
+ const calls=[];let resolveRun;
+ const data={cases:Array.from({length:6},(_,i)=>({id:'c'+i,goal:'Synthetic '+i})),state:{used:0,pending:0,requests:0,halted:false,expiresAt:new Date(Date.now()+60000).toISOString(),cases:Object.fromEntries(Array.from({length:6},(_,i)=>['c'+i,{status:'ready'}]))}};
+ if(completed)data.state.cases.c0={status:'completed',result:{category:'security',severity:'high',reason:'saved real result'}};
+ const context=vm.createContext({document:{getElementById:id=>ids[id],createElement:()=>new Element(),querySelectorAll:()=>ids.choices.children},fetch:async(path,options)=>{calls.push({path,options});if(path==='api/status')return {ok:true,json:async()=>structuredClone(data)};await new Promise(r=>resolveRun=r);const id=JSON.parse(options.body).caseId;data.state.cases[id]={status:'completed',result:{category:'other',severity:'low',reason:'fixture-only UI test'}};return {ok:true,json:async()=>({state:structuredClone(data.state)})};}});
+ vm.runInContext(file('app.js'),context);
+ const login=async()=>{ids.code.value='fixture-access-code-not-a-real-secret';await ids.login.handlers.submit({preventDefault(){}});};
+ return {ids,calls,login,release:()=>resolveRun()};
+}
+test('original layout is retained and selecting/authenticating never starts a paid request',async()=>{const {ids,calls,login}=setup();assert.equal(ids.choices.children.length,6);assert.equal(ids.play.disabled,true);ids.choices.children[2].handlers.click();assert.equal(calls.length,0);await login();assert.equal(calls.length,1);assert.equal(calls[0].options.method,'GET');ids.choices.children[4].handlers.click();assert.equal(calls.length,1);assert.equal(ids.input.textContent,'Synthetic 4');const original=readFileSync(new URL('../replay/public/style.css',import.meta.url),'utf8');assert(file('style.css').startsWith(original));assert.match(file('index.html'),/class="samples"/);assert.match(file('index.html'),/class="viewer"/);});
+test('only explicit execution posts once; selection and double clicks cannot duplicate it',async()=>{const {ids,calls,login,release}=setup();await login();const running=ids.play.handlers.click();assert.equal(calls.length,2);assert.equal(calls[1].options.method,'POST');assert.equal(JSON.parse(calls[1].options.body).caseId,'c0');await ids.play.handlers.click();ids.choices.children[1].handlers.click();assert.equal(calls.length,2);assert.equal(ids.result.hidden,true);assert.equal(ids['step-0'].className,'');release();await running;assert.equal(ids.result.hidden,false);assert.equal(ids['step-0'].className,'done');assert.equal(ids.play.disabled,true);await ids.play.handlers.click();assert.equal(calls.length,2);});
+test('saved model results render without replaying or calling the provider',async()=>{const {ids,calls,login}=setup(true);await login();assert.equal(ids.reason.textContent,'saved real result');assert.equal(ids.result.hidden,false);assert.equal(ids.play.disabled,true);ids.choices.children[1].handlers.click();assert.equal(ids.result.hidden,true);ids.choices.children[0].handlers.click();assert.equal(ids.result.hidden,false);assert.equal(calls.length,1);assert.doesNotMatch(file('app.js'),/innerHTML|localStorage|sessionStorage/);});

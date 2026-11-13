@@ -1,0 +1,27 @@
+services:
+  web:
+    volumes:
+      - ./nginx.live.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+  api:
+    build:
+      context: ../../..
+      dockerfile: examples/pixieagent/demo/Dockerfile
+      target: live
+    volumes:
+      - ${PIXIEAGENT_SECRETS_DIRECTORY:?Set an absolute private secrets directory}:/run/trial:ro
+      - trial-state:/state
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 384m
+    cpus: 1
+    restart: "no"
+    logging:
+      driver: none
+volumes:
+  trial-state:

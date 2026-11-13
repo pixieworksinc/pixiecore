@@ -48,9 +48,6 @@ The command below scaffolds a Blueprint with the latest published npm package
 (0.1.1). For the recommended 0.2.x development line, use the source checkout
 steps in [Install and run](#install-and-run) below.
 
-The CLI can also scaffold a small single-operation Blueprint as a starting point:
-
-
 ```bash
 npx --package @pixieworks/pixiecore pixiecore blueprint create ./blueprints/date-normalizer \
   --operation=converter \
@@ -112,6 +109,8 @@ Runtime failures use exported error subclasses with stable `code` values. Every
 subclass derives from the canonical `PixieCoreError` base, so consumers can catch
 one base class while retaining specific errors such as
 `BlueprintValidationError`, `InputTypeError`, and `LLMAPIError`.
+
+[PixieAgent](https://github.com/pixieworksinc/pixiecore/tree/0.2.x/examples/pixieagent): bounded agent, offline tests and containerized demos.
 
 ## Blueprint
 
