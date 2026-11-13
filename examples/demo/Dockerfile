@@ -41,7 +41,7 @@ COPY examples/pixieagent/demo/replay/public/ /demo/public/pixieagent/
 COPY examples/demo/public/ /demo/public/
 COPY examples/demo/nginx.conf /etc/nginx/nginx.conf
 COPY examples/demo/php-fpm.conf /usr/local/etc/php-fpm.d/zz-demo.conf
-COPY examples/demo/start.sh examples/demo/bootstrap.php /demo/
+COPY examples/demo/start.sh examples/demo/bootstrap.php examples/demo/runtime.mjs /demo/
 COPY LICENSE THIRD_PARTY_NOTICES.md /demo/
 RUN chmod 755 /demo/start.sh && chmod 644 /opt/drupal/web/sites/default/settings.php
 WORKDIR /opt/drupal

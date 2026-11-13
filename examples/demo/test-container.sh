@@ -5,7 +5,7 @@ set -eu
 export COMPOSE_PROJECT_NAME=pixie-demos-ci
 compose() { docker compose -p "$COMPOSE_PROJECT_NAME" -f examples/demo/compose.yaml "$@"; }
 wait_ready() {
-  for attempt in $(seq 1 120); do
+  for attempt in $(seq 1 30); do
     if curl --max-time 2 --fail --silent http://127.0.0.1:8088/user/login > /dev/null; then return 0; fi
     container=$(compose ps -aq demo)
     if [ -n "$container" ] && [ "$(docker inspect --format '{{.RestartCount}}' "$container")" -gt 0 ]; then
@@ -26,13 +26,27 @@ container=$(compose ps -q demo)
 # The container has only an internal bridge and no provider credentials.
 test "$(docker inspect --format '{{.HostConfig.ReadonlyRootfs}}' "$container")" = true
 docker exec "$container" node -e "fetch('http://198.51.100.1', {signal:AbortSignal.timeout(1500)}).then(()=>process.exit(1),()=>console.log('Outbound network denied'))"
+volume=$(docker inspect --format '{{range .Mounts}}{{if eq .Destination "/state"}}{{.Name}}{{end}}{{end}}' "$container")
+if docker run --rm --network none --read-only -v "$volume:/state" pixiecore-demos:local > /tmp/duplicate-owner.log 2>&1; then
+  echo "Duplicate state owner was not rejected." >&2
+  exit 1
+fi
+grep -q 'Demo state is already in use.' /tmp/duplicate-owner.log
+if [ -n "${DEMO_SCREENSHOTS_DIRECTORY:-}" ]; then
+  mkdir -p "$DEMO_SCREENSHOTS_DIRECTORY"
+  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/landing.png" http://127.0.0.1:8088/ > /tmp/demo-browser.log 2>&1
+  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/replay.png" http://127.0.0.1:8088/pixieagent/ >> /tmp/demo-browser.log 2>&1
+fi
 # Inspect SQLite without publishing its contents. Recreating may change session/cache rows.
-before=$(compose exec -T demo vendor/bin/drush sql:query 'SELECT count(*) FROM pixiecore_spec_run;')
+before=$(compose exec -T demo php -r '$db = new PDO("sqlite:/state/site.sqlite"); echo $db->query("SELECT count(*) FROM pixiecore_spec_run")->fetchColumn();' )
+compose stop --timeout 10
+app_exit=$(docker inspect --format '{{.State.ExitCode}}' "$container")
+test "$app_exit" = 0
 compose down
 compose up --no-build -d --wait --wait-timeout 180
 wait_ready
 python3 examples/demo/smoke.py --restored
-after=$(compose exec -T demo vendor/bin/drush sql:query 'SELECT count(*) FROM pixiecore_spec_run;')
+after=$(compose exec -T demo php -r '$db = new PDO("sqlite:/state/site.sqlite"); echo $db->query("SELECT count(*) FROM pixiecore_spec_run")->fetchColumn();' )
 test "$before" = "$after"
 # A new state volume must also bootstrap without a prebuilt database.
 compose down --volumes

@@ -28,7 +28,13 @@ jobs:
           umask 077
           openssl rand -hex 24 > "$DEMO_PASSWORD_FILE"
           chmod 644 "$DEMO_PASSWORD_FILE"
+          export DEMO_SCREENSHOTS_DIRECTORY="$RUNNER_TEMP/demo-screenshots"
           sh examples/demo/test-container.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: demo-screenshots
+          path: ${{ runner.temp }}/demo-screenshots/
+          retention-days: 3
       - name: Record tested image size and export
         if: github.event_name == 'push'
         run: |
