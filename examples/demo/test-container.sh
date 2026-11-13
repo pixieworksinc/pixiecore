@@ -7,6 +7,11 @@ compose() { docker compose -p "$COMPOSE_PROJECT_NAME" -f examples/demo/compose.y
 wait_ready() {
   for attempt in $(seq 1 120); do
     if curl --fail --silent http://127.0.0.1:8088/user/login > /dev/null; then return 0; fi
+    container=$(compose ps -aq demo)
+    if [ -n "$container" ] && [ "$(docker inspect --format '{{.RestartCount}}' "$container")" -gt 0 ]; then
+      compose logs
+      return 1
+    fi
     sleep 2
   done
   compose logs

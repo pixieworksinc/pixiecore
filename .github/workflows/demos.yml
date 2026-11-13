@@ -18,6 +18,8 @@ jobs:
           persist-credentials: false
       - name: Build from locked public source
         run: docker build -f examples/demo/Dockerfile -t pixiecore-demos:local .
+      - name: Measure built image
+        run: docker image inspect pixiecore-demos:local --format '{{.Id}} {{.Size}}'
       - name: Test isolated bootstrap and recreation
         run: |
           export DEMO_PASSWORD_FILE="$RUNNER_TEMP/demo-password"

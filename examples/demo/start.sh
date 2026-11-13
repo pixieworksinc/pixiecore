@@ -29,7 +29,7 @@ node /runtime/examples/integrations/drupal/executable-specification/runtime/mock
 runtime_pid=$!
 php-fpm --nodaemonize &
 php_pid=$!
-nginx -g 'daemon off;' &
+nginx -e /dev/stderr -g 'daemon off;' &
 web_pid=$!
 stop_children() {
   kill -TERM "$runtime_pid" "$php_pid" "$web_pid" 2>/dev/null || true
