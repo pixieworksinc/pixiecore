@@ -41,7 +41,11 @@ fi
 before=$(compose exec -T demo php -r '$db = new PDO("sqlite:/state/site.sqlite"); echo $db->query("SELECT count(*) FROM pixiecore_spec_run")->fetchColumn();' )
 compose stop --timeout 10
 app_exit=$(docker inspect --format '{{.State.ExitCode}}' "$container")
-test "$app_exit" = 0
+if [ "$app_exit" != 0 ]; then
+  echo "Application did not stop cleanly: exit $app_exit" >&2
+  compose logs
+  exit 1
+fi
 compose down
 compose up --no-build -d --wait --wait-timeout 180
 wait_ready
