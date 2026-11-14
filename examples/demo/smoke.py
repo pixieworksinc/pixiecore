@@ -103,6 +103,8 @@ def verify_replay():
     anon = client()
     status, landing = request(anon, "/")
     assert status == 200 and "pixiecore-demo-landing" in landing
+    assert len(re.findall(r"<main\b", landing)) == 1
+    assert len(re.findall(r"<h1\b", landing)) == 1
     assert "/core/themes/claro/" in landing, "Landing is not rendered with Drupal Claro"
     assert "/pixiecore_specification/assets/css/dark.css" in landing
     with anon.open(BASE + "/pixieagent/", timeout=10) as response:
@@ -110,10 +112,14 @@ def verify_replay():
         assert response.headers["X-Content-Type-Options"] == "nosniff"
         replay = response.read().decode()
     assert "pixieagent-demo" in replay
+    assert len(re.findall(r"<main\b", replay)) == 1
+    assert len(re.findall(r"<h1\b", replay)) == 1
     assert "/pixieagent/assets/core/themes/claro/" in replay
     assert "/pixiecore_specification/assets/css/dark.css" in replay
     assets = re.findall(r'(?:src|href)="([^"]+\.(?:js|css)(?:\?[^"]*)?)"', replay)
-    assert assets and all(path.startswith("/pixieagent/assets/") for path in assets), "Replay assets escaped its proxy prefix"
+    assert assets, "Replay assets are missing"
+    escaped = [path for path in assets if not path.startswith("/pixieagent/assets/")]
+    assert not escaped, f"Replay assets escaped its proxy prefix: {escaped}"
     for path in assets:
         assert request(anon, path.replace("&amp;", "&"))[0] == 200, path
     for path in ["/pixieagent/live/", "/pixieagent/assets/sites/default/settings.php", "/pixieagent/assets/vendor/autoload.php", "/pixieagent/assets/.env", "/pixieagent/assets/modules/custom/pixiecore_specification/pixiecore_specification.module", "/sites/default/settings.php", "/sites/default/files/test.php", "/vendor/autoload.php", "/.env"]:

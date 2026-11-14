@@ -67,5 +67,17 @@ function pixiecore_specification_preprocess_html(array &$variables): void {
   }
   if ($route === 'pixiecore_specification.replay') {
     $variables['head_title']['title'] = 'PixieAgent';
+    // Claro's noscript links are head attachments outside the URL generator.
+    foreach ($variables['page']['#attached']['html_head'] ?? [] as $index => $attachment) {
+      $href = $attachment[0]['#attributes']['href'] ?? '';
+      if (!is_string($href) || $href === '') {
+        continue;
+      }
+      $parts = explode('?', $href, 2);
+      $path = $parts[0];
+      pixiecore_specification_file_url_alter($path);
+      $variables['page']['#attached']['html_head'][$index][0]['#attributes']['href'] = $path
+        . (isset($parts[1]) ? '?' . $parts[1] : '');
+    }
   }
 }
