@@ -19,7 +19,7 @@ pixiecore_specification.landing:
     _access: 'TRUE'
 
 pixiecore_specification.replay:
-  path: '/pixieagent/'
+  path: '/pixieagent'
   defaults:
     _controller: '\Drupal\pixiecore_specification\Controller\DemoPagesController::replay'
     _title: ''
