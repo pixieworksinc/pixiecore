@@ -112,7 +112,7 @@ try {
     try { devtools = (await readFile(join(profile, 'DevToolsActivePort'), 'utf8')).trim().split('\n'); }
     catch (error) { if (!(error instanceof Error) || !('code' in error) || error.code !== 'ENOENT') throw error; }
     return devtools?.length === 2;
-  }, 'Chrome did not expose its local DevTools port');
+  }, 'Chrome did not expose its local DevTools port', 30000);
   assert.ok(devtools);
   const endpoint = `http://127.0.0.1:${devtools[0]}`;
   browser = await connect(`ws://127.0.0.1:${devtools[0]}${devtools[1]}`);
