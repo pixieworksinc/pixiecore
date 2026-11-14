@@ -17,3 +17,14 @@ function pixiecore_specification_codemirror_mode_info_alter(array &$modes): void
     }
   }
 }
+
+/**
+ * Implements hook_page_attachments().
+ */
+function pixiecore_specification_page_attachments(array &$attachments): void {
+  $attachments['#cache']['contexts'][] = 'route';
+  $attachments['#cache']['contexts'][] = 'theme';
+  if (\Drupal::theme()->getActiveTheme()->getName() === 'claro' && in_array(\Drupal::routeMatch()->getRouteName(), ['user.login', 'pixiecore_specification.demo'], TRUE)) {
+    $attachments['#attached']['library'][] = 'pixiecore_specification/dark';
+  }
+}

@@ -1,5 +1,8 @@
 # Rebuildable PixieCore and PixieAgent demos
 
+The Claro-based Core login and editor use a dark palette. The separate
+PixieAgent interface retains its own styling.
+
 An isolated application container runs the existing Drupal Blueprint editor, its loopback
 PixieCore fixture runtime, and the existing six-card PixieAgent replay. The default mode makes
 no model-provider requests. Images contain no API key, production database, live

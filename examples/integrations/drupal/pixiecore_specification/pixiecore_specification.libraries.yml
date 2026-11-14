@@ -7,3 +7,8 @@ editor:
   dependencies:
     - core/drupal
     - core/once
+
+dark:
+  css:
+    theme:
+      assets/css/dark.css: { weight: 100 }

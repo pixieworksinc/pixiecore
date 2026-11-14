@@ -35,6 +35,7 @@ grep -q 'Demo state is already in use.' /tmp/duplicate-owner.log
 if [ -n "${DEMO_SCREENSHOTS_DIRECTORY:-}" ]; then
   mkdir -p "$DEMO_SCREENSHOTS_DIRECTORY"
   google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/claro-login.png" http://127.0.0.1:8088/user/login > /tmp/demo-browser.log 2>&1
+  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=390,844 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/claro-login-mobile.png" http://127.0.0.1:8088/user/login >> /tmp/demo-browser.log 2>&1
   google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/landing.png" http://127.0.0.1:8088/ > /tmp/demo-browser.log 2>&1
   google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/replay.png" http://127.0.0.1:8088/pixieagent/ >> /tmp/demo-browser.log 2>&1
   google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=390,844 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/landing-mobile.png" http://127.0.0.1:8088/ >> /tmp/demo-browser.log 2>&1
