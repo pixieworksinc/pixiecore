@@ -1,0 +1,5 @@
+# Generated from canonical demo sources by examples/demo/prepare-pages.php.
+/assets/pages/
+/assets/replay/
+/templates/pixiecore-demo-landing.html.twig
+/templates/pixiecore-demo-replay.html.twig

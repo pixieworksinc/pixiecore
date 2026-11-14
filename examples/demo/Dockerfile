@@ -21,6 +21,11 @@ RUN composer install --no-dev --prefer-dist --no-interaction --no-progress \
     && composer check-platform-reqs --no-dev
 COPY examples/integrations/drupal/pixiecore_integration/ web/modules/custom/pixiecore_integration/
 COPY examples/integrations/drupal/pixiecore_specification/ web/modules/custom/pixiecore_specification/
+COPY examples/demo/prepare-pages.php /page-source/examples/demo/prepare-pages.php
+COPY examples/demo/public/index.html /page-source/examples/demo/public/index.html
+COPY examples/pixieagent/demo/replay/public/ /page-source/examples/pixieagent/demo/replay/public/
+RUN php /page-source/examples/demo/prepare-pages.php /site/web/modules/custom/pixiecore_specification \
+    && rm -rf /page-source
 COPY --from=runtime-build /assets/node_modules/codemirror/ web/libraries/codemirror/
 COPY examples/demo/settings.php web/sites/default/settings.php
 RUN mkdir -p /state/files && rm -rf web/sites/default/files \
@@ -39,8 +44,6 @@ COPY --from=runtime-build /app/build/demo/executable-specification/ /runtime/exa
 COPY --from=runtime-build /app/build/demo/pixiecore_specification/blueprints/ /runtime/examples/integrations/drupal/pixiecore_specification/blueprints/
 COPY --from=runtime-build /app/build/demo/pixieagent/ /runtime/examples/pixieagent/
 COPY --from=site-build /site/ /opt/drupal/
-COPY examples/pixieagent/demo/replay/public/ /demo/public/pixieagent/
-COPY examples/demo/public/ /demo/public/
 COPY examples/demo/nginx.conf /etc/nginx/nginx.conf
 COPY examples/demo/php-fpm.conf /usr/local/etc/php-fpm.d/zz-demo.conf
 COPY examples/demo/start.sh examples/demo/bootstrap.php examples/demo/configure-theme.php /demo/

@@ -25,6 +25,11 @@ if ($theme_config->get('default') !== 'claro' || $theme_config->get('admin') !==
   $theme_config->set('default', 'claro')->set('admin', 'claro')->save();
   $changed = TRUE;
 }
+$site_config = \Drupal::configFactory()->getEditable('system.site');
+if ($site_config->get('page.front') !== '/demos') {
+  $site_config->set('page.front', '/demos')->save();
+  $changed = TRUE;
+}
 $role = Role::load('demo');
 if (!$role) {
   throw new RuntimeException('Demo role is missing; preserve the state for inspection.');

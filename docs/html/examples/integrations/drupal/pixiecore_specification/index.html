@@ -81,6 +81,34 @@ calls, budget, expiry and synthetic inputs.</p>
 exception precedence, and nonmatching inputs also require an owner-defined
 business contract. The initial two cases do not establish natural-language
 accuracy or superiority over all rules engines.</p>
+<h2 id="public-demo-pages">Public demo pages</h2>
+<p>The existing module also renders the anonymous landing page at <code>/demos</code> and the
+saved six-case replay at <code>/pixieagent/</code> using Drupal render arrays, Twig, and
+attached libraries. <code>configure-theme.php</code> selects Claro for both site and admin
+and sets <code>/demos</code> as the front page. These routes do not execute Blueprints or
+call a provider. The authenticated editor and its storage remain separate.</p>
+<p>The canonical landing markup/styles live in <code>examples/demo/public/index.html</code>;
+the replay markup, styles, data and script live in
+<code>examples/pixieagent/demo/replay/public/</code>. Do not edit generated module assets or
+Twig fragments. From the repository root, prepare them before installing this
+module outside Docker:</p>
+<pre><code class="language-sh">php examples/demo/prepare-pages.php /path/to/drupal/web/modules/custom/pixiecore_specification</code></pre>
+<p>The destination must already contain this module&#39;s source. Omit the argument to
+generate beside the repository copy before copying that module into Drupal.
+Run the same command after changes to either canonical page, then rebuild
+Drupal caches. Docker runs it during the site build. Generated fragments are
+literal Twig verbatim blocks; a verbatim terminator in source is rejected.
+Replay JavaScript is copied unchanged and attached in data-before-app order.</p>
+<p>The container enables <code>$settings[&#39;pixiecore_demo_replay_asset_prefix&#39;] = TRUE</code>.
+With this setting, only the replay route rewrites local library URLs beneath <code>/pixieagent/assets/</code>
+so an existing prefix-only proxy can serve its Drupal/Claro assets. The bundled
+nginx configuration allows only CSS, JavaScript, images and fonts in public
+asset roots and denies other prefixed paths. The replay response retains a CSP
+that forbids connections, form submissions and framing. No live endpoint is
+introduced by the replay page.</p>
+<p>A standard Drupal installation leaves this setting disabled and serves libraries
+through its normal asset URLs. Enable the prefix only with the matching bundled
+nginx alias or an equivalent reviewed reverse-proxy configuration.</p>
 </main></div>
 
 </body>

@@ -101,14 +101,22 @@ def result(fields):
 
 def verify_replay():
     anon = client()
-    assert request(anon, "/")[0] == 200
-    assert "PixieAgent" in request(anon, "/")[1]
+    status, landing = request(anon, "/")
+    assert status == 200 and "pixiecore-demo-landing" in landing
+    assert "/core/themes/claro/" in landing, "Landing is not rendered with Drupal Claro"
+    assert "/pixiecore_specification/assets/css/dark.css" in landing
     with anon.open(BASE + "/pixieagent/", timeout=10) as response:
         assert "connect-src 'none'" in response.headers["Content-Security-Policy"]
         assert response.headers["X-Content-Type-Options"] == "nosniff"
-    for path in ["/pixieagent/", "/pixieagent/app.js", "/pixieagent/style.css", "/pixieagent/data.js"]:
-        assert request(anon, path)[0] == 200
-    for path in ["/pixieagent/live/", "/sites/default/settings.php", "/sites/default/files/test.php", "/vendor/autoload.php", "/.env"]:
+        replay = response.read().decode()
+    assert "pixieagent-demo" in replay
+    assert "/pixieagent/assets/core/themes/claro/" in replay
+    assert "/pixiecore_specification/assets/css/dark.css" in replay
+    assets = re.findall(r'(?:src|href)="([^"]+\.(?:js|css)(?:\?[^"]*)?)"', replay)
+    assert assets and all(path.startswith("/pixieagent/assets/") for path in assets), "Replay assets escaped its proxy prefix"
+    for path in assets:
+        assert request(anon, path.replace("&amp;", "&"))[0] == 200, path
+    for path in ["/pixieagent/live/", "/pixieagent/assets/sites/default/settings.php", "/pixieagent/assets/vendor/autoload.php", "/pixieagent/assets/.env", "/pixieagent/assets/modules/custom/pixiecore_specification/pixiecore_specification.module", "/sites/default/settings.php", "/sites/default/files/test.php", "/vendor/autoload.php", "/.env"]:
         assert request(anon, path)[0] == 404
     # Drupal may deny or redirect an anonymous editor request, but never expose the form.
     status, html = request(anon, ROUTE)

@@ -9,3 +9,19 @@ pixiecore_specification.demo:
   options:
     _admin_route: true
     no_cache: true
+
+pixiecore_specification.landing:
+  path: '/demos'
+  defaults:
+    _controller: '\Drupal\pixiecore_specification\Controller\DemoPagesController::landing'
+    _title: ''
+  requirements:
+    _access: 'TRUE'
+
+pixiecore_specification.replay:
+  path: '/pixieagent/'
+  defaults:
+    _controller: '\Drupal\pixiecore_specification\Controller\DemoPagesController::replay'
+    _title: ''
+  requirements:
+    _access: 'TRUE'

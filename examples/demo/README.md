@@ -1,7 +1,7 @@
 # Rebuildable PixieCore and PixieAgent demos
 
-The Claro-based Core login and editor use a dark palette. The separate
-PixieAgent interface retains its own styling.
+Drupal serves the landing page, Core login/editor and PixieAgent replay with
+core Claro and a dark palette. PixieAgent keeps its original six-card layout.
 
 An isolated application container runs the existing Drupal Blueprint editor, its loopback
 PixieCore fixture runtime, and the existing six-card PixieAgent replay. The default mode makes
@@ -13,7 +13,8 @@ same editor and the existing real-provider REST path.
   Only the two documented Gold/1200 pricing fixtures are supported. This is a
   real runtime with a **mock provider**, not a natural-language rule interpreter.
 - **PixieAgent:** choose one of six synthetic issues and replay its saved **mock**
-  decision/classification/confirmation. This is a static replay; the original card layout is unchanged.
+  decision/classification/confirmation. Drupal renders the page and loads the
+  existing replay assets; card playback runs in the browser.
 - Optional PixieCore live mode uses the same editor and saved revisions; see
   [the two-call trial](#optional-two-call-live-trial).
 - The separate [restricted live example](../pixieagent/demo/README.md) is not
@@ -50,8 +51,10 @@ grants permission to view the administration theme, blocks the installer adminis
 and disables self-registration and automated
 cron. The password is consumed only during initial installation. Retrieve it
 locally from your private file to log in; do not paste it into an Issue. The login
-and editor use Drupal core's Claro theme; no additional administration permissions
-are granted.
+and editor use Drupal core's Claro theme. Startup also sets `/demos` as Drupal's
+front page, including when reusing an existing volume. The landing and replay
+routes allow anonymous visitors. Editor permissions remain restricted to the
+existing demo role.
 
 Open <http://127.0.0.1:8088/>. The landing page links to both experiences:
 
@@ -172,6 +175,10 @@ Snapshot the current virtual-host configuration before switching its backend;
 validate the new configuration before a graceful reload. The core demo uses
 root-relative Drupal paths, so give it a dedicated hostname rather than adding
 an arbitrary path prefix. The replay can also be proxied at `/pixieagent/`.
+Its Drupal libraries use `/pixieagent/assets/` so every CSS, JavaScript and font
+request follows that same proxy prefix. The application exposes only public
+asset extensions through this alias. Keep the application nginx configuration
+from this source together with the image when rebuilding the demo.
 If an older live trial is already there, preserve its **more specific** route,
 service and persistent ledger; do not implicitly replace `/pixieagent/live/`.
 
@@ -255,12 +262,18 @@ both existing fixtures, container replacement retaining the saved result, and a
 second fresh-volume installation. Its test project is disposable and is the only
 place that uses `down --volumes`. Existing PixieAgent CI still checks all 88 tests,
 the six offline cases and the separate live container with mocked communication.
+Anonymous-page checks cover Drupal rendering, dark styling, proxy-prefixed
+assets and sensitive-file denial. Browser checks exercise all six replay cards
+and switching cases during playback, with desktop and narrow-screen captures.
 
 For the container smoke check after a local build, set `DEMO_PASSWORD_FILE` to a
 **test-only** password file and run `sh examples/demo/test-container.sh`. It owns
 the `pixie-demos-ci` Compose project and its disposable volumes. Do not run it
 against a live demo. It probes only a documentation-reserved IP to confirm egress
 failure, never a provider endpoint.
+The browser check needs Node 24 and Chrome. Set `DEMO_BROWSER_BIN` to the Chrome
+executable if it is unavailable as `google-chrome`; set
+`DEMO_SCREENSHOTS_DIRECTORY` to save captures and its JSON acceptance report.
 
 This deployment is a bounded example, not a production multi-tenant service or
 an assessment of model accuracy. Refresh locked packages and base images through
