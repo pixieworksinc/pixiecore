@@ -46,6 +46,9 @@ jobs:
           docker image inspect pixiecore-demos:local pixiecore-demos-web:local --format '{{.Id}} {{.Size}}' > image-metadata.txt
           docker save pixiecore-demos:local pixiecore-demos-web:local | gzip -1 > pixiecore-demos.tar.gz
           sha256sum pixiecore-demos.tar.gz > pixiecore-demos.tar.gz.sha256
+          # Allow an app-only replacement while retaining an unchanged gateway.
+          docker save pixiecore-demos:local | gzip -1 > pixiecore-demo-app.tar.gz
+          sha256sum pixiecore-demo-app.tar.gz > pixiecore-demo-app.tar.gz.sha256
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: github.event_name == 'push'
         with:
@@ -54,4 +57,12 @@ jobs:
             pixiecore-demos.tar.gz
             pixiecore-demos.tar.gz.sha256
             image-metadata.txt
+          retention-days: 3
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: github.event_name == 'push'
+        with:
+          name: pixiecore-demo-app-image
+          path: |
+            pixiecore-demo-app.tar.gz
+            pixiecore-demo-app.tar.gz.sha256
           retention-days: 3
