@@ -91,6 +91,9 @@ const chrome = spawn(process.env.DEMO_BROWSER_BIN ?? 'google-chrome', [
   '--remote-debugging-address=127.0.0.1', '--remote-debugging-port=0',
   `--user-data-dir=${profile}`, 'about:blank',
 ], { stdio: ['ignore', 'ignore', 'pipe'] });
+let chromeClosed = false;
+// Capture close immediately: exit alone does not mean inherited stdio closed.
+chrome.once('close', () => { chromeClosed = true; });
 /** @type {Error | undefined} */
 let launchError;
 let chromeLog = '';
@@ -109,6 +112,7 @@ const scriptErrors = [];
 let runPosts = 0;
 /** @type {{cases: {id: string, matched: boolean}[], screenshots: string[], providerRequests: number, assets?: {path: string, status: number}[], [key: string]: unknown}} */
 const report = { cases: [], screenshots: [], providerRequests: 0 };
+let testFailed = false;
 
 try {
   if (screenshots) await mkdir(screenshots, { recursive: true });
@@ -264,9 +268,9 @@ try {
     }
     assert.deepEqual((await agentStatus()).state, initial.state, 'Rejected requests changed the ledger');
     report.rejectedRequests = denied.map(entry => entry.status);
-    const alias = await fetch(new URL('/pixieagent/?destination=/user/login', base), {
-      headers: { Host: `localhost:${base.port}` }, redirect: 'manual',
-    });
+    const aliasUrl = new URL('/pixieagent/?destination=/user/login', base);
+    aliasUrl.hostname = base.hostname === 'localhost' ? '127.0.0.1' : 'localhost';
+    const alias = await fetch(aliasUrl, { redirect: 'manual' });
     assert.equal(alias.status, 302, 'An alternate host did not redirect to the configured origin');
     assert.equal(alias.headers.get('location'), new URL('/pixieagent/', base).href, 'Destination changed the canonical redirect');
     report.canonicalRedirect = true;
@@ -398,17 +402,27 @@ try {
   if (screenshots) await writeFile(join(screenshots, 'browser-acceptance.json'), JSON.stringify(report, null, 2));
   console.log(`Drupal Agent ${liveTest ? 'injected live harness' : 'saved replay'}: six cases, request guards, scoped assets, dark appearance, and desktop/mobile checks passed. No real provider requests.`);
 } catch (error) {
-  if (screenshots) await writeFile(join(screenshots, 'browser-failure.json'), JSON.stringify({ error: error instanceof Error ? error.message : String(error), report, violations, failedResponses, scriptErrors, chromeLog }, null, 2));
+  testFailed = true;
+  if (screenshots) await writeFile(join(screenshots, 'browser-failure.json'), JSON.stringify({ error: error instanceof Error ? error.message : String(error), report, violations, failedResponses, scriptErrors, chromeLog }, null, 2))
+    .catch(reportError => console.error('Could not save browser failure evidence:', reportError));
   throw error;
 } finally {
-  page?.close();
-  if (browser) {
-    await browser.call('Browser.close').catch(() => {});
-    browser.close();
+  try {
+    page?.close();
+    if (browser) {
+      await browser.call('Browser.close').catch(() => {});
+      browser.close();
+    }
+    if (chrome.exitCode === null && chrome.signalCode === null) chrome.kill('SIGTERM');
+    await waitFor(async () => chromeClosed, 'Chrome stdio did not close', 5000).catch(async () => {
+      if (chrome.exitCode === null && chrome.signalCode === null) chrome.kill('SIGKILL');
+      await waitFor(async () => chromeClosed, 'Chrome did not finish closing', 5000);
+    });
+    // Only the fresh profile owned by this test is removed. Chrome descendants
+    // can finish writing shortly after close, so retry transient ENOTEMPTY.
+    await rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+  } catch (cleanupError) {
+    if (!testFailed) throw cleanupError;
+    console.error('Browser cleanup also failed; preserving the test failure:', cleanupError);
   }
-  if (chrome.exitCode === null) {
-    chrome.kill('SIGTERM');
-    await waitFor(async () => chrome.exitCode !== null || chrome.signalCode !== null, 'Chrome did not stop', 5000).catch(() => chrome.kill('SIGKILL'));
-  }
-  await rm(profile, { recursive: true, force: true });
 }
