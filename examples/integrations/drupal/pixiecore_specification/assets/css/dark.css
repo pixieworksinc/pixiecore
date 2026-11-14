@@ -1,0 +1,87 @@
+/* Dark palette for the Claro-based Core demo. Keep white for status messages
+ * and primary button text, which use it as a foreground color. */
+html:root {
+  color-scheme: dark;
+  --color-bg: #191b24;
+  --color-fg: #f0f1f6;
+  --color-text: #f0f1f6;
+  --color-text-light: #b9bbc8;
+  --color-link: #a9c4ff;
+  --color-link-hover: #c8d8ff;
+  --color-link-active: #e0e8ff;
+  --color-bgblue-hover: #29364f;
+  --color-bgblue-active: #33405a;
+  --tabs--hover-bg-color: #33405a;
+  --color-gray: #f0f1f6;
+  --color-gray-900: #e0e1ea;
+  --color-gray-800: #c9cbd6;
+  --color-gray-700: #b9bbc8;
+  --color-gray-600: #a4a6b5;
+  --color-gray-500: #8e91a2;
+  --color-gray-400: #6e7182;
+  --color-gray-300: #515465;
+  --color-gray-200: #3d4050;
+  --color-gray-100: #343746;
+  --color-gray-050: #292c3a;
+  --color-gray-025: #222531;
+  --color-gray-050-o-40: rgb(41 44 58 / 40%);
+  --color-gray-200-o-80: rgb(61 64 80 / 80%);
+  --color-focus: #81d9c8;
+  --focus-box-shadow: 0 0 0 var(--focus-border-offset-size) var(--color-bg), 0 0 0 calc(var(--focus-border-size) + var(--focus-border-offset-size)) var(--color-focus);
+  --input--focus-border-color: #a9c4ff;
+  --input--error-color: #ff9b9b;
+  --input--error-border-color: #ff9b9b;
+  --input--disabled-color: #a4a6b5;
+  --input--disabled-fg-color: #b9bbc8;
+  --input--disabled-bg-color: #292c3a;
+  --input--disabled-border-color: #6e7182;
+  --button--disabled-bg-color: #343746;
+  --button--disabled-fg-color: #b9bbc8;
+  --button--disabled-bg-color--primary: #343746;
+  --button--disabled-fg-color--primary: #b9bbc8;
+}
+
+html .claro-details,
+html .claro-details__summary--accordion,
+html .claro-details__summary--accordion-item,
+html .claro-details__summary--vertical-tabs-item,
+html .tabs__tab.is-active {
+  background-color: var(--color-bg);
+}
+
+html .form-element[readonly] {
+  color: var(--color-fg);
+  background-color: var(--color-gray-050);
+}
+
+@media (forced-colors: none) {
+  html .claro-details__summary::before {
+    filter: brightness(2.5);
+  }
+}
+
+/* Claro uses a dark blue for active tabs against its light background. */
+html .tabs .tabs__link:hover,
+html .claro-details__summary:hover {
+  color: var(--color-link);
+}
+
+html .tabs .tabs__link.is-active,
+html .tabs .tabs__link.is-active:hover,
+html .tabs .tabs__link.is-active:focus {
+  color: var(--color-link);
+}
+
+html .tabs .tabs__tab.is-active::before,
+html .tabs .tabs__link.is-active::before {
+  border-color: var(--color-link);
+}
+
+html .CodeMirror-focused {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+html .form-item--error .CodeMirror {
+  border: 2px solid var(--input--error-border-color);
+}

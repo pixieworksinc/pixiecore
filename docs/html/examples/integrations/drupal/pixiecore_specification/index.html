@@ -50,8 +50,9 @@ or the browser. Use Drupal trusted_host_patterns and normal web-server request
 limits. Editable Blueprint/input byte limits and the demo schema contract are
 validated before transport. The HTTP client does not follow redirects and has
 bounded connect/request timeouts. This example accepts only a loopback HTTP
-fixture endpoint without credentials. Any non-MOCK mode is disabled before
-transport; no request is automatically retried by this module.</p>
+endpoint. MOCK requires no token. REAL requires a separate trusted <code>allow_live</code>
+opt-in and a server-side transport token; setting a mode name alone cannot
+activate it. No request is automatically retried by this module.</p>
 <p>Output is escaped text, not HTML. The module checks the fixed output shape and
 arithmetic but does not manufacture results or implement the discount rule.
 These checks cannot prove that an arbitrary Blueprint was understood correctly.
@@ -64,19 +65,19 @@ before considering real data. Reset is not an erasure operation.</p>
 <p>The default mock backend supports only two exact Gold/1200 threshold fixtures. It is
 always labeled MOCK, does not interpret arbitrary natural-language rules, and
 rejects unsupported Blueprints. Its usage fields remain null, not zero.</p>
-<p>This repository example does not provide real-provider execution or metered
-usage evidence. Do not point it at <code>pixiecore serve</code> with an OpenAI provider;
-the only supported backend is the provided offline fixture server.</p>
-<p>The proposal for a separate runtime budget ledger in
-<a href="https://github.com/pixieworksinc/pixiecore/issues/6">Issue #6</a> was closed as
-unnecessary, and PR #7 was closed without merging. It is not a pending
-implementation task or a prerequisite for a real-provider adapter. This example
-does not implement a separate budget ledger; provider-side billing controls are
-configured with the provider.</p>
-<p>A real-provider adapter would need separately reviewed implementation,
-authentication, request/response contracts, and offline tests. Any later paid
-evaluation requires separate approval of model,
-calls, USD cap, retries, and exact fixtures. Annual spending, regional rules,
+<p>An optional real-provider host is included for the existing editor. Use the
+<a href="../../../demo/index.html#optional-two-call-live-trial">explicit two-call container trial</a>.
+The API key remains in a read-only server mount; the UI cannot change model,
+endpoint, tools or limits. REAL results include validated usage and an estimate,
+while semantic correctness remains subject to review. Do not point the module
+at stock <code>pixiecore serve</code>; its response is not this demo&#39;s metadata contract.</p>
+<p>The separate runtime billing-ledger proposal in
+<a href="https://github.com/pixieworksinc/pixiecore/issues/6">Issue #6</a> remains closed;
+PR #7 is not reopened. Provider billing controls remain with the provider.
+This trial consumes two durable call permits instead of adding billing or
+replenishment machinery. Paid activation needs separate approval of the model,
+calls, budget, expiry and synthetic inputs.</p>
+<p>Annual spending, regional rules,
 exception precedence, and nonmatching inputs also require an owner-defined
 business contract. The initial two cases do not establish natural-language
 accuracy or superiority over all rules engines.</p>

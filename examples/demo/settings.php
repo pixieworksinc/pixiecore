@@ -33,3 +33,14 @@ $settings['pixiecore_specification'] = [
   'endpoint' => 'http://127.0.0.1:3087',
   'token' => '',
 ];
+
+// Real mode is an explicit Compose overlay; the provider key stays outside PHP.
+if (getenv('DEMO_MODE') === 'real') {
+  $token = trim(file_get_contents('/run/secrets/runtime_token') ?: '');
+  if (strlen($token) < 32) {
+    throw new RuntimeException('The live runtime transport token is unavailable.');
+  }
+  $settings['pixiecore_specification']['mode'] = 'real';
+  $settings['pixiecore_specification']['allow_live'] = TRUE;
+  $settings['pixiecore_specification']['token'] = $token;
+}
