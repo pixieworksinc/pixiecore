@@ -114,6 +114,19 @@ test('operator settings cannot substitute a different provider or larger token c
   assert.throws(() => validateLiveConfig({ ...config, maxOutputTokens: 5000 }));
 });
 
+test('provider timeout leaves headroom before the Drupal, FastCGI and gateway deadlines', () => {
+  const config = validateLiveConfig({ expiresAt: '2000-01-01T00:00:00Z', statePath: '/state',
+    templatePath: '/template', apiKeyPath: '/key', transportTokenPath: '/token' });
+  // Match the deployed PHP client, app nginx and gateway configuration.
+  const drupalClientTimeoutMs = 30_000;
+  const appFastCgiTimeoutMs = 30_000;
+  const gatewayTimeoutMs = 35_000;
+  assert.equal(config.requestTimeoutMs, 25_000);
+  assert.ok(config.requestTimeoutMs < drupalClientTimeoutMs);
+  assert.ok(config.requestTimeoutMs < appFastCgiTimeoutMs);
+  assert.ok(appFastCgiTimeoutMs < gatewayTimeoutMs);
+});
+
 test('missing provider usage consumes the attempt and stops further calls', async t => {
   const fixture = await setup(t, [{ discount: 0.15, final_price: 1020 }], {}, false);
   assert.equal((await fixture.post('0.15')).status, 502);

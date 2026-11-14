@@ -94,7 +94,11 @@ opt-in and does not enable the separate PixieAgent live service.
 Before activation, review the current model/price, two-call allowance, expiry,
 credential mounts, and rollback. The fixed provider is `gpt-6-luna` at
 `https://api.openai.com/v1/chat/completions`, with no retries, no tools/MCP,
-512 output tokens, 16 KiB provider bodies, and a 30-second provider timeout.
+512 output tokens, 16 KiB provider bodies, and a 25-second provider timeout.
+The provider deadline leaves five seconds before the Drupal HTTP client and
+application FastCGI read deadlines of 30 seconds. The gateway read deadline is
+35 seconds. Operator files supply paths and expiry, so they inherit this fixed
+provider deadline.
 At the reviewed conservative rates of $0.20/input-million and $0.75/output-million,
 reserving 1,050,000 input tokens per call bounds the pair at $0.420768, below $1.
 Recheck [model specifications](https://developers.openai.com/api/docs/models/gpt-6-luna)

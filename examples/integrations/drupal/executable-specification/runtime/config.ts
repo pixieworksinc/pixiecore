@@ -9,7 +9,7 @@ export type LiveConfig = LiveSettings & typeof LIMITS;
 
 const LIMITS = Object.freeze({ model: 'gpt-6-luna', baseUrl: 'https://api.openai.com/v1',
   host: '127.0.0.1', port: 3087, maxOutputTokens: 512, temperature: 0,
-  requestTimeoutMs: 30000, maxRequestBytes: 16384, maxInstructionBytes: 8192, maxInputBytes: 2048 });
+  requestTimeoutMs: 25_000, maxRequestBytes: 16384, maxInstructionBytes: 8192, maxInputBytes: 2048 });
 
 /** Keep the provider and limits fixed; operator files supply only paths and expiry. */
 export function validateLiveConfig(input: unknown): LiveConfig {
