@@ -15,19 +15,21 @@ core Claro and a dark palette. PixieAgent keeps its original six-card layout.</p
 <p>An isolated application container runs the existing Drupal Blueprint editor, its loopback
 PixieCore fixture runtime, and the existing six-card PixieAgent replay. The default mode makes
 no model-provider requests. Images contain no API key, production database, live
-trial state, or prebuilt maintainer runtime. An explicit live overlay reuses this
-same editor and the existing real-provider REST path.</p>
+trial state, or prebuilt maintainer runtime. Explicit live overlays select the
+existing Core editor and Agent card flows.</p>
 <ul>
 <li><strong>PixieCore:</strong> save a Blueprint, run it through PixieCore, inspect the result.
 Only the two documented Gold/1200 pricing fixtures are supported. This is a
 real runtime with a <strong>mock provider</strong>, not a natural-language rule interpreter.</li>
-<li><strong>PixieAgent:</strong> choose one of six synthetic issues and replay its saved <strong>mock</strong>
+<li><strong>Default PixieAgent mode:</strong> choose one of six synthetic issues and replay its saved <strong>mock</strong>
 decision/classification/confirmation. Drupal renders the page and loads the
 existing replay assets; card playback runs in the browser.</li>
 <li>Optional PixieCore live mode uses the same editor and saved revisions; see
 <a href="#optional-two-call-live-trial">the two-call trial</a>.</li>
-<li>The separate <a href="../pixieagent/demo/index.html">restricted live example</a> is not
-activated by this deployment. Starting containers or viewing pages costs $0.</li>
+<li>Optional PixieAgent live mode uses the Drupal card page and its existing
+bounded Agent runtime; see <a href="#optional-pixieagent-live-trial">the Agent trial</a>.</li>
+<li>The <a href="../pixieagent/demo/index.html">restricted live backend</a> is reused by the
+explicit Agent overlay. Page display costs $0.</li>
 </ul>
 <h2 id="build-and-start-from-a-clean-checkout">Build and start from a clean checkout</h2>
 <p>Install Docker with Compose v2. Run from the repository root on the <code>0.2.x</code>
@@ -134,6 +136,56 @@ recreate it using only the base Compose file. Keep the named volume and secret
 files; removing a mount is not deleting the key. The editor resumes MOCK mode and
 retains history. Record the selected image and proxy configuration as described
 below before applying any production change.</p>
+<h2 id="optional-pixieagent-live-trial">Optional PixieAgent live trial</h2>
+<p>The Agent overlay selects the existing real-provider card UI at <code>/pixieagent/</code>.
+Drupal renders it with Claro dark styling. Enter the private access code, choose
+one of the six synthetic cases, then press the execution button. Status checks
+and sample selection read the saved state. The execution POST invokes the
+existing Planner → PixieCore classification → Planner flow. Completed cases
+show their stored model result. <code>/pixieagent/replay/</code> provides the fixture replay.</p>
+<p>The existing backend runs as <code>agent-api</code> using the same source-built image.
+Its port stays within the Compose networks. Read-only operator files and a
+separate <code>agent-state</code> volume hold credentials and durable accounting. The
+backend retains the USD 1 shared ceiling, 30 total requests, five per case,
+512 completion tokens, 16 KiB request limit, 30-second requests, 90-second cases
+and the configured expiry. API proxies allow 100 seconds with retries disabled.
+The six cases are once-only across all users of that ledger. Usage-based
+accounting includes reservations before dispatch and settlement after valid
+usage. The operator verifies current model prices before activation.</p>
+<p>Prepare a private copy of <code>agent-live-config.example.json</code> with the reviewed
+origin and UTC expiry, and set <code>enabled</code> to <code>true</code> after activation approval.
+The origin in the JSON and <code>PIXIEAGENT_ORIGIN</code> must match. Use HTTPS for public
+origins; loopback HTTP supports local tests. Visitors on another demo hostname
+are redirected to the configured canonical Agent origin.</p>
+<p>Create a random access code of at least 32 characters in an operator-controlled
+file. Make the config, access-code and provider-key mounts readable by UID82,
+and protect their parent directory. The access code is entered in the browser
+and retained in page memory. The provider key is read by the Node backend when
+executing a case. Keep these files outside the source checkout and image.</p>
+<pre><code class="language-sh">export PIXIEAGENT_LIVE_CONFIG_FILE=&quot;$HOME/pixie-demo-operator/agent-live.json&quot;
+export PIXIEAGENT_ACCESS_CODE_FILE=&quot;$HOME/pixie-demo-operator/agent-code&quot;
+export DEMO_API_KEY_FILE=&quot;$HOME/pixie-demo-operator/openai-key&quot;
+export PIXIEAGENT_ORIGIN=&quot;https://demo.example.org&quot;
+docker compose -f examples/demo/compose.yaml -f examples/demo/compose.agent-live.yaml up --build -d</code></pre>
+<p>Add <code>-f examples/demo/compose.live.yaml</code> before the Agent overlay to operate both
+reviewed live modes together. Each mode uses its own persistent allowance.
+The Core login-password mount is required. Page display and
+access-code authentication complete before any case execution.</p>
+<p>For an existing trial, back up and verify the original ledger before migration.
+Retain case IDs, completed results, requests, used amount, pending reservation
+and halt status. A reviewed continuation may apply a newly approved expiry to
+a verified copy while retaining the original record. The original shared
+ceiling and once-only cases continue across that migration.</p>
+<p>Stop with the same Compose files used for startup. For the combined live modes,
+use the following helper, which drains the gateway before stopping the services.</p>
+<pre><code class="language-sh">sh examples/demo/stop.sh docker compose -f examples/demo/compose.yaml -f examples/demo/compose.live.yaml -f examples/demo/compose.agent-live.yaml</code></pre>
+<p>The existing Agent entrypoint retains <code>process.lock</code> after termination and
+refuses automatic reactivation. Its Node service may exit with code143 after
+SIGTERM. Keep the volume and inspect the ledger and process state before a
+reviewed recovery. An in-flight case or pending reservation remains stopped.
+A new reviewed start requires exclusive ownership and deliberate handling of
+the retained process lock. Restore the base deployment to serve fixture replay
+while retaining the Agent volume for investigation or recovery.</p>
 <h2 id="https-deployment">HTTPS deployment</h2>
 <p>Build off-host when the server has limited disk/RAM. The CI workflow exports the
 exact tested image for a short retention period; download its archive, checksum,

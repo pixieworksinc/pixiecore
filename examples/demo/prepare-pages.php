@@ -52,7 +52,7 @@ function demo_page_fragment(DOMDocument $document, DOMNode $node): string {
   return preg_replace(['/<main\b/i', '@</main>@i'], ['<div', '</div>'], $html);
 }
 
-foreach (['templates', 'assets/pages', 'assets/replay'] as $directory) {
+foreach (['templates', 'assets/pages', 'assets/replay', 'assets/live'] as $directory) {
   $path = $destination . '/' . $directory;
   if (!is_dir($path) && !mkdir($path, 0755, TRUE) && !is_dir($path)) {
     throw new RuntimeException('Cannot create generated demo directory.');
@@ -86,5 +86,32 @@ demo_page_template($destination . '/templates/pixiecore-demo-replay.html.twig', 
 foreach (['style.css', 'data.js', 'app.js'] as $asset) {
   if (!copy($replay_source . '/' . $asset, $destination . '/assets/replay/' . $asset)) {
     throw new RuntimeException('Cannot copy canonical replay library assets.');
+  }
+}
+
+$live_source = $source . '/examples/pixieagent/demo/live/public';
+$live = demo_page_document($live_source . '/index.html');
+$body = $live->getElementsByTagName('body')->item(0);
+if (!$body || $live->getElementsByTagName('script')->length !== 1) {
+  throw new RuntimeException('Expected the canonical live body and its library script.');
+}
+// The primary route can now render live mode, so retain a distinct replay link.
+foreach ($body->getElementsByTagName('a') as $link) {
+  if ($link->getAttribute('href') === '/pixieagent/') {
+    $link->setAttribute('href', '/pixieagent/replay/');
+  }
+}
+$fragment = '<div class="pixieagent-demo">';
+foreach ($body->childNodes as $child) {
+  if ($child instanceof DOMElement && in_array($child->tagName, ['script', 'style'], TRUE)) {
+    throw new RuntimeException('Live body must not embed scripts or styles.');
+  }
+  $fragment .= demo_page_fragment($live, $child);
+}
+$fragment .= '</div>';
+demo_page_template($destination . '/templates/pixiecore-demo-live.html.twig', $fragment);
+foreach (['style.css', 'app.js'] as $asset) {
+  if (!copy($live_source . '/' . $asset, $destination . '/assets/live/' . $asset)) {
+    throw new RuntimeException('Cannot copy canonical live library assets.');
   }
 }

@@ -8,8 +8,9 @@ COPY schemas/ schemas/
 COPY scripts/ scripts/
 COPY examples/integrations/drupal/ examples/integrations/drupal/
 COPY examples/demo/build-runtime.mjs examples/demo/build-runtime.mjs
-COPY examples/pixieagent/luna.ts examples/pixieagent/luna.ts
+COPY examples/pixieagent/ examples/pixieagent/
 RUN npm run build && node examples/demo/build-runtime.mjs \
+    && node examples/pixieagent/demo/build-runtime.mjs \
     && npm prune --omit=dev --ignore-scripts --no-audit --fund=false
 COPY examples/demo/assets/ /assets/
 RUN cd /assets && npm ci --ignore-scripts --no-audit --fund=false
@@ -24,6 +25,7 @@ COPY examples/integrations/drupal/pixiecore_specification/ web/modules/custom/pi
 COPY examples/demo/prepare-pages.php /page-source/examples/demo/prepare-pages.php
 COPY examples/demo/public/index.html /page-source/examples/demo/public/index.html
 COPY examples/pixieagent/demo/replay/public/ /page-source/examples/pixieagent/demo/replay/public/
+COPY examples/pixieagent/demo/live/public/ /page-source/examples/pixieagent/demo/live/public/
 RUN php /page-source/examples/demo/prepare-pages.php /site/web/modules/custom/pixiecore_specification \
     && rm -rf /page-source
 COPY --from=runtime-build /assets/node_modules/codemirror/ web/libraries/codemirror/
@@ -42,7 +44,13 @@ COPY --from=runtime-build /app/dist/ /runtime/dist/
 COPY --from=runtime-build /app/schemas/ /runtime/schemas/
 COPY --from=runtime-build /app/build/demo/executable-specification/ /runtime/examples/integrations/drupal/executable-specification/
 COPY --from=runtime-build /app/build/demo/pixiecore_specification/blueprints/ /runtime/examples/integrations/drupal/pixiecore_specification/blueprints/
-COPY --from=runtime-build /app/build/demo/pixieagent/ /runtime/examples/pixieagent/
+COPY --from=runtime-build /app/build/pixieagent/ /runtime/examples/pixieagent/
+COPY examples/pixieagent/agent.yaml /runtime/examples/pixieagent/agent.yaml
+COPY examples/pixieagent/blueprints/ /runtime/examples/pixieagent/blueprints/
+COPY examples/pixieagent/evaluation/cases.json examples/pixieagent/evaluation/fixtures.json /runtime/examples/pixieagent/evaluation/
+COPY examples/pixieagent/demo/live/ /runtime/examples/pixieagent/demo/live/
+COPY examples/pixieagent/demo/write-manifest.mjs /runtime/examples/pixieagent/demo/write-manifest.mjs
+RUN cd /runtime && node examples/pixieagent/demo/write-manifest.mjs
 COPY --from=site-build /site/ /opt/drupal/
 COPY examples/demo/nginx.conf /etc/nginx/nginx.conf
 COPY examples/demo/php-fpm.conf /usr/local/etc/php-fpm.d/zz-demo.conf

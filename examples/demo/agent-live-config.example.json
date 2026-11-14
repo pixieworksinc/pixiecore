@@ -1,0 +1,13 @@
+{
+  "enabled": false,
+  "model": "gpt-6-luna",
+  "maxCostUsd": 1,
+  "maxRequests": 30,
+  "origin": "https://demo.example.org",
+  "port": 3098,
+  "runtimeRoot": "/runtime",
+  "stateDirectory": "/state",
+  "credentialFile": "/run/secrets/openai_api_key",
+  "accessCodeFile": "/run/secrets/pixieagent_access_code",
+  "expiresAt": "REPLACE_WITH_APPROVED_UTC_EXPIRY"
+}

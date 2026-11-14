@@ -3,3 +3,5 @@
 /assets/replay/
 /templates/pixiecore-demo-landing.html.twig
 /templates/pixiecore-demo-replay.html.twig
+/assets/live/
+/templates/pixiecore-demo-live.html.twig

@@ -1,0 +1,33 @@
+# Explicit overlay for the existing bounded PixieAgent live trial.
+services:
+  demo:
+    environment:
+      PIXIEAGENT_MODE: real
+      PIXIEAGENT_ORIGIN: ${PIXIEAGENT_ORIGIN:?Set the reviewed public origin}
+  agent-api:
+    init: true
+    image: ${DEMO_IMAGE:-pixiecore-demos:local}
+    entrypoint: ["node", "/runtime/examples/pixieagent/demo/live/start.mjs"]
+    environment:
+      TRIAL_CONFIG: /run/config/pixieagent-live.json
+    volumes:
+      - agent-state:/state
+      - ${PIXIEAGENT_LIVE_CONFIG_FILE:?Set the reviewed agent configuration}:/run/config/pixieagent-live.json:ro
+      - ${PIXIEAGENT_ACCESS_CODE_FILE:?Set the private access code file}:/run/secrets/pixieagent_access_code:ro
+      - ${DEMO_API_KEY_FILE:?Set the private OpenAI key file}:/run/secrets/openai_api_key:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 384m
+    cpus: 1
+    restart: "no"
+    healthcheck:
+      disable: true
+    logging:
+      driver: none
+    networks: [offline, edge]
+volumes:
+  agent-state:
