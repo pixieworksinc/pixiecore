@@ -117,6 +117,21 @@ one exits. A normal restart does not reset history or create executions.</p>
 <pre><code class="language-sh"># Retains the named volume and operator password file.
 docker compose -f examples/demo/compose.yaml down
 docker compose -f examples/demo/compose.yaml up --no-build -d</code></pre>
+<p>Alternatively, explicitly request a graceful application shutdown before removing
+containers. This also works on hosts where the container runtime cannot deliver
+the normal stop signal. It does not change host security policy or force-kill a
+process:</p>
+<pre><code class="language-sh">sh examples/demo/stop.sh docker compose -f examples/demo/compose.yaml
+docker compose -f examples/demo/compose.yaml down
+docker compose -f examples/demo/compose.yaml up --no-build -d</code></pre>
+<p>Pass the same <code>--env-file</code>, <code>-p</code> and <code>-f</code> options used to start the project after
+<code>docker compose</code> in all three commands. The helper validates both selected
+service labels, disables their automatic restart, sends the application&#39;s normal
+shutdown signal from inside each container, and requires exit code zero within
+30 seconds per service. On failure, it preserves the containers and data for
+inspection. After success, <code>down</code> followed by <code>up</code> restores the restart policy
+from Compose. Do not use <code>start</code> alone after this helper. For a backup, copy state
+after the helper succeeds and before <code>down</code> removes the stopped container.</p>
 <p><strong>Do not use <code>down --volumes</code> for retained data.</strong> To back up, stop this container
 first so SQLite and files are consistent. Copy <code>/state</code> from the stopped
 container with <code>docker cp</code>, store it in a private directory, and record the image

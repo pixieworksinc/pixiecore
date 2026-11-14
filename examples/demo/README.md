@@ -130,6 +130,26 @@ docker compose -f examples/demo/compose.yaml down
 docker compose -f examples/demo/compose.yaml up --no-build -d
 ```
 
+Alternatively, explicitly request a graceful application shutdown before removing
+containers. This also works on hosts where the container runtime cannot deliver
+the normal stop signal. It does not change host security policy or force-kill a
+process:
+
+```sh
+sh examples/demo/stop.sh docker compose -f examples/demo/compose.yaml
+docker compose -f examples/demo/compose.yaml down
+docker compose -f examples/demo/compose.yaml up --no-build -d
+```
+
+Pass the same `--env-file`, `-p` and `-f` options used to start the project after
+`docker compose` in all three commands. The helper validates both selected
+service labels, disables their automatic restart, sends the application's normal
+shutdown signal from inside each container, and requires exit code zero within
+30 seconds per service. On failure, it preserves the containers and data for
+inspection. After success, `down` followed by `up` restores the restart policy
+from Compose. Do not use `start` alone after this helper. For a backup, copy state
+after the helper succeeds and before `down` removes the stopped container.
+
 **Do not use `down --volumes` for retained data.** To back up, stop this container
 first so SQLite and files are consistent. Copy `/state` from the stopped
 container with `docker cp`, store it in a private directory, and record the image

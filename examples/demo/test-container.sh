@@ -54,6 +54,13 @@ wait_ready
 python3 examples/demo/smoke.py --restored
 after=$(compose exec -T demo php -r '$db = new PDO("sqlite:/state/site.sqlite"); echo $db->query("SELECT count(*) FROM pixiecore_spec_run")->fetchColumn();' )
 test "$before" = "$after"
+# The in-container shutdown path also retains data and exits without forced kill.
+sh examples/demo/stop.sh docker compose -p "$COMPOSE_PROJECT_NAME" -f examples/demo/compose.yaml
+compose down
+compose up --no-build -d --wait --wait-timeout 180
+wait_ready
+python3 examples/demo/smoke.py --restored
+test "$(docker inspect --format '{{.HostConfig.RestartPolicy.Name}}' "$(compose ps -q demo)")" = unless-stopped
 # A new state volume must also bootstrap without a prebuilt database.
 compose down --volumes
 compose up --no-build -d --wait --wait-timeout 180
