@@ -6,10 +6,10 @@ Do not deploy it to a production Drupal site. No API key or paid request is need
 ## Reproducible scope
 
 The instructions below reproduce the checked-in mock runtime and Drupal modules.
-This example does not include a real-provider server, a Dockerfile, or a Compose
-deployment. A separately operated live demo does not establish that its runtime
-can be rebuilt from this checkout. Renaming or tagging a local container image
-does not supply its source, dependency versions, or build instructions.
+For an isolated Docker/Compose deployment of this mock editor and the PixieAgent
+replay, use the [rebuildable demos](../../../demo/README.md). The manual setup below
+remains useful for development. No real-provider server is included here. A
+separately operated live trial does not establish that its backend is shipped.
 
 See the module's [current evidence boundary](../pixiecore_specification/README.md#current-evidence-boundary)
 for the supported backend and the closed metering proposal.
