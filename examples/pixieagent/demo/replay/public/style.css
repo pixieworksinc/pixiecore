@@ -84,3 +84,6 @@
 .pixieagent-demo .tags{flex-wrap:wrap}
 .pixieagent-demo .steps li>div{min-width:0}
 .pixieagent-demo .steps li{overflow-wrap:anywhere}
+
+.pixieagent-demo .choice .num{flex:none;white-space:nowrap}
+.pixieagent-demo blockquote::before,.pixieagent-demo blockquote::after{content:none}

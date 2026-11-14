@@ -85,4 +85,7 @@
 .pixieagent-demo .steps li>div{min-width:0}
 .pixieagent-demo .steps li{overflow-wrap:anywhere}
 
+.pixieagent-demo .choice .num{flex:none;white-space:nowrap}
+.pixieagent-demo blockquote::before,.pixieagent-demo blockquote::after{content:none}
+
 .pixieagent-demo .login{margin-top:24px;max-width:560px}.pixieagent-demo .login label{font-size:12px;font-weight:650}.pixieagent-demo .login-row{display:flex;gap:10px;margin-top:8px}.pixieagent-demo .login input{font:inherit;min-width:0;flex:1;padding:10px 14px;border:1px solid var(--line);border-radius:9px;background:#20232e;color:var(--ink)}.pixieagent-demo .login .primary{white-space:nowrap;gap:0}.pixieagent-demo .choice:disabled{cursor:wait}.pixieagent-demo .login p{margin-bottom:0}.pixieagent-demo #budget{color:var(--green);font-variant-numeric:tabular-nums}@media(max-width:460px){.pixieagent-demo .login-row{flex-direction:column}.pixieagent-demo .login .primary{justify-content:center}}

@@ -237,6 +237,7 @@ try {
   await viewport(375, 812);
   await evaluate('document.querySelector("#result details").open = true');
   await checkAppearance('agentMobile');
+  assert.equal(await evaluate(`[...document.querySelectorAll('.choice .num')].every(number => getComputedStyle(number).whiteSpace === 'nowrap' && number.getBoundingClientRect().height < 24)`), true, 'Mobile card numbers wrapped');
   await screenshot('replay-mobile.png');
 
   await client.call('Emulation.setEmulatedMedia', { features: [
