@@ -63,6 +63,7 @@ def request(opener, path, fields=None):
 def form(opener):
     status, html = request(opener, ROUTE)
     assert status == 200 and ("REAL" if LIVE else "MOCK") in html
+    assert "/core/themes/claro/" in html, "Editor is not using Claro"
     result = Form(html, "pixiecore-specification-demo").fields
     assert "instruction" in result and "form_token" in result, "Missing editor form"
     return result
@@ -80,6 +81,7 @@ def login():
     opener = client()
     status, html = request(opener, "/user/login")
     assert status == 200
+    assert "/core/themes/claro/" in html, "Login is not using Claro"
     fields = Form(html, "user-login-form").fields
     fields.update(name=os.environ.get("DEMO_USER", "demo"),
                   **{"pass": Path(os.environ["DEMO_PASSWORD_FILE"]).read_text().strip(), "op": "Log in"})

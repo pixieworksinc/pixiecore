@@ -30,12 +30,3 @@ User::load(1)->block()->save();
 \Drupal::configFactory()->getEditable('system.performance')
   ->set('css.preprocess', FALSE)->set('js.preprocess', FALSE)->save();
 \Drupal::configFactory()->getEditable('automated_cron.settings')->set('interval', 0)->save();
-// The existing core theme is enough; no site-specific theme/module is introduced.
-\Drupal::service('module_installer')->install(['block']);
-\Drupal::service('theme_installer')->install(['stark']);
-\Drupal::configFactory()->getEditable('system.theme')->set('default', 'stark')->save();
-\Drupal::entityTypeManager()->getStorage('block')->create([
-  'id' => 'demo_content', 'theme' => 'stark', 'region' => 'content',
-  'plugin' => 'system_main_block', 'settings' => ['label_display' => FALSE],
-])->save();
-\Drupal::service('kernel')->rebuildContainer();

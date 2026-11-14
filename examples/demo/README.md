@@ -10,7 +10,7 @@ same editor and the existing real-provider REST path.
   Only the two documented Gold/1200 pricing fixtures are supported. This is a
   real runtime with a **mock provider**, not a natural-language rule interpreter.
 - **PixieAgent:** choose one of six synthetic issues and replay its saved **mock**
-  decision/classification/confirmation. The original card layout is unchanged.
+  decision/classification/confirmation. This is a static replay; the original card layout is unchanged.
 - Optional PixieCore live mode uses the same editor and saved revisions; see
   [the two-call trial](#optional-two-call-live-trial).
 - The separate [restricted live example](../pixieagent/demo/README.md) is not
@@ -43,9 +43,12 @@ docker compose -f examples/demo/compose.yaml up --build -d
 
 The first boot installs a fresh minimal SQLite site and takes up to several
 minutes. It creates the `demo` user with only the Blueprint demo permission,
-blocks the installer administrator, and disables self-registration and automated
+grants permission to view the administration theme, blocks the installer administrator,
+and disables self-registration and automated
 cron. The password is consumed only during initial installation. Retrieve it
-locally from your private file to log in; do not paste it into an Issue.
+locally from your private file to log in; do not paste it into an Issue. The login
+and editor use Drupal core's Claro theme; no additional administration permissions
+are granted.
 
 Open <http://127.0.0.1:8088/>. The landing page links to both experiences:
 
@@ -183,6 +186,17 @@ changing it selects a different named volume. Never share one state volume with
 two containers: startup holds an exclusive process lock and refuses a second
 owner. Docker health detects web failures; the supervisor stops all children if
 one exits. A normal restart does not reset history or create executions.
+
+To apply the Claro appearance to an existing volume, rebuild the image and recreate
+the containers with the same Compose project and password file:
+
+```sh
+docker compose -f examples/demo/compose.yaml up --build -d
+```
+
+Startup applies the theme configuration idempotently without rerunning the initial
+bootstrap or making provider calls. Do not run `bootstrap.php` again on an existing
+volume. Existing revisions and credentials remain in the retained volume.
 
 ```sh
 # Retains the named volume and operator password file.
