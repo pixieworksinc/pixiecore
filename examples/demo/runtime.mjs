@@ -1,5 +1,5 @@
 /** Own the existing fixture host and drain it on container shutdown. */
-import {startMockSpecificationHost} from '/runtime/examples/integrations/drupal/executable-specification/runtime/mock-server.js';
+import {startMockSpecificationHost} from '../integrations/drupal/executable-specification/runtime/mock-server.js';
 const host = await startMockSpecificationHost(3087);
 console.log('Offline PixieCore fixture host ready.');
 let closing = false;

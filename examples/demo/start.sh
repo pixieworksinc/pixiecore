@@ -25,7 +25,7 @@ if [ ! -f /state/initialized ]; then
   vendor/bin/drush php:script /demo/bootstrap.php --quiet
   printf '1\n' > /state/initialized
 fi
-node /demo/runtime.mjs &
+node /runtime/examples/demo/runtime.mjs &
 runtime_pid=$!
 php-fpm --nodaemonize &
 php_pid=$!
