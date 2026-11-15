@@ -25,3 +25,10 @@ replay:
   js:
     assets/replay/data.js: { weight: -2 }
     assets/replay/app.js: { weight: -1 }
+
+live:
+  css:
+    theme:
+      assets/live/style.css: { weight: 100 }
+  js:
+    assets/live/app.js: {}

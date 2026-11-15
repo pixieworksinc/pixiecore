@@ -25,3 +25,16 @@ pixiecore_specification.replay:
     _title: ''
   requirements:
     _access: 'TRUE'
+
+  options:
+    no_cache: true
+
+pixiecore_specification.saved_replay:
+  path: '/pixieagent/replay'
+  defaults:
+    _controller: '\Drupal\pixiecore_specification\Controller\DemoPagesController::savedReplay'
+    _title: ''
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: true

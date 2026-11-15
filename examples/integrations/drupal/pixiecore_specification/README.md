@@ -87,6 +87,13 @@ accuracy or superiority over all rules engines.
 
 ## Public demo pages
 
+The trusted `pixieagent_demo_live` setting selects the existing live card UI at
+`/pixieagent/`; `pixieagent_demo_origin` supplies its canonical HTTPS origin.
+The default setting selects fixture replay, and `/pixieagent/replay/` always
+renders that replay. Pair live mode with the existing bounded Node backend,
+authenticated API proxy and reviewed operator files described in the
+[container deployment guide](../../../demo/README.md#optional-pixieagent-live-trial).
+
 The existing module also renders the anonymous landing page at `/demos` and the
 saved six-case replay at `/pixieagent/` using Drupal render arrays, Twig, and
 attached libraries. `configure-theme.php` selects Claro for both site and admin

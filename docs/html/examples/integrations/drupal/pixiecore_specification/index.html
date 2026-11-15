@@ -82,6 +82,12 @@ exception precedence, and nonmatching inputs also require an owner-defined
 business contract. The initial two cases do not establish natural-language
 accuracy or superiority over all rules engines.</p>
 <h2 id="public-demo-pages">Public demo pages</h2>
+<p>The trusted <code>pixieagent_demo_live</code> setting selects the existing live card UI at
+<code>/pixieagent/</code>; <code>pixieagent_demo_origin</code> supplies its canonical HTTPS origin.
+The default setting selects fixture replay, and <code>/pixieagent/replay/</code> always
+renders that replay. Pair live mode with the existing bounded Node backend,
+authenticated API proxy and reviewed operator files described in the
+<a href="../../../demo/index.html#optional-pixieagent-live-trial">container deployment guide</a>.</p>
 <p>The existing module also renders the anonymous landing page at <code>/demos</code> and the
 saved six-case replay at <code>/pixieagent/</code> using Drupal render arrays, Twig, and
 attached libraries. <code>configure-theme.php</code> selects Claro for both site and admin

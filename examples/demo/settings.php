@@ -46,3 +46,7 @@ if (getenv('DEMO_MODE') === 'real') {
   $settings['pixiecore_specification']['allow_live'] = TRUE;
   $settings['pixiecore_specification']['token'] = $token;
 }
+
+// Agent live UI is selected only by trusted environment, with its own origin.
+$settings['pixieagent_demo_live'] = getenv('PIXIEAGENT_MODE') === 'real';
+$settings['pixieagent_demo_origin'] = getenv('PIXIEAGENT_ORIGIN') ?: '';

@@ -24,7 +24,7 @@ function pixiecore_specification_codemirror_mode_info_alter(array &$modes): void
 function pixiecore_specification_page_attachments(array &$attachments): void {
   $attachments['#cache']['contexts'][] = 'route';
   $attachments['#cache']['contexts'][] = 'theme';
-  if (\Drupal::theme()->getActiveTheme()->getName() === 'claro' && in_array(\Drupal::routeMatch()->getRouteName(), ['user.login', 'pixiecore_specification.demo', 'pixiecore_specification.landing', 'pixiecore_specification.replay'], TRUE)) {
+  if (\Drupal::theme()->getActiveTheme()->getName() === 'claro' && in_array(\Drupal::routeMatch()->getRouteName(), ['user.login', 'pixiecore_specification.demo', 'pixiecore_specification.landing', 'pixiecore_specification.replay', 'pixiecore_specification.saved_replay'], TRUE)) {
     $attachments['#attached']['library'][] = 'pixiecore_specification/dark';
   }
 }
@@ -36,6 +36,7 @@ function pixiecore_specification_theme(): array {
   return [
     'pixiecore_demo_landing' => ['variables' => [], 'template' => 'pixiecore-demo-landing'],
     'pixiecore_demo_replay' => ['variables' => [], 'template' => 'pixiecore-demo-replay'],
+    'pixiecore_demo_live' => ['variables' => [], 'template' => 'pixiecore-demo-live'],
   ];
 }
 
@@ -45,7 +46,7 @@ function pixiecore_specification_theme(): array {
  * Keeps replay assets on the path forwarded by the public site's proxy.
  */
 function pixiecore_specification_file_url_alter(string &$uri): void {
-  if (\Drupal::routeMatch()->getRouteName() !== 'pixiecore_specification.replay'
+  if (!in_array(\Drupal::routeMatch()->getRouteName(), ['pixiecore_specification.replay', 'pixiecore_specification.saved_replay'], TRUE)
     || !\Drupal\Core\Site\Settings::get('pixiecore_demo_replay_asset_prefix', FALSE)) {
     return;
   }
@@ -65,7 +66,7 @@ function pixiecore_specification_preprocess_html(array &$variables): void {
   if ($route === 'pixiecore_specification.landing') {
     $variables['head_title']['title'] = 'PixieCore & PixieAgent demos';
   }
-  if ($route === 'pixiecore_specification.replay') {
+  if (in_array($route, ['pixiecore_specification.replay', 'pixiecore_specification.saved_replay'], TRUE)) {
     $variables['head_title']['title'] = 'PixieAgent';
     // Claro's noscript links are head attachments outside the URL generator.
     foreach ($variables['page']['#attached']['html_head'] ?? [] as $index => $attachment) {
