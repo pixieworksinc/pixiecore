@@ -25,7 +25,7 @@ if (luna.diagnostics?.some(item => item.category === ts.DiagnosticCategory.Error
 await mkdir(new URL('pixieagent/', output), {recursive: true});
 await writeFile(new URL('pixieagent/luna.js', output), luna.outputText);
 
-for (const name of ['config', 'live-server', 'live-server.test']) {
+for (const name of ['config', 'live-server', 'live-server.test', 'adapter-server', 'adapter-server.test']) {
   const source = new URL(`../integrations/drupal/executable-specification/runtime/${name}.ts`, import.meta.url);
   const compiled = ts.transpileModule(await readFile(source, 'utf8'), {
     compilerOptions: {target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext},

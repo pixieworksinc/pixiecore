@@ -137,7 +137,9 @@ try {
       const request = event.params.request;
       const url = new URL(request.url);
       const liveRun = liveTest && request.method === 'POST' && url.pathname === '/pixieagent/api/run' && !url.search;
-      const allowed = url.origin === base.origin && (['GET', 'HEAD'].includes(request.method) || liveRun);
+      const adapterForm = !liveTest && request.method === 'POST'
+        && ['/user/login', '/admin/config/pixiecore/adapter'].includes(url.pathname) && !url.search;
+      const allowed = url.origin === base.origin && (['GET', 'HEAD'].includes(request.method) || liveRun || adapterForm);
       if (allowed && liveRun) runPosts += 1;
       if (!allowed) violations.push({ method: request.method, url: request.url });
       page?.call(allowed ? 'Fetch.continueRequest' : 'Fetch.failRequest', {
@@ -395,6 +397,41 @@ try {
   await viewport(375, 812);
   await checkAppearance('loginMobile');
   await screenshot('claro-login-mobile.png');
+  if (!liveTest) {
+    assert.ok(process.env.DEMO_PASSWORD_FILE, 'Adapter verification requires the isolated demo password file');
+    const password = (await readFile(process.env.DEMO_PASSWORD_FILE, 'utf8')).trim();
+    const username = process.env.DEMO_USER ?? 'demo';
+    assert.ok(password.length >= 20 && /^[a-z][a-z0-9_-]{2,31}$/.test(username));
+    await evaluate(`document.querySelector('[name="name"]').value=${JSON.stringify(username)};document.querySelector('[name="pass"]').value=${JSON.stringify(password)};document.querySelector('#user-login-form').requestSubmit()`);
+    await waitFor(async () => evaluate('document.readyState === "complete" && !document.querySelector("#user-login-form")'), 'Isolated demo login did not finish');
+    await viewport(1280, 960);
+    await navigate('/admin/config/pixiecore/adapter', '#pixiecore-customer-adapter-demo');
+    await checkAppearance('adapter');
+    await viewport(375, 812);
+    await evaluate('document.querySelector("[data-adapter-blueprint]").closest("details").open=true');
+    await checkAppearance('adapterJsonExpandedMobile');
+    await screenshot('adapter-json-expanded-mobile.png');
+    await evaluate('document.querySelector("[data-adapter-blueprint]").closest("details").open=false');
+    await viewport(1280, 960);
+    await evaluate('document.querySelector("[name=case_id]").value="csv";document.querySelector("[name=view]").click()');
+    await waitFor(async () => evaluate('document.readyState === "complete" && document.querySelector("[data-adapter-source]")?.textContent.includes("customer_tier,purchase_amount")'), 'CSV source was not shown');
+    await evaluate('document.querySelector("[name=execute]").click()');
+    await waitFor(async () => evaluate('document.readyState === "complete" && document.querySelector("[name=result]")?.value.includes("schema_validation")'), 'Adapter fixture did not finish');
+    const adapterRecord = await evaluate('JSON.parse(document.querySelector("[name=result]").value)');
+    assert.deepEqual(adapterRecord.data, {customer_tier: 'Gold', purchase_amount: 1200});
+    assert.equal(adapterRecord.case_id, 'csv');
+    assert.equal(adapterRecord.status, 'passed');
+    assert.equal(adapterRecord.mode, 'fixture');
+    assert.equal(adapterRecord.model_accuracy, 'not_measured');
+    await screenshot('adapter-csv.png');
+    await viewport(375, 812);
+    await checkAppearance('adapterMobile');
+    await screenshot('adapter-mobile.png');
+    await evaluate('document.querySelector("[name=case_id]").value="missing";document.querySelector("[name=view]").click()');
+    await waitFor(async () => evaluate('document.readyState === "complete" && document.querySelector("[data-adapter-source]")?.textContent.trim() === "The customer tier is Gold."'), 'Missing-field input was not selected');
+    assert.ok(!(await evaluate('document.querySelector("[name=result]").value')).trim().startsWith('{'), 'Selection retained the previous result');
+    report.adapter = {format: 'csv', matched: true, fixtureExecutions: 1, staleResultCleared: true};
+  }
   assert.deepEqual(violations, [], 'Unexpected external request or mutating HTTP method');
   assert.deepEqual(failedResponses, [], 'A browser resource failed');
   assert.deepEqual(scriptErrors, [], 'Browser JavaScript failed');

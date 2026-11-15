@@ -24,6 +24,9 @@ real runtime with a <strong>mock provider</strong>, not a natural-language rule 
 <li><strong>Default PixieAgent mode:</strong> choose one of six synthetic issues and replay its saved <strong>mock</strong>
 decision/classification/confirmation. Drupal renders the page and loads the
 existing replay assets; card playback runs in the browser.</li>
+<li><strong>Customer adapter:</strong> send JSON, CSV or natural-language fixtures through one
+fixed Blueprint to the same typed JSON. This separate operation is always
+offline; see <a href="../integrations/drupal/pixiecore_specification/index.html#customer-record-adapter-rehearsal">its contract and five cases</a>.</li>
 <li>Optional PixieCore live mode uses the same editor and saved revisions; see
 <a href="#optional-two-call-live-trial">the two-call trial</a>.</li>
 <li>Optional PixieAgent live mode uses the Drupal card page and its existing
@@ -63,6 +66,7 @@ existing demo role.</p>
 <p>Open <a href="http://127.0.0.1:8088/">http://127.0.0.1:8088/</a>. The landing page links to both experiences:</p>
 <ul>
 <li><code>/user/login?destination=/admin/config/pixiecore/specification</code>: restricted editor.</li>
+<li><code>/admin/config/pixiecore/adapter</code>: restricted offline customer adapter.</li>
 <li><code>/pixieagent/</code>: anonymous six-case replay.</li>
 <li><code>/pixieagent/live/</code>: deliberately unavailable in this container.</li>
 </ul>
@@ -86,6 +90,17 @@ newly generated model responses or the historical accepted live evaluation.</li>
 state and result labels are inherited from the existing modules. A shared demo
 account shares its history; create separate restricted users for separate
 reviewers if needed. Do not enter real customer data into this synthetic demo.</p>
+<h2 id="try-the-customer-adapter">Try the customer adapter</h2>
+<p>Open <code>/admin/config/pixiecore/adapter</code> with the same restricted demo login.
+Choose JSON, CSV or natural-language input, click <strong>View input</strong>, then <strong>Execute</strong>.
+All three pass the same immutable Blueprint and return
+<code>{&quot;customer_tier&quot;:&quot;Gold&quot;,&quot;purchase_amount&quot;:1200}</code>. The missing and ambiguous
+selections return explicit errors and require review. The result displays the
+raw input, Blueprint hash and independent schema/expected-value checks.</p>
+<p>This is a fixture-backed HTTP/runtime rehearsal, not a real-model evaluation.
+The adapter stays offline with either live overlay and does not consume its
+allowance. Results are scoped to the current form interaction; there is no new
+permanent history. See <a href="../integrations/drupal/pixiecore_specification/index.html#customer-record-adapter-rehearsal">the adapter instructions</a>.</p>
 <h2 id="optional-two-call-live-trial">Optional two-call live trial</h2>
 <p>This reuses the existing Drupal editor, Save/Execute/Reset, revision store and
 PixieCore REST host. It does not create another UI or modify PixieCore&#39;s public
