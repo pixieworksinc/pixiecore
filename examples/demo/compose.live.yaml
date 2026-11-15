@@ -1,0 +1,13 @@
+# Explicit overlay. The normal Compose configuration remains offline.
+services:
+  demo:
+    environment:
+      DEMO_MODE: real
+      PIXIECORE_DEMO_CONFIG: /run/config/pixiecore-live.json
+    volumes:
+      - ${DEMO_LIVE_CONFIG_FILE:?Set the reviewed live configuration}:/run/config/pixiecore-live.json:ro
+      - ${DEMO_API_KEY_FILE:?Set the private OpenAI key file}:/run/secrets/openai_api_key:ro
+      - ${DEMO_RUNTIME_TOKEN_FILE:?Set the private runtime token file}:/run/secrets/runtime_token:ro
+    # No automatic restart of a paid trial. Durable call permits remain in /state.
+    restart: "no"
+    networks: [offline, edge]

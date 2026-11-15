@@ -12,6 +12,7 @@ from pathlib import Path
 
 BASE = os.environ.get("DEMO_TEST_URL", "http://127.0.0.1:8088")
 ROUTE = "/admin/config/pixiecore/specification"
+LIVE = "--live" in sys.argv
 
 
 class Form(HTMLParser):
@@ -61,7 +62,9 @@ def request(opener, path, fields=None):
 
 def form(opener):
     status, html = request(opener, ROUTE)
-    assert status == 200 and "MOCK" in html
+    assert status == 200 and ("REAL" if LIVE else "MOCK") in html
+    assert "/core/themes/claro/" in html, "Editor is not using Claro"
+    assert "/pixiecore_specification/assets/css/dark.css" in html, "Editor dark CSS is missing"
     result = Form(html, "pixiecore-specification-demo").fields
     assert "instruction" in result and "form_token" in result, "Missing editor form"
     return result
@@ -79,6 +82,8 @@ def login():
     opener = client()
     status, html = request(opener, "/user/login")
     assert status == 200
+    assert "/core/themes/claro/" in html, "Login is not using Claro"
+    assert "/pixiecore_specification/assets/css/dark.css" in html, "Login dark CSS is missing"
     fields = Form(html, "user-login-form").fields
     fields.update(name=os.environ.get("DEMO_USER", "demo"),
                   **{"pass": Path(os.environ["DEMO_PASSWORD_FILE"]).read_text().strip(), "op": "Log in"})
@@ -89,21 +94,35 @@ def login():
 
 def result(fields):
     # The disabled result textarea is rendered by the existing CodeMirror element.
-    values = [value for value in fields.values() if '"schema_and_arithmetic"' in value]
+    values = [value for value in fields.values() if '"http_requests"' in value]
     assert values, "No execution record in the rendered form"
     return json.loads(values[0])
 
 
 def verify_replay():
     anon = client()
-    assert request(anon, "/")[0] == 200
-    assert "PixieAgent" in request(anon, "/")[1]
+    status, landing = request(anon, "/")
+    assert status == 200 and "pixiecore-demo-landing" in landing
+    assert len(re.findall(r"<main\b", landing)) == 1
+    assert len(re.findall(r"<h1\b", landing)) == 1
+    assert "/core/themes/claro/" in landing, "Landing is not rendered with Drupal Claro"
+    assert "/pixiecore_specification/assets/css/dark.css" in landing
     with anon.open(BASE + "/pixieagent/", timeout=10) as response:
         assert "connect-src 'none'" in response.headers["Content-Security-Policy"]
         assert response.headers["X-Content-Type-Options"] == "nosniff"
-    for path in ["/pixieagent/", "/pixieagent/app.js", "/pixieagent/style.css", "/pixieagent/data.js"]:
-        assert request(anon, path)[0] == 200
-    for path in ["/pixieagent/live/", "/sites/default/settings.php", "/sites/default/files/test.php", "/vendor/autoload.php", "/.env"]:
+        replay = response.read().decode()
+    assert "pixieagent-demo" in replay
+    assert len(re.findall(r"<main\b", replay)) == 1
+    assert len(re.findall(r"<h1\b", replay)) == 1
+    assert "/pixieagent/assets/core/themes/claro/" in replay
+    assert "/pixiecore_specification/assets/css/dark.css" in replay
+    assets = re.findall(r'(?:src|href)="([^"]+\.(?:js|css)(?:\?[^"]*)?)"', replay)
+    assert assets, "Replay assets are missing"
+    escaped = [path for path in assets if not path.startswith("/pixieagent/assets/")]
+    assert not escaped, f"Replay assets escaped its proxy prefix: {escaped}"
+    for path in assets:
+        assert request(anon, path.replace("&amp;", "&"))[0] == 200, path
+    for path in ["/pixieagent/live/", "/pixieagent/assets/sites/default/settings.php", "/pixieagent/assets/vendor/autoload.php", "/pixieagent/assets/.env", "/pixieagent/assets/modules/custom/pixiecore_specification/pixiecore_specification.module", "/sites/default/settings.php", "/sites/default/files/test.php", "/vendor/autoload.php", "/.env"]:
         assert request(anon, path)[0] == 404
     # Drupal may deny or redirect an anonymous editor request, but never expose the form.
     status, html = request(anon, ROUTE)
@@ -114,6 +133,29 @@ verify_replay()
 user = login()
 assert request(user, "/admin/people")[0] == 403
 initial = form(user)
+if LIVE:
+    if "--restored" in sys.argv:
+        record = result(initial)
+        assert int(initial["revision"]) == 2 and record["data"] == {"discount": 0.2, "final_price": 960}
+        assert result(submit(user, "execute"))["status"] == "failed", "Restart replenished call permits"
+        print("Live-mode stub history retained; consumed permits stay consumed.")
+        sys.exit(0)
+    assert int(initial["revision"]) == 0
+    changed = dict(initial)
+    changed["instruction"] = changed["instruction"].split("\nexamples:\n")[0].replace("Set discount to 0.20 only", "Set discount to 0.15 only")
+    assert int(submit(user, "save", changed)["revision"]) == 1
+    first = result(submit(user, "execute"))
+    assert first["data"] == {"discount": 0.15, "final_price": 1020}
+    assert first["mode"] == "real" and first["provider"] == "openai"
+    assert first["model"] == "gpt-6-luna" and first["input_tokens"] == 500
+    changed = form(user)
+    changed["instruction"] = changed["instruction"].replace("Set discount to 0.15 only", "Set discount to 0.20 only")
+    assert int(submit(user, "save", changed)["revision"]) == 2
+    second = result(submit(user, "execute"))
+    assert second["data"] == {"discount": 0.2, "final_price": 960}
+    assert first["startup_id"] == second["startup_id"]
+    print("Existing Drupal Save/Execute and 15%→20% live-mode protocol passed with stub responses.")
+    sys.exit(0)
 if "--restored" in sys.argv:
     record = result(initial)
     assert int(initial["revision"]) == 3 and record["data"]["final_price"] == 960

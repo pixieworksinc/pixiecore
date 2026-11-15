@@ -150,4 +150,71 @@ final class SpecificationExecutorTest extends UnitTestCase {
     ];
   }
 
+  /**
+   * Tests the reused real-provider path requires complete matching metadata.
+   */
+  #[DataProvider('liveMetadata')]
+  public function testLiveMetadata(array $metadata, bool $accepted): void {
+    $client = $this->createMock(PixieCoreClientInterface::class);
+    $client->expects($this->once())->method('executeEnvelope')->willReturn([
+      'data' => ['discount' => 0.15, 'final_price' => 1020],
+      'metadata' => $metadata,
+    ]);
+    $store = $this->createMock(RevisionStoreInterface::class);
+    $store->method('latest')->willReturn([
+      'revision' => 1,
+      'instruction' => 'saved instruction',
+      'blueprint' => 'saved yaml',
+      'inputs_json' => DiscountBlueprint::DEFAULT_INPUTS,
+      'source_hash' => str_repeat('a', 64),
+    ]);
+    $store->expects($this->once())->method('record');
+    $lock = $this->createMock(LockBackendInterface::class);
+    $lock->method('acquire')->willReturn(TRUE);
+    $lock->expects($this->once())->method('release');
+    $executor = new SpecificationExecutor(new DiscountBlueprint(), $store, $client, new Settings([
+      'pixiecore_specification' => [
+        'mode' => 'real',
+        'allow_live' => TRUE,
+        'endpoint' => 'http://127.0.0.1:3087',
+        'token' => str_repeat('x', 32),
+      ],
+    ]), $lock);
+    $result = $executor->execute(1, 1, 'saved instruction', DiscountBlueprint::DEFAULT_INPUTS);
+    $this->assertSame($accepted ? 'unverified' : 'failed', $result['status']);
+    $this->assertSame('real', $result['mode']);
+    if ($accepted) {
+      $this->assertSame(1, $result['provider_calls']);
+      $this->assertSame(500, $result['input_tokens']);
+      $this->assertSame('test-startup', $result['startup_id']);
+      $this->assertSame('not_measured', $result['business_accuracy']);
+      return;
+    }
+    $this->assertArrayNotHasKey('data', $result);
+  }
+
+  /**
+   * Provides valid evidence and the mismatches that must not become success.
+   */
+  public static function liveMetadata(): array {
+    $valid = [
+      'provider' => 'openai',
+      'model' => 'gpt-6-luna',
+      'provider_calls' => 1,
+      'input_tokens' => 500,
+      'output_tokens' => 20,
+      'estimated_cost_usd' => 0.000115,
+      'startup_id' => 'test-startup',
+    ];
+    return [
+      [$valid, TRUE],
+      [array_replace($valid, ['provider' => 'fixture-mock']), FALSE],
+      [array_replace($valid, ['model' => 'different-model']), FALSE],
+      [array_replace($valid, ['input_tokens' => NULL]), FALSE],
+      [array_replace($valid, ['output_tokens' => 513]), FALSE],
+      [array_replace($valid, ['startup_id' => '']), FALSE],
+      [array_replace($valid, ['estimated_cost_usd' => 2]), FALSE],
+    ];
+  }
+
 }

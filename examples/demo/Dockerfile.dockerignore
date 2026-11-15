@@ -7,6 +7,7 @@
 !scripts/**
 !examples/integrations/drupal/**
 !examples/pixieagent/demo/replay/public/**
+!examples/pixieagent/luna.ts
 !examples/demo/**
 !LICENSE
 !THIRD_PARTY_NOTICES.md

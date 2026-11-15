@@ -46,8 +46,9 @@ or the browser. Use Drupal trusted_host_patterns and normal web-server request
 limits. Editable Blueprint/input byte limits and the demo schema contract are
 validated before transport. The HTTP client does not follow redirects and has
 bounded connect/request timeouts. This example accepts only a loopback HTTP
-fixture endpoint without credentials. Any non-MOCK mode is disabled before
-transport; no request is automatically retried by this module.
+endpoint. MOCK requires no token. REAL requires a separate trusted `allow_live`
+opt-in and a server-side transport token; setting a mode name alone cannot
+activate it. No request is automatically retried by this module.
 
 Output is escaped text, not HTML. The module checks the fixed output shape and
 arithmetic but does not manufacture results or implement the discount rule.
@@ -65,21 +66,58 @@ The default mock backend supports only two exact Gold/1200 threshold fixtures. I
 always labeled MOCK, does not interpret arbitrary natural-language rules, and
 rejects unsupported Blueprints. Its usage fields remain null, not zero.
 
-This repository example does not provide real-provider execution or metered
-usage evidence. Do not point it at `pixiecore serve` with an OpenAI provider;
-the only supported backend is the provided offline fixture server.
+An optional real-provider host is included for the existing editor. Use the
+[explicit two-call container trial](../../../demo/README.md#optional-two-call-live-trial).
+The API key remains in a read-only server mount; the UI cannot change model,
+endpoint, tools or limits. REAL results include validated usage and an estimate,
+while semantic correctness remains subject to review. Do not point the module
+at stock `pixiecore serve`; its response is not this demo's metadata contract.
 
-The proposal for a separate runtime budget ledger in
-[Issue #6](https://github.com/pixieworksinc/pixiecore/issues/6) was closed as
-unnecessary, and PR #7 was closed without merging. It is not a pending
-implementation task or a prerequisite for a real-provider adapter. This example
-does not implement a separate budget ledger; provider-side billing controls are
-configured with the provider.
+The separate runtime billing-ledger proposal in
+[Issue #6](https://github.com/pixieworksinc/pixiecore/issues/6) remains closed;
+PR #7 is not reopened. Provider billing controls remain with the provider.
+This trial consumes two durable call permits instead of adding billing or
+replenishment machinery. Paid activation needs separate approval of the model,
+calls, budget, expiry and synthetic inputs.
 
-A real-provider adapter would need separately reviewed implementation,
-authentication, request/response contracts, and offline tests. Any later paid
-evaluation requires separate approval of model,
-calls, USD cap, retries, and exact fixtures. Annual spending, regional rules,
+Annual spending, regional rules,
 exception precedence, and nonmatching inputs also require an owner-defined
 business contract. The initial two cases do not establish natural-language
 accuracy or superiority over all rules engines.
+
+## Public demo pages
+
+The existing module also renders the anonymous landing page at `/demos` and the
+saved six-case replay at `/pixieagent/` using Drupal render arrays, Twig, and
+attached libraries. `configure-theme.php` selects Claro for both site and admin
+and sets `/demos` as the front page. These routes do not execute Blueprints or
+call a provider. The authenticated editor and its storage remain separate.
+
+The canonical landing markup/styles live in `examples/demo/public/index.html`;
+the replay markup, styles, data and script live in
+`examples/pixieagent/demo/replay/public/`. Do not edit generated module assets or
+Twig fragments. From the repository root, prepare them before installing this
+module outside Docker:
+
+```sh
+php examples/demo/prepare-pages.php /path/to/drupal/web/modules/custom/pixiecore_specification
+```
+
+The destination must already contain this module's source. Omit the argument to
+generate beside the repository copy before copying that module into Drupal.
+Run the same command after changes to either canonical page, then rebuild
+Drupal caches. Docker runs it during the site build. Generated fragments are
+literal Twig verbatim blocks; a verbatim terminator in source is rejected.
+Replay JavaScript is copied unchanged and attached in data-before-app order.
+
+The container enables `$settings['pixiecore_demo_replay_asset_prefix'] = TRUE`.
+With this setting, only the replay route rewrites local library URLs beneath `/pixieagent/assets/`
+so an existing prefix-only proxy can serve its Drupal/Claro assets. The bundled
+nginx configuration allows only CSS, JavaScript, images and fonts in public
+asset roots and denies other prefixed paths. The replay response retains a CSP
+that forbids connections, form submissions and framing. No live endpoint is
+introduced by the replay page.
+
+A standard Drupal installation leaves this setting disabled and serves libraries
+through its normal asset URLs. Enable the prefix only with the matching bundled
+nginx alias or an equivalent reviewed reverse-proxy configuration.

@@ -1,4 +1,4 @@
-# Build from the public repository root. Runtime is entirely offline.
+# Build from public source. Default mode is offline; live mode is explicit.
 FROM node:24-alpine3.23 AS runtime-build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig*.json ./
@@ -8,6 +8,7 @@ COPY schemas/ schemas/
 COPY scripts/ scripts/
 COPY examples/integrations/drupal/ examples/integrations/drupal/
 COPY examples/demo/build-runtime.mjs examples/demo/build-runtime.mjs
+COPY examples/pixieagent/luna.ts examples/pixieagent/luna.ts
 RUN npm run build && node examples/demo/build-runtime.mjs \
     && npm prune --omit=dev --ignore-scripts --no-audit --fund=false
 COPY examples/demo/assets/ /assets/
@@ -20,6 +21,11 @@ RUN composer install --no-dev --prefer-dist --no-interaction --no-progress \
     && composer check-platform-reqs --no-dev
 COPY examples/integrations/drupal/pixiecore_integration/ web/modules/custom/pixiecore_integration/
 COPY examples/integrations/drupal/pixiecore_specification/ web/modules/custom/pixiecore_specification/
+COPY examples/demo/prepare-pages.php /page-source/examples/demo/prepare-pages.php
+COPY examples/demo/public/index.html /page-source/examples/demo/public/index.html
+COPY examples/pixieagent/demo/replay/public/ /page-source/examples/pixieagent/demo/replay/public/
+RUN php /page-source/examples/demo/prepare-pages.php /site/web/modules/custom/pixiecore_specification \
+    && rm -rf /page-source
 COPY --from=runtime-build /assets/node_modules/codemirror/ web/libraries/codemirror/
 COPY examples/demo/settings.php web/sites/default/settings.php
 RUN mkdir -p /state/files && rm -rf web/sites/default/files \
@@ -36,12 +42,11 @@ COPY --from=runtime-build /app/dist/ /runtime/dist/
 COPY --from=runtime-build /app/schemas/ /runtime/schemas/
 COPY --from=runtime-build /app/build/demo/executable-specification/ /runtime/examples/integrations/drupal/executable-specification/
 COPY --from=runtime-build /app/build/demo/pixiecore_specification/blueprints/ /runtime/examples/integrations/drupal/pixiecore_specification/blueprints/
+COPY --from=runtime-build /app/build/demo/pixieagent/ /runtime/examples/pixieagent/
 COPY --from=site-build /site/ /opt/drupal/
-COPY examples/pixieagent/demo/replay/public/ /demo/public/pixieagent/
-COPY examples/demo/public/ /demo/public/
 COPY examples/demo/nginx.conf /etc/nginx/nginx.conf
 COPY examples/demo/php-fpm.conf /usr/local/etc/php-fpm.d/zz-demo.conf
-COPY examples/demo/start.sh examples/demo/bootstrap.php /demo/
+COPY examples/demo/start.sh examples/demo/bootstrap.php examples/demo/configure-theme.php /demo/
 COPY examples/demo/runtime.mjs /runtime/examples/demo/runtime.mjs
 COPY LICENSE THIRD_PARTY_NOTICES.md /demo/
 RUN chmod 755 /demo/start.sh && chmod 644 /opt/drupal/web/sites/default/settings.php

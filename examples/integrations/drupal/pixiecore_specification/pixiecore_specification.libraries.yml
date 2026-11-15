@@ -7,3 +7,21 @@ editor:
   dependencies:
     - core/drupal
     - core/once
+
+dark:
+  css:
+    theme:
+      assets/css/dark.css: { weight: 100 }
+
+landing:
+  css:
+    theme:
+      assets/pages/landing.css: { weight: 100 }
+
+replay:
+  css:
+    theme:
+      assets/replay/style.css: { weight: 100 }
+  js:
+    assets/replay/data.js: { weight: -2 }
+    assets/replay/app.js: { weight: -1 }

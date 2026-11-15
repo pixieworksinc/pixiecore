@@ -32,13 +32,7 @@ if docker run --rm --network none --read-only -v "$volume:/state" pixiecore-demo
   exit 1
 fi
 grep -q 'Demo state is already in use.' /tmp/duplicate-owner.log
-if [ -n "${DEMO_SCREENSHOTS_DIRECTORY:-}" ]; then
-  mkdir -p "$DEMO_SCREENSHOTS_DIRECTORY"
-  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/landing.png" http://127.0.0.1:8088/ > /tmp/demo-browser.log 2>&1
-  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=1280,960 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/replay.png" http://127.0.0.1:8088/pixieagent/ >> /tmp/demo-browser.log 2>&1
-  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=390,844 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/landing-mobile.png" http://127.0.0.1:8088/ >> /tmp/demo-browser.log 2>&1
-  google-chrome --headless --no-sandbox --disable-dev-shm-usage --disable-background-networking --timeout=3000 --window-size=390,844 --screenshot="$DEMO_SCREENSHOTS_DIRECTORY/replay-mobile.png" http://127.0.0.1:8088/pixieagent/ >> /tmp/demo-browser.log 2>&1
-fi
+node examples/demo/browser-test.mjs
 # Inspect SQLite without publishing its contents. Recreating may change session/cache rows.
 before=$(compose exec -T demo php -r '$db = new PDO("sqlite:/state/site.sqlite"); echo $db->query("SELECT count(*) FROM pixiecore_spec_run")->fetchColumn();' )
 compose stop --timeout 10

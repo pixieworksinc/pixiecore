@@ -8,8 +8,9 @@ Do not deploy it to a production Drupal site. No API key or paid request is need
 The instructions below reproduce the checked-in mock runtime and Drupal modules.
 For an isolated Docker/Compose deployment of this mock editor and the PixieAgent
 replay, use the [rebuildable demos](../../../demo/README.md). The manual setup below
-remains useful for development. No real-provider server is included here. A
-separately operated live trial does not establish that its backend is shipped.
+remains useful for development. The normal instructions below remain offline. An explicit two-call live overlay
+now reuses the same editor and an included real-provider host; see the rebuildable
+demos README before preparing or activating that separately approved trial.
 
 See the module's [current evidence boundary](../pixiecore_specification/README.md#current-evidence-boundary)
 for the supported backend and the closed metering proposal.

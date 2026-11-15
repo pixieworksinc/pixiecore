@@ -34,7 +34,10 @@ final class SpecificationExecutor implements SpecificationExecutorInterface {
     if (!is_array($options)) {
       return 'disabled';
     }
-    return ($options['mode'] ?? '') === 'mock' ? 'mock' : 'disabled';
+    if (($options['mode'] ?? '') === 'mock') {
+      return 'mock';
+    }
+    return ($options['mode'] ?? '') === 'real' && ($options['allow_live'] ?? FALSE) === TRUE ? 'real' : 'disabled';
   }
 
   /**
@@ -70,9 +73,10 @@ final class SpecificationExecutor implements SpecificationExecutorInterface {
     $scheme = parse_url($endpoint, PHP_URL_SCHEME);
     $host = parse_url($endpoint, PHP_URL_HOST);
     if ($scheme !== 'http' || !in_array($host, ['127.0.0.1', 'localhost', '[::1]'], TRUE)
-      || $token !== '' || parse_url($endpoint, PHP_URL_USER) !== NULL
+      || ($mode === 'mock' ? $token !== '' : strlen($token) < 32)
+      || parse_url($endpoint, PHP_URL_USER) !== NULL
       || parse_url($endpoint, PHP_URL_QUERY) !== NULL || parse_url($endpoint, PHP_URL_FRAGMENT) !== NULL) {
-      throw new \RuntimeException('The offline fixture endpoint must be loopback HTTP without credentials.');
+      throw new \RuntimeException('The runtime must use loopback HTTP and credentials appropriate to its mode.');
     }
     $key = $this->acquire($uid);
     try {
@@ -103,8 +107,32 @@ final class SpecificationExecutor implements SpecificationExecutorInterface {
       try {
         $response = $this->client->executeEnvelope($endpoint, $token, $saved['blueprint'], $inputs);
         $provider = $response['metadata']['provider'] ?? '';
-        if ($provider !== 'fixture-mock') {
+        if ($provider !== ($mode === 'mock' ? 'fixture-mock' : 'openai')) {
           throw new \UnexpectedValueException('The configured backend did not identify the expected provider.');
+        }
+        if ($mode === 'real') {
+          $metadata = $response['metadata'];
+          if (($metadata['model'] ?? '') !== 'gpt-6-luna'
+            || ($metadata['provider_calls'] ?? NULL) !== 1
+            || !is_int($metadata['input_tokens'] ?? NULL)
+            || !is_int($metadata['output_tokens'] ?? NULL)
+            || $metadata['input_tokens'] < 1
+            || $metadata['input_tokens'] > 1050000
+            || $metadata['output_tokens'] < 0
+            || $metadata['output_tokens'] > 512
+            || !is_string($metadata['startup_id'] ?? NULL)
+            || trim($metadata['startup_id']) === ''
+            || !is_numeric($metadata['estimated_cost_usd'] ?? NULL)
+            || !is_finite((float) $metadata['estimated_cost_usd'])
+            || (float) $metadata['estimated_cost_usd'] < 0
+            || (float) $metadata['estimated_cost_usd'] > 1) {
+            throw new \UnexpectedValueException('Real-provider usage evidence is incomplete.');
+          }
+          $record['provider_calls'] = 1;
+          $record['input_tokens'] = $metadata['input_tokens'];
+          $record['output_tokens'] = $metadata['output_tokens'];
+          $record['estimated_cost_usd'] = (float) $metadata['estimated_cost_usd'];
+          $record['startup_id'] = $metadata['startup_id'] ?? NULL;
         }
         $this->blueprint->validateResult($response['data'], $inputs);
         $record['status'] = 'unverified';

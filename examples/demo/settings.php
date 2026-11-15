@@ -28,8 +28,21 @@ $settings['config_sync_directory'] = '/state/config';
 $settings['file_temp_path'] = '/tmp';
 $settings['skip_permissions_hardening'] = TRUE;
 $settings['update_free_access'] = FALSE;
+// This image's nginx maps prefixed replay libraries to the Drupal web root.
+$settings['pixiecore_demo_replay_asset_prefix'] = TRUE;
 $settings['pixiecore_specification'] = [
   'mode' => 'mock',
   'endpoint' => 'http://127.0.0.1:3087',
   'token' => '',
 ];
+
+// Real mode is an explicit Compose overlay; the provider key stays outside PHP.
+if (getenv('DEMO_MODE') === 'real') {
+  $token = trim(file_get_contents('/run/secrets/runtime_token') ?: '');
+  if (strlen($token) < 32) {
+    throw new RuntimeException('The live runtime transport token is unavailable.');
+  }
+  $settings['pixiecore_specification']['mode'] = 'real';
+  $settings['pixiecore_specification']['allow_live'] = TRUE;
+  $settings['pixiecore_specification']['token'] = $token;
+}

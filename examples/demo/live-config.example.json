@@ -1,0 +1,7 @@
+{
+  "expiresAt": "2000-01-01T00:00:00Z",
+  "statePath": "/state/private/pixiecore-live",
+  "templatePath": "/runtime/examples/integrations/drupal/pixiecore_specification/blueprints/customer-discount/customer-discount.yaml",
+  "apiKeyPath": "/run/secrets/openai_api_key",
+  "transportTokenPath": "/run/secrets/runtime_token"
+}

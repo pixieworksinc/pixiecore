@@ -1,7 +1,12 @@
-/** Own the existing fixture host and drain it on container shutdown. */
+/** Own the existing selected host and drain it on container shutdown. */
 import {startMockSpecificationHost} from '../integrations/drupal/executable-specification/runtime/mock-server.js';
-const host = await startMockSpecificationHost(3087);
-console.log('Offline PixieCore fixture host ready.');
+import {startConfiguredLiveHost} from '../integrations/drupal/executable-specification/runtime/live-server.js';
+const mode = process.env.DEMO_MODE || 'mock';
+if (!['mock', 'real'].includes(mode)) throw Error('Invalid DEMO_MODE');
+const host = mode === 'real'
+  ? await startConfiguredLiveHost(process.env.PIXIECORE_DEMO_CONFIG)
+  : await startMockSpecificationHost(3087);
+console.log(`PixieCore ${mode} host ready.`);
 let closing = false;
 async function stop() {
   if (closing) return;
@@ -12,7 +17,7 @@ async function stop() {
     clearTimeout(deadline);
     process.exit(0);
   } catch {
-    console.error('Fixture host shutdown failed.');
+    console.error('Demo host shutdown failed.');
     process.exit(1);
   }
 }

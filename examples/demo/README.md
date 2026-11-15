@@ -1,15 +1,22 @@
 # Rebuildable PixieCore and PixieAgent demos
 
+Drupal serves the landing page, Core login/editor and PixieAgent replay with
+core Claro and a dark palette. PixieAgent keeps its original six-card layout.
+
 An isolated application container runs the existing Drupal Blueprint editor, its loopback
-PixieCore fixture runtime, and the existing six-card PixieAgent replay. It makes
-no model-provider requests. It contains no API key, production database, live
-trial ledger, or prebuilt maintainer runtime.
+PixieCore fixture runtime, and the existing six-card PixieAgent replay. The default mode makes
+no model-provider requests. Images contain no API key, production database, live
+trial state, or prebuilt maintainer runtime. An explicit live overlay reuses this
+same editor and the existing real-provider REST path.
 
 - **PixieCore:** save a Blueprint, run it through PixieCore, inspect the result.
   Only the two documented Gold/1200 pricing fixtures are supported. This is a
   real runtime with a **mock provider**, not a natural-language rule interpreter.
 - **PixieAgent:** choose one of six synthetic issues and replay its saved **mock**
-  decision/classification/confirmation. The original card layout is unchanged.
+  decision/classification/confirmation. Drupal renders the page and loads the
+  existing replay assets; card playback runs in the browser.
+- Optional PixieCore live mode uses the same editor and saved revisions; see
+  [the two-call trial](#optional-two-call-live-trial).
 - The separate [restricted live example](../pixieagent/demo/README.md) is not
   activated by this deployment. Starting containers or viewing pages costs $0.
 
@@ -40,9 +47,14 @@ docker compose -f examples/demo/compose.yaml up --build -d
 
 The first boot installs a fresh minimal SQLite site and takes up to several
 minutes. It creates the `demo` user with only the Blueprint demo permission,
-blocks the installer administrator, and disables self-registration and automated
+grants permission to view the administration theme, blocks the installer administrator,
+and disables self-registration and automated
 cron. The password is consumed only during initial installation. Retrieve it
-locally from your private file to log in; do not paste it into an Issue.
+locally from your private file to log in; do not paste it into an Issue. The login
+and editor use Drupal core's Claro theme. Startup also sets `/demos` as Drupal's
+front page, including when reusing an existing volume. The landing and replay
+routes allow anonymous visitors. Editor permissions remain restricted to the
+existing demo role.
 
 Open <http://127.0.0.1:8088/>. The landing page links to both experiences:
 
@@ -71,6 +83,67 @@ Authentication, Drupal form CSRF protection, per-user revision ownership, dirty
 state and result labels are inherited from the existing modules. A shared demo
 account shares its history; create separate restricted users for separate
 reviewers if needed. Do not enter real customer data into this synthetic demo.
+
+## Optional two-call live trial
+
+This reuses the existing Drupal editor, Save/Execute/Reset, revision store and
+PixieCore REST host. It does not create another UI or modify PixieCore's public
+API. The normal Compose command stays offline. The live overlay is deliberately
+opt-in and does not enable the separate PixieAgent live service.
+
+Before activation, review the current model/price, two-call allowance, expiry,
+credential mounts, and rollback. The fixed provider is `gpt-6-luna` at
+`https://api.openai.com/v1/chat/completions`, with no retries, no tools/MCP,
+512 output tokens, 16 KiB provider bodies, and a 25-second provider timeout.
+The provider deadline leaves five seconds before the Drupal HTTP client and
+application FastCGI read deadlines of 30 seconds. The gateway read deadline is
+35 seconds. Operator files supply paths and expiry, so they inherit this fixed
+provider deadline.
+At the reviewed conservative rates of $0.20/input-million and $0.75/output-million,
+reserving 1,050,000 input tokens per call bounds the pair at $0.420768, below $1.
+Recheck [model specifications](https://developers.openai.com/api/docs/models/gpt-6-luna)
+and [pricing](https://developers.openai.com/api/docs/pricing) before authorizing a
+new trial. Reported usage estimates are not independently verified billing.
+
+Copy [live-config.example.json](live-config.example.json) to a private operator
+directory outside Git, and set an explicit future expiry only after trial
+approval. The sample is deliberately expired. Keep the configured `/state`
+path stable. Prepare a provider key file and a random transport token of at
+least 32 bytes. Protect their containing directory and make these read-only
+mounts readable by container UID 82. Never put their values in command lines,
+Git, image layers, the browser, or Issue text.
+
+```sh
+export DEMO_LIVE_CONFIG_FILE="$HOME/pixie-demo-operator/live-config.json"
+export DEMO_API_KEY_FILE="$HOME/pixie-demo-operator/openai-key"
+export DEMO_RUNTIME_TOKEN_FILE="$HOME/pixie-demo-operator/runtime-token"
+# DEMO_PASSWORD_FILE remains the existing private login-password file.
+docker compose -f examples/demo/compose.yaml -f examples/demo/compose.live.yaml up --build -d
+```
+
+Use the existing login and editor. Viewing, saving and resetting make no provider
+requests. Only Execute dispatches one request. The UI says REAL, and records the
+returned JSON, revision, provider/model, startup ID, usage and estimate. A valid
+schema and arithmetic do not establish that the model understood the policy.
+
+For the Gold/1200 pair, remove the bundled `examples:` section before the first
+Save so its 20% answers cannot contradict a 15% prompt. Set the prompt rate to
+`0.15`, Save, Execute, and inspect the actual response (expected 1020). Change
+only that rate to `0.20`, Save, Execute again (expected 960). Keep the same process
+running during both executions. Do not silently replace a wrong model answer
+with the expected value or rerun until it matches.
+
+Two atomic call permits are consumed before dispatch and retained under `/state`.
+They survive container replacement. A failed/interrupted call, invalid output or
+unknown usage stops the trial. Changing expiry or restarting does not replenish
+permits. There is no billing ledger, replenishment endpoint, implicit retry or
+automatic restart. Do not delete trial state to obtain additional calls.
+
+For rollback, stop this Compose project using the same overlay options, then
+recreate it using only the base Compose file. Keep the named volume and secret
+files; removing a mount is not deleting the key. The editor resumes MOCK mode and
+retains history. Record the selected image and proxy configuration as described
+below before applying any production change.
 
 ## HTTPS deployment
 
@@ -106,6 +179,10 @@ Snapshot the current virtual-host configuration before switching its backend;
 validate the new configuration before a graceful reload. The core demo uses
 root-relative Drupal paths, so give it a dedicated hostname rather than adding
 an arbitrary path prefix. The replay can also be proxied at `/pixieagent/`.
+Its Drupal libraries use `/pixieagent/assets/` so every CSS, JavaScript and font
+request follows that same proxy prefix. The application exposes only public
+asset extensions through this alias. Keep the application nginx configuration
+from this source together with the image when rebuilding the demo.
 If an older live trial is already there, preserve its **more specific** route,
 service and persistent ledger; do not implicitly replace `/pixieagent/live/`.
 
@@ -123,6 +200,17 @@ changing it selects a different named volume. Never share one state volume with
 two containers: startup holds an exclusive process lock and refuses a second
 owner. Docker health detects web failures; the supervisor stops all children if
 one exits. A normal restart does not reset history or create executions.
+
+To apply the Claro appearance to an existing volume, rebuild the image and recreate
+the containers with the same Compose project and password file:
+
+```sh
+docker compose -f examples/demo/compose.yaml up --build -d
+```
+
+Startup applies the theme configuration idempotently without rerunning the initial
+bootstrap or making provider calls. Do not run `bootstrap.php` again on an existing
+volume. Existing revisions and credentials remain in the retained volume.
 
 ```sh
 # Retains the named volume and operator password file.
@@ -178,13 +266,23 @@ both existing fixtures, container replacement retaining the saved result, and a
 second fresh-volume installation. Its test project is disposable and is the only
 place that uses `down --volumes`. Existing PixieAgent CI still checks all 88 tests,
 the six offline cases and the separate live container with mocked communication.
+Anonymous-page checks cover Drupal rendering, dark styling, proxy-prefixed
+assets and sensitive-file denial. Browser checks exercise all six replay cards
+and switching cases during playback, with desktop and narrow-screen captures.
 
 For the container smoke check after a local build, set `DEMO_PASSWORD_FILE` to a
 **test-only** password file and run `sh examples/demo/test-container.sh`. It owns
 the `pixie-demos-ci` Compose project and its disposable volumes. Do not run it
 against a live demo. It probes only a documentation-reserved IP to confirm egress
 failure, never a provider endpoint.
+The browser check needs Node 24 and Chrome. Set `DEMO_BROWSER_BIN` to the Chrome
+executable if it is unavailable as `google-chrome`; set
+`DEMO_SCREENSHOTS_DIRECTORY` to save captures and its JSON acceptance report.
 
 This deployment is a bounded example, not a production multi-tenant service or
 an assessment of model accuracy. Refresh locked packages and base images through
 reviewed changes, then repeat build/recreation checks before replacing an image.
+
+The CI-only `test-live-container.sh` exercises the real-mode protocol through
+the existing Drupal form using injected responses and an offline container
+network. No real key or provider call is used, and this is not model evaluation.
