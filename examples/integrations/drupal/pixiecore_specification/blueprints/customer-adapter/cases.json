@@ -1,0 +1,47 @@
+[
+  {
+    "id": "json",
+    "label": "JSON customer record",
+    "inputs": {
+      "source_format": "json",
+      "source_text": "{\"customer_tier\":\"Gold\",\"purchase_amount\":1200}"
+    },
+    "expected": {"customer_tier": "Gold", "purchase_amount": 1200}
+  },
+  {
+    "id": "csv",
+    "label": "CSV customer record",
+    "inputs": {
+      "source_format": "csv",
+      "source_text": "customer_tier,purchase_amount\nGold,1200"
+    },
+    "expected": {"customer_tier": "Gold", "purchase_amount": 1200}
+  },
+  {
+    "id": "text",
+    "label": "Natural-language customer record",
+    "inputs": {
+      "source_format": "text",
+      "source_text": "The customer tier is Gold and the purchase amount is 1200."
+    },
+    "expected": {"customer_tier": "Gold", "purchase_amount": 1200}
+  },
+  {
+    "id": "missing",
+    "label": "Missing purchase amount",
+    "inputs": {
+      "source_format": "text",
+      "source_text": "The customer tier is Gold."
+    },
+    "expected": {"error": "missing_fields"}
+  },
+  {
+    "id": "ambiguous",
+    "label": "Ambiguous purchase amount",
+    "inputs": {
+      "source_format": "text",
+      "source_text": "The customer tier is Gold. The purchase amount is 1200 or 1500."
+    },
+    "expected": {"error": "ambiguous_input"}
+  }
+]

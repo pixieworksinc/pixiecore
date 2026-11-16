@@ -115,6 +115,85 @@ introduced by the replay page.</p>
 <p>A standard Drupal installation leaves this setting disabled and serves libraries
 through its normal asset URLs. Enable the prefix only with the matching bundled
 nginx alias or an equivalent reviewed reverse-proxy configuration.</p>
+<h2 id="customer-record-adapter-rehearsal">Customer record adapter rehearsal</h2>
+<p>This small, separate operation sends three synthetic input formats through one
+immutable Blueprint and the actual PixieCore HTTP/runtime boundary. Drupal sends
+the raw input text. It does not parse CSV, infer fields, or generate the result.</p>
+<p>The bundled provider returns exact fixtures. This checks delivery, output-schema
+validation and display, not a real model&#39;s ability to interpret these formats.
+The adapter is always offline, including when the separate discount or Agent
+demo uses an explicitly enabled live mode. It does not read their credentials,
+consume their call allowances, or change their saved records.</p>
+<h3 id="run-the-adapter-example">Run the adapter example</h3>
+<p>Follow the <a href="../../../demo/index.html">container setup</a>, log in with the configured
+demo account, and open <code>/admin/config/pixiecore/adapter</code>.</p>
+<ol>
+<li><p>Select JSON, CSV or natural-language input and click <strong>View input</strong>.</p>
+</li>
+<li><p>Inspect the raw source and the complete bundled Blueprint. Viewing sends no
+execution request.</p>
+</li>
+<li><p>Click <strong>Execute</strong>. Drupal sends the same Blueprint and the selected original
+text to PixieCore. The result includes the input, Blueprint SHA-256, provider,
+schema check and comparison with the fixed expected result.</p>
+</li>
+<li><p>Confirm that all three successful inputs produce this same typed object:</p>
+<pre><code class="language-json">{&quot;customer_tier&quot;:&quot;Gold&quot;,&quot;purchase_amount&quot;:1200}</code></pre>
+</li>
+</ol>
+<p>The CSV input is:</p>
+<pre><code class="language-csv">customer_tier,purchase_amount
+Gold,1200</code></pre>
+<p>The natural-language input is:</p>
+<pre><code class="language-text">The customer tier is Gold and the purchase amount is 1200.</code></pre>
+<p>The other two selections demonstrate refusal rather than guessed data:</p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Expected output</th>
+<th>Display meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>The customer tier is Gold.</code></td>
+<td><code>{&quot;error&quot;:&quot;missing_fields&quot;}</code></td>
+<td>Review the missing purchase amount.</td>
+</tr>
+<tr>
+<td><code>The customer tier is Gold. The purchase amount is 1200 or 1500.</code></td>
+<td><code>{&quot;error&quot;:&quot;ambiguous_input&quot;}</code></td>
+<td>Resolve the ambiguity before proceeding.</td>
+</tr>
+</tbody></table>
+<p>Both refusal objects are explicit branches of the same output schema. Matching
+a refusal fixture means that the refusal path passed its contract check; it is
+not a successful conversion. A schema-valid response can still fail the expected
+value comparison. Neither check measures general semantic accuracy.</p>
+<h3 id="reproduce-the-adapter-offline-checks">Reproduce the adapter offline checks</h3>
+<p>From a clean repository checkout with Node 24:</p>
+<pre><code class="language-sh">npm ci --ignore-scripts
+npm run build
+node examples/demo/build-runtime.mjs
+node --test build/demo/executable-specification/runtime/adapter-server.test.js</code></pre>
+<p>The container verification also exercises the authenticated Drupal form with all
+five fixed cases. The fixture host binds only to loopback and is not a published
+service. Startup and shutdown are owned by the existing demo supervisor.</p>
+<h3 id="adapter-limits">Adapter limits</h3>
+<ul>
+<li>Only the five bundled synthetic inputs are supported. An unknown input or a
+changed Blueprint fails rather than invoking another provider.</li>
+<li>The adapter uses one immutable Blueprint; it does not introduce another
+authoring system or modify the discount policy.</li>
+<li>The latest result is kept only in the current form interaction. There is no
+new persistent revision or execution history. Changing the selected input
+clears the current result.</li>
+<li>There is no free-text submission, upload, external data source, automatic
+pricing operation or customer update.</li>
+<li>Real-model behavior is untested. A real-provider trial, deployment and budget
+would require a separate concrete plan; switching an existing live overlay
+does not enable it for this operation.</li>
+</ul>
 </main></div>
 
 </body>

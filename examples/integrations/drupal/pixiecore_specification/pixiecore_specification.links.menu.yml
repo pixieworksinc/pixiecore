@@ -1,3 +1,10 @@
+pixiecore_specification.adapter:
+  title: 'PixieCore customer adapter demo'
+  description: 'Rehearse three input formats using one offline adapter Blueprint.'
+  parent: system.admin_config_development
+  route_name: pixiecore_specification.adapter
+  weight: 51
+
 pixiecore_specification.demo:
   title: 'PixieCore Blueprint demo'
   description: 'Edit and execute the PixieCore Blueprint demo.'

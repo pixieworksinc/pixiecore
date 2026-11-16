@@ -128,3 +128,88 @@ introduced by the replay page.
 A standard Drupal installation leaves this setting disabled and serves libraries
 through its normal asset URLs. Enable the prefix only with the matching bundled
 nginx alias or an equivalent reviewed reverse-proxy configuration.
+
+
+## Customer record adapter rehearsal
+
+This small, separate operation sends three synthetic input formats through one
+immutable Blueprint and the actual PixieCore HTTP/runtime boundary. Drupal sends
+the raw input text. It does not parse CSV, infer fields, or generate the result.
+
+The bundled provider returns exact fixtures. This checks delivery, output-schema
+validation and display, not a real model's ability to interpret these formats.
+The adapter is always offline, including when the separate discount or Agent
+demo uses an explicitly enabled live mode. It does not read their credentials,
+consume their call allowances, or change their saved records.
+
+### Run the adapter example
+
+Follow the [container setup](../../../demo/README.md), log in with the configured
+demo account, and open `/admin/config/pixiecore/adapter`.
+
+1. Select JSON, CSV or natural-language input and click **View input**.
+2. Inspect the raw source and the complete bundled Blueprint. Viewing sends no
+   execution request.
+3. Click **Execute**. Drupal sends the same Blueprint and the selected original
+   text to PixieCore. The result includes the input, Blueprint SHA-256, provider,
+   schema check and comparison with the fixed expected result.
+4. Confirm that all three successful inputs produce this same typed object:
+
+   ```json
+   {"customer_tier":"Gold","purchase_amount":1200}
+   ```
+
+The CSV input is:
+
+```csv
+customer_tier,purchase_amount
+Gold,1200
+```
+
+The natural-language input is:
+
+```text
+The customer tier is Gold and the purchase amount is 1200.
+```
+
+The other two selections demonstrate refusal rather than guessed data:
+
+| Input | Expected output | Display meaning |
+| --- | --- | --- |
+| `The customer tier is Gold.` | `{"error":"missing_fields"}` | Review the missing purchase amount. |
+| `The customer tier is Gold. The purchase amount is 1200 or 1500.` | `{"error":"ambiguous_input"}` | Resolve the ambiguity before proceeding. |
+
+Both refusal objects are explicit branches of the same output schema. Matching
+a refusal fixture means that the refusal path passed its contract check; it is
+not a successful conversion. A schema-valid response can still fail the expected
+value comparison. Neither check measures general semantic accuracy.
+
+### Reproduce the adapter offline checks
+
+From a clean repository checkout with Node 24:
+
+```sh
+npm ci --ignore-scripts
+npm run build
+node examples/demo/build-runtime.mjs
+node --test build/demo/executable-specification/runtime/adapter-server.test.js
+```
+
+The container verification also exercises the authenticated Drupal form with all
+five fixed cases. The fixture host binds only to loopback and is not a published
+service. Startup and shutdown are owned by the existing demo supervisor.
+
+### Adapter limits
+
+- Only the five bundled synthetic inputs are supported. An unknown input or a
+  changed Blueprint fails rather than invoking another provider.
+- The adapter uses one immutable Blueprint; it does not introduce another
+  authoring system or modify the discount policy.
+- The latest result is kept only in the current form interaction. There is no
+  new persistent revision or execution history. Changing the selected input
+  clears the current result.
+- There is no free-text submission, upload, external data source, automatic
+  pricing operation or customer update.
+- Real-model behavior is untested. A real-provider trial, deployment and budget
+  would require a separate concrete plan; switching an existing live overlay
+  does not enable it for this operation.

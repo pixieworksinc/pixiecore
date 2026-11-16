@@ -1,4 +1,7 @@
 services:
+  pixiecore_specification.adapter:
+    class: Drupal\pixiecore_specification\Adapter\CustomerAdapterDemo
+    arguments: ['@pixiecore_integration.client', '@settings']
   pixiecore_specification.blueprint:
     class: Drupal\pixiecore_specification\Blueprint\DiscountBlueprint
   pixiecore_specification.store:

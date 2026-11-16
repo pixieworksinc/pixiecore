@@ -26,6 +26,15 @@
   max-width: 100%;
 }
 
+[data-adapter-demo] {
+  overflow-wrap: anywhere;
+}
+
+[data-adapter-demo] pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 48rem) {
   .specification-panes {
     grid-template-columns: minmax(0, 1fr);

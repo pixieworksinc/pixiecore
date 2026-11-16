@@ -36,6 +36,9 @@ $settings['pixiecore_specification'] = [
   'token' => '',
 ];
 
+// This separate operation never consumes the Core or Agent live trial allowance.
+$settings['pixiecore_adapter'] = ['endpoint' => 'http://127.0.0.1:3088'];
+
 // Real mode is an explicit Compose overlay; the provider key stays outside PHP.
 if (getenv('DEMO_MODE') === 'real') {
   $token = trim(file_get_contents('/run/secrets/runtime_token') ?: '');

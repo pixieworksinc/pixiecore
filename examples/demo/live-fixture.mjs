@@ -1,5 +1,6 @@
 /** CI-only live protocol test. No provider key is read and no provider connection exists. */
 import {startLiveSpecificationHost} from '../integrations/drupal/executable-specification/runtime/live-server.js';
+import {startAdapterHost} from '../integrations/drupal/executable-specification/runtime/adapter-server.js';
 import {readFileSync} from 'node:fs';
 const outputs = [{discount: 0.15, final_price: 1020}, {discount: 0.2, final_price: 960}];
 const provider = {
@@ -18,4 +19,10 @@ const config = {
 };
 const host = await startLiveSpecificationHost({config, provider,
   token: readFileSync(config.transportTokenPath, 'utf8').trim(), templatePath: config.templatePath});
-for (const signal of ['SIGTERM', 'SIGINT']) process.once(signal, () => { void host.close(); });
+const adapter = await startAdapterHost(3088).catch(async error => {
+  await host.close();
+  throw error;
+});
+for (const signal of ['SIGTERM', 'SIGINT']) process.once(signal, () => {
+  void Promise.all([host.close(), adapter.close()]);
+});

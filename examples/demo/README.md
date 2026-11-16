@@ -15,6 +15,9 @@ existing Core editor and Agent card flows.
 - **Default PixieAgent mode:** choose one of six synthetic issues and replay its saved **mock**
   decision/classification/confirmation. Drupal renders the page and loads the
   existing replay assets; card playback runs in the browser.
+- **Customer adapter:** send JSON, CSV or natural-language fixtures through one
+  fixed Blueprint to the same typed JSON. This separate operation is always
+  offline; see [its contract and five cases](../integrations/drupal/pixiecore_specification/README.md#customer-record-adapter-rehearsal).
 - Optional PixieCore live mode uses the same editor and saved revisions; see
   [the two-call trial](#optional-two-call-live-trial).
 - Optional PixieAgent live mode uses the Drupal card page and its existing
@@ -61,6 +64,7 @@ existing demo role.
 Open <http://127.0.0.1:8088/>. The landing page links to both experiences:
 
 - `/user/login?destination=/admin/config/pixiecore/specification`: restricted editor.
+- `/admin/config/pixiecore/adapter`: restricted offline customer adapter.
 - `/pixieagent/`: anonymous six-case replay.
 - `/pixieagent/live/`: deliberately unavailable in this container.
 
@@ -85,6 +89,20 @@ Authentication, Drupal form CSRF protection, per-user revision ownership, dirty
 state and result labels are inherited from the existing modules. A shared demo
 account shares its history; create separate restricted users for separate
 reviewers if needed. Do not enter real customer data into this synthetic demo.
+
+## Try the customer adapter
+
+Open `/admin/config/pixiecore/adapter` with the same restricted demo login.
+Choose JSON, CSV or natural-language input, click **View input**, then **Execute**.
+All three pass the same immutable Blueprint and return
+`{"customer_tier":"Gold","purchase_amount":1200}`. The missing and ambiguous
+selections return explicit errors and require review. The result displays the
+raw input, Blueprint hash and independent schema/expected-value checks.
+
+This is a fixture-backed HTTP/runtime rehearsal, not a real-model evaluation.
+The adapter stays offline with either live overlay and does not consume its
+allowance. Results are scoped to the current form interaction; there is no new
+permanent history. See [the adapter instructions](../integrations/drupal/pixiecore_specification/README.md#customer-record-adapter-rehearsal).
 
 ## Optional two-call live trial
 

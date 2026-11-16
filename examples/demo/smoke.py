@@ -129,9 +129,54 @@ def verify_replay():
     assert status in [200, 403] and "data-specification-editor" not in html
 
 
+def verify_adapter(opener):
+    """Exercise the separate fixture operation without changing pricing history."""
+    route = "/admin/config/pixiecore/adapter"
+    form_id = "pixiecore-customer-adapter-demo"
+    status, anonymous = request(client(), route)
+    assert status in [200, 403] and form_id not in anonymous
+    status, html = request(opener, route)
+    assert status == 200 and "/pixiecore_specification/assets/css/dark.css" in html
+    fields = Form(html, form_id).fields
+    expected = {
+        "json": {"customer_tier": "Gold", "purchase_amount": 1200},
+        "csv": {"customer_tier": "Gold", "purchase_amount": 1200},
+        "text": {"customer_tier": "Gold", "purchase_amount": 1200},
+        "missing": {"error": "missing_fields"},
+        "ambiguous": {"error": "ambiguous_input"},
+    }
+    hashes = set()
+    for case_id, output in expected.items():
+        view = dict(fields, case_id=case_id, view="View input")
+        status, html = request(opener, route, view)
+        assert status == 200 and "data-adapter-source" in html and "data-adapter-blueprint" in html
+        fields = Form(html, form_id).fields
+        assert not fields.get("result", "").lstrip().startswith("{"), "View retained another case's result"
+        if case_id == "json":
+            invalid = dict(fields, case_id=case_id, execute="Execute", form_token="invalid-csrf-token")
+            status, rejected = request(opener, route, invalid)
+            assert status == 200
+            assert not Form(rejected, form_id).fields.get("result", "").lstrip().startswith("{"), "Invalid CSRF ran the adapter"
+        execute = dict(fields, case_id=case_id, execute="Execute")
+        status, html = request(opener, route, execute)
+        assert status == 200
+        fields = Form(html, form_id).fields
+        record = json.loads(fields["result"])
+        assert record["case_id"] == case_id and record["data"] == output
+        assert record["status"] == ("review_required" if "error" in output else "passed")
+        assert record["schema_validation"] == "passed" and record["expected_match"] == "passed"
+        assert record["mode"] == "fixture" and record["model_accuracy"] == "not_measured"
+        assert record["provider"] == "adapter-fixture" and record["model"] == "offline-contract-fixtures"
+        assert record["http_requests"] == 1
+        hashes.add(record["blueprint_sha256"])
+    assert len(hashes) == 1, "Cases did not use the same Blueprint"
+    print("Adapter: three input formats, two review paths, one Blueprint, fixture-only.")
+
+
 verify_replay()
 user = login()
 assert request(user, "/admin/people")[0] == 403
+verify_adapter(user)
 initial = form(user)
 if LIVE:
     if "--restored" in sys.argv:
